@@ -14,6 +14,8 @@ export const SIZES = {
  "kumamoto_2016_phone": 0.7,
  "kurils_desktop": 3.2,
  "kurils_phone": 1.8,
+ "kyoto_desktop": 1.5,
+ "kyoto_phone": 0.9,
  "quakes_3d_desktop": 2.2,
  "quakes_3d_phone": 1.4,
  "ryukyu_desktop": 2.0,

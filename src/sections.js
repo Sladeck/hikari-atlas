@@ -148,15 +148,18 @@ export const SECTIONS = [
     wallpapers: [
       { file: 'sakura', jp: '桜前線', en: 'The sakura front', note: 'Left to right is the calendar, bottom to top is latitude. The isolated row in April at the bottom is a southern island station; Okinawa\'s January blooms are a different, early cherry.' },
       { file: 'sakura_map', jp: '桜の地図', en: 'Cherry blossom map', note: 'Every JMA observation city as a blossom. The deeper the pink, the earlier that city\'s first bloom now comes compared with the 1950s: 81 of 100 cities bloom earlier, the median city by about 5 days over 66 years. Pale blossoms have barely moved.' },
+      { file: 'kyoto', jp: '京都の桜', en: 'Kyoto, 1,200 years', note: 'The longest flowering record on Earth: the day Kyoto\'s mountain cherries peaked, in 838 springs from 812 to today, read from old diaries and chronicles before modern observation. For a thousand years the bloom held near 15 April. Since 1900 it has slid earlier, and in 2023 it came on 25 March, the earliest on record. The deeper the pink, the earlier the year; the faint line is the 30-year average.' },
     ],
     method: [
       ['Data', 'JMA phenological observations: first-bloom date of the reference cherry tree at each station.'],
       ['Flowers', 'Each bloom is a five-petal sprite, randomly turned, blended additively so busy weeks glow.'],
+      ['Kyoto', 'Peak-bloom dates of Prunus jamasakura in Kyoto compiled by Yasuyuki Aono from historical documents, extended to the present. Pink measures how much earlier than the 812–1850 average (about 15 April) each year bloomed.'],
       ['Map', 'For each city with 30+ years of records, the trend of its first-bloom day is fitted with a Theil–Sen slope, which ignores odd years. Four station positions that were geocoded to towns abroad in the source file are corrected to their JMA sites.'],
     ],
     sources: [
       ['JMA さくらの開花日', 'https://www.data.jma.go.jp/sakura/data/index.html'],
       ['Dataset compiled by akg314/sakura', 'https://github.com/akg314/sakura'],
+      ['Kyoto peak bloom since 812: Aono & Kazui (2008), Aono & Saito (2010), Katata (2026), via Our World in Data', 'https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto'],
     ],
   },
   {
