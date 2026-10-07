@@ -8,7 +8,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 | Chapter | What it shows | Wallpapers |
 |---|---|---|
-| 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions |
+| 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,784 storms tracked by JMA, 1951 to 2019, coloured by central pressure | 1 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
@@ -49,12 +49,14 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | Script | Output | Data |
 |---|---|---|
 | `render_views.py` | Earthquake views | USGS ComCat CSVs, M4.5+, 1973 to today |
+| `quakes_3d.py` | The plates in 3D | the same USGS CSVs |
 | `tsunami.py`, `tsunami_render.py` | Tsunami still (+ `--video`) | ETOPO1 10 arc-minute relief |
 | `typhoons.py` | Typhoon tracks | JMA RSMC Tokyo best track (`bst_all.txt`) |
 | `fuji.py`, `fuji_side.py`, `fuji_points.py` | Fuji from above, from the south, in 3D | 30 m elevation model of Fuji |
 | `sakura.py`, `sakura_map.py` | Sakura front chart and map | JMA first-bloom dates, Natural Earth coastline |
 | `trains.py` | Railway views | 国土数値情報 railway data |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
+| `publish.py` | Copies renders to `public/` and writes the gallery previews | the renders above |
 
 `common.py` holds the shared idea: light is *added* into a float buffer (never painted over),
 blurred into a soft core and a wide glow, tone-mapped with `1 - exp(-x)`, and every unlit pixel is

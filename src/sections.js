@@ -21,6 +21,7 @@ export const SECTIONS = [
     scale: { label: 'Hypocentre depth', from: '0 km', to: '650 km', stops: ['#ffdb9e', '#ff7330', '#e6294d', '#8c33d9', '#4059ff'] },
     wallpapers: [
       { file: 'japan', jp: '日本', en: 'Japan', note: 'Four plates meet under Japan. The bright band is the Japan Trench; the violet branch hanging below is the Pacific plate sinking towards 680 km under the Izu–Bonin arc. The frame holds 27,900 of the 30,167 quakes; the rest lie in the faded tails.' },
+      { file: 'quakes_3d', jp: '沈み込み', en: 'The plates in 3D', note: 'The 22,141 quakes east of 136°E lifted out of the map, each at its real depth, seen from above the Pacific. The bright arc is the trench; beneath it the Pacific plate hangs as a sheet of light, and under the Izu–Bonin arc it plunges almost straight down to 680 km. Depth is stretched twice so the slab can be seen.' },
       { file: 'tohoku', jp: '東北', en: 'Tōhoku', note: 'The densest glow offshore is the aftershock zone of the 2011 Great Tōhoku earthquake: more than 3,700 quakes of M4.5+ in the following twelve months.' },
       { file: 'tokyo', jp: '東京・関東', en: 'Tokyo & Kantō', note: 'Off the Bōsō Peninsula, three plates meet at one of the few trench-trench-trench triple junctions on Earth.' },
       { file: 'kurils', jp: '北海道・千島', en: 'Hokkaido & Kurils', note: 'The Kuril Trench runs from Hokkaido to Kamchatka. Red and violet flecks are quakes inside the slab, hundreds of kilometres down.' },
@@ -32,6 +33,7 @@ export const SECTIONS = [
       ['Data', 'USGS earthquake catalogue (ComCat), magnitude 4.5 and up, 1973 to October 2026, box 121–150°E, 23–47°N. Nuclear tests and landslides are filtered out.'],
       ['Light', 'Each quake is a Gaussian glow added into a float buffer, never painted over, so dense trenches build up light on their own. Quakes of M7+ get four faint rings.'],
       ['Rotation', 'The national view is rotated along its main axis (found with PCA) so the arc fills the long side of the screen. A small arrow marks north.'],
+      ['3D view', 'Each quake is placed at its longitude, latitude and depth in kilometres, depth stretched twice, and seen through a perspective camera from above the Pacific. West of 136°E the quakes fade out, so the view holds the Pacific plate alone.'],
     ],
     sources: [['USGS ANSS Comprehensive Earthquake Catalog', 'https://earthquake.usgs.gov/fdsnws/event/1/']],
   },

@@ -12,6 +12,8 @@ export const SIZES = {
  "japan_phone": 1.6,
  "kurils_desktop": 3.2,
  "kurils_phone": 1.8,
+ "quakes_3d_desktop": 2.2,
+ "quakes_3d_phone": 1.4,
  "ryukyu_desktop": 2.0,
  "ryukyu_phone": 1.3,
  "sakura_desktop": 1.1,
