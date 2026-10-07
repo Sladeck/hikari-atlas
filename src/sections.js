@@ -28,14 +28,20 @@ export const SECTIONS = [
       { file: 'izu', jp: '伊豆・小笠原', en: 'Izu–Bonin Trench', note: 'Subduction in one picture: the amber line is the shallow arc, the violet line beside it is the same plate seen 600 km deeper.' },
       { file: 'ryukyu', jp: '琉球', en: 'Ryūkyū Arc', note: 'The Philippine Sea plate dives under the Ryūkyū islands. Behind the arc, the Okinawa Trough is slowly rifting open.' },
       { file: 'west', jp: '西日本', en: 'Western & Central Japan', note: 'Quieter inland, which makes its big events stand out: Kobe 1995, Kumamoto 2016 and Noto 2024.' },
+      { file: 'tohoku_2011', jp: '東日本大震災', en: 'The week after the M9', note: 'Every quake of M2.5 and up that JMA located in the seven days after 14:46 on 11 March 2011: 7,138 of them, filling a zone 500 km long within hours. White marks the first hours, amber the days after; the brightest star is the M9.0 itself.' },
+      { file: 'kumamoto_2016', jp: '熊本地震', en: 'Kumamoto 2016', note: 'An M6.5 on 14 April, then an M7.3 on the same fault 28 hours later. The 13,445 quakes of M1.5 and up to the end of 2016 trace the Futagawa and Hinagu faults, white where the first hours struck, then run north-east past Aso towards Ōita as later bursts cool to red.' },
     ],
     method: [
       ['Data', 'USGS earthquake catalogue (ComCat), magnitude 4.5 and up, 1973 to October 2026, box 121–150°E, 23–47°N. Nuclear tests and landslides are filtered out.'],
       ['Light', 'Each quake is a Gaussian glow added into a float buffer, never painted over, so dense trenches build up light on their own. Quakes of M7+ get four faint rings.'],
       ['Rotation', 'The national view is rotated along its main axis (found with PCA) so the arc fills the long side of the screen. A small arrow marks north.'],
+      ['Sequences', 'The Tōhoku and Kumamoto pictures use the JMA earthquake catalogue, which records far smaller quakes than the USGS one. Colour there is time since the first big shock, on a log scale, from white to deep red.'],
       ['3D view', 'Each quake is placed at its longitude, latitude and depth in kilometres, depth stretched twice, and seen through a perspective camera from above the Pacific. West of 136°E the quakes fade out, so the view holds the Pacific plate alone.'],
     ],
-    sources: [['USGS ANSS Comprehensive Earthquake Catalog', 'https://earthquake.usgs.gov/fdsnws/event/1/']],
+    sources: [
+      ['USGS ANSS Comprehensive Earthquake Catalog', 'https://earthquake.usgs.gov/fdsnws/event/1/'],
+      ['JMA earthquake catalogue (震源データ)', 'https://www.data.jma.go.jp/eqev/data/bulletin/hypo.html'],
+    ],
   },
   {
     id: 'tsunami',

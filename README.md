@@ -8,7 +8,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 | Chapter | What it shows | Wallpapers |
 |---|---|---|
-| 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D |
+| 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,784 storms tracked by JMA, 1951 to 2019, coloured by central pressure | 1 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
@@ -50,6 +50,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 |---|---|---|
 | `render_views.py` | Earthquake views | USGS ComCat CSVs, M4.5+, 1973 to today |
 | `quakes_3d.py` | The plates in 3D | the same USGS CSVs |
+| `sequences.py` (+ `jma_hypo.py`) | Tōhoku 2011 and Kumamoto 2016 sequences | JMA earthquake catalogue, 2011 and 2016 |
 | `tsunami.py`, `tsunami_render.py` | Tsunami still (+ `--video`) | ETOPO1 10 arc-minute relief |
 | `typhoons.py` | Typhoon tracks | JMA RSMC Tokyo best track (`bst_all.txt`) |
 | `fuji.py`, `fuji_side.py`, `fuji_points.py` | Fuji from above, from the south, in 3D | 30 m elevation model of Fuji |
@@ -68,6 +69,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | Path under `dl/` | Used by |
 |---|---|
 | `geovista-data/assets/rasters/fuji_dem.tif` | `fuji*.py` |
+| `jma-hypo/h2011`, `h2016` (unzipped yearly files) | `sequences.py` |
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
 | `Typhoon-Search/bst_all.txt` | `typhoons.py`, `export_web.py` |
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
@@ -78,7 +80,7 @@ The earthquake CSVs from USGS go in `pipeline/usgs/`.
 
 ## Data
 
-- Earthquakes: [USGS ANSS Comprehensive Earthquake Catalog](https://earthquake.usgs.gov/fdsnws/event/1/)
+- Earthquakes: [USGS ANSS Comprehensive Earthquake Catalog](https://earthquake.usgs.gov/fdsnws/event/1/); for the sequences, the [JMA earthquake catalogue](https://www.data.jma.go.jp/eqev/data/bulletin/hypo.html)
 - Ocean depth: [ETOPO1, NOAA](https://doi.org/10.7289/V5C8276M), via [fatiando-data/earth-topography-10arcmin](https://github.com/fatiando-data/earth-topography-10arcmin)
 - Typhoons: [JMA RSMC Tokyo best track data](https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html)
 - Mount Fuji elevation: [bjlittle/geovista-data](https://github.com/bjlittle/geovista-data)
