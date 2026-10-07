@@ -1,0 +1,24 @@
+# dependencies and build output (recreated by `npm install` / `npm run build`)
+node_modules/
+dist/
+.vite/
+
+# pipeline: raw downloaded datasets and intermediate renders (see README, "Data")
+pipeline/out/
+pipeline/data/
+pipeline/usgs/
+pipeline/dl/
+*.npz
+__pycache__/
+*.pyc
+.venv/
+
+# tooling
+.impeccable/
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.*
+.vscode/
+.idea/

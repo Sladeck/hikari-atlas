@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Japan's earthquakes, typhoons, tsunami, Mount Fuji, cherry blossoms and railways, drawn as light on pure black from real data. Free OLED wallpapers." />
+    <title>Hikari Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- fonts load without blocking the first paint, so the loading screen shows immediately -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=IBM+Plex+Mono:wght@300;400&display=swap" media="print" onload="this.media='all'" />
+    <style>
+      /* loading screen: painted before the app bundle arrives; the app drives it via window.hikariLoader */
+      html, body { margin: 0; background: #000; }
+      #loader { position: fixed; inset: 0; z-index: 100; background: #000; display: grid; place-items: center; color: #e6e0d8;
+        font-family: "Zen Kaku Gothic New", "Hiragino Sans", system-ui, sans-serif; transition: opacity .9s cubic-bezier(.16,1,.3,1), visibility 0s linear .9s; }
+      #loader.done { opacity: 0; visibility: hidden; }
+      #loader .in { display: grid; justify-items: center; gap: 28px; }
+      /* 光 drawn as light: a dim glyph, filled from the bottom by the real progress, glowing */
+      #loader .glyph { position: relative; font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 700;
+        font-size: clamp(96px, 22vmin, 180px); line-height: 1; color: #1d1915; }
+      #loader .glyph b { position: absolute; inset: 0; color: #ffcf8a; font-weight: inherit;
+        clip-path: inset(calc((1 - var(--lp, 0)) * 100%) 0 0 0); transition: clip-path .5s cubic-bezier(.16,1,.3,1);
+        text-shadow: 0 0 24px rgba(255,207,138,.55), 0 0 60px rgba(255,140,60,.35); }
+      #loader .glyph::after { content: ""; position: absolute; left: 50%; bottom: -14px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+        background: #ffcf8a; box-shadow: 0 0 12px #ffcf8a; animation: hk-breath 1.6s ease-in-out infinite; }
+      @keyframes hk-breath { 0%,100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.3); } }
+      #loader .bar { width: min(240px, 60vw); height: 1px; background: #1d1915; overflow: hidden; }
+      #loader .bar i { display: block; height: 100%; width: calc(var(--lp, 0) * 100%); background: #ffcf8a; box-shadow: 0 0 8px #ffcf8a;
+        transition: width .5s cubic-bezier(.16,1,.3,1); }
+      #loader .txt { display: grid; justify-items: center; gap: 6px; }
+      #loader .name { font-size: 13px; letter-spacing: .32em; text-transform: uppercase; color: #a39b90; }
+      #loader .status { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: #6e665d; font-variant-numeric: tabular-nums; min-height: 1.4em; }
+      @media (prefers-reduced-motion: reduce) { #loader, #loader * { transition: none !important; animation: none !important; } }
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><circle cx='16' cy='16' r='5' fill='%23ffcf8a'/></svg>" />
+  </head>
+  <body>
+    <div id="loader" role="status" aria-live="polite" aria-label="Loading Hikari Atlas">
+      <div class="in">
+        <div class="glyph" lang="ja" aria-hidden="true">光<b>光</b></div>
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <div class="txt"><span class="name">Hikari Atlas</span><span class="status">Gathering light</span></div>
+      </div>
+    </div>
+    <script>
+      // tiny controller the app reports to; also guarantees the screen never sticks
+      (function () {
+        var el = document.getElementById('loader'), st = el.querySelector('.status'), shown = Date.now(), closed = false;
+        function set(p, label) { el.style.setProperty('--lp', Math.max(0, Math.min(1, p))); if (label) st.textContent = label; }
+        function done() {
+          if (closed) return; closed = true; set(1, 'Ready');
+          var wait = Math.max(0, 700 - (Date.now() - shown));      // never a sub-second flash
+          setTimeout(function () { el.classList.add('done'); window.dispatchEvent(new Event('hikari:revealed')); setTimeout(function () { el.remove(); }, 1000); }, wait + 250);
+        }
+        window.hikariLoader = { set: set, done: done, get closed() { return closed; } };
+        set(0.06);
+        setTimeout(done, 15000);                                  // safety net on a very slow network
+      })();
+    </script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
