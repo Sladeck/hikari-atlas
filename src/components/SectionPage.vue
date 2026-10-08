@@ -11,11 +11,12 @@ import TokyoTrains from './anim/TokyoTrains.vue'
 import TsunamiVideo from './anim/TsunamiVideo.vue'
 import FujiRise from './anim/FujiRise.vue'
 import RiverFlow from './anim/RiverFlow.vue'
+import VolcanoEruptions from './anim/VolcanoEruptions.vue'
 import { sections, local, lang, t } from '../i18n.js'
 
 const props = defineProps({ section: { type: Object, required: true } })
 const sec = computed(() => local(props.section))                 // this chapter in the current language
-const ANIMS = { quakes: QuakeTimelapse, typhoons: TyphoonTracks, sakura: SakuraFront, trains: TokyoTrains, tsunami: TsunamiVideo, fuji: FujiRise, rivers: RiverFlow }
+const ANIMS = { quakes: QuakeTimelapse, typhoons: TyphoonTracks, sakura: SakuraFront, trains: TokyoTrains, tsunami: TsunamiVideo, fuji: FujiRise, rivers: RiverFlow, volcanoes: VolcanoEruptions }
 const anim = computed(() => ANIMS[props.section.anim])
 const next = computed(() => sections.value[(sections.value.findIndex((s) => s.id === props.section.id) + 1) % sections.value.length])
 const nextLine = computed(() => (lang.value === 'ja' ? next.value.lede.split('。')[0] + '。' : next.value.lede.split('. ')[0] + '.'))

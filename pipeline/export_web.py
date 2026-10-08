@@ -4,7 +4,7 @@ Coordinates are pre-projected with the same projections as the wallpapers and
 normalised to 0..1 of a 16:9 (desktop) and a 1290x2796 (phone) frame, so the
 browser only has to scale and draw.
 
-Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [--out DIR]
+Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [volcanoes] [--out DIR]
 With no names every dataset is exported; meta.json keeps the entries of the ones left out.
 """
 import json, os, sys, warnings
@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 from common import WEB_PUBLIC, EquiProj
 
 DW, DH, PW, PH = 3840, 2160, 1290, 2796
-NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers")
+NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes")
 
 
 # ---------------------------------------------------------------- earthquakes
@@ -121,6 +121,34 @@ def rivers(OUT):
     print("rivers", len(offs) - 1, "reaches", len(X), "points")
     # the longest path from a spring to the sea: a reach's distance to the sea plus its own length
     return {"reaches": len(offs) - 1, "points": len(X), "maxKm": round(float((R["DIST_DN_KM"] + R["LENGTH_KM"]).max()), 1)}
+
+
+# ---------------------------------------------------------------- volcanoes (eruptions since 1600)
+def volcanoes(OUT):
+    """Volcano positions in both frames, every confirmed eruption since 1600, and the faint land behind.
+    meta.volcanoes.v: [x, y desktop, x, y phone] per volcano (0..1 of the frame);
+    meta.volcanoes.e: [volcano, start year, end year (start + 0.5 when unknown), VEI (-1 unknown)]."""
+    import volcanoes as vo
+    Pd, Pp = vo.projection(DW, DH), vo.projection(PW, PH)
+    vols, conf, name = vo.stripes_rows()
+    t = {r["name"]: r for r in vo.table()}
+    pos = []
+    for n in vols:
+        r = t[name[n]]
+        a, b = Pd(r["lon"], r["lat"]); c, e = Pp(r["lon"], r["lat"])
+        pos.append([round(float(a) / DW, 4), round(float(b) / DH, 4), round(float(c) / PW, 4), round(float(e) / PH, 4)])
+    idx = {n: i for i, n in enumerate(vols)}
+    ev = []
+    for e in sorted(conf, key=lambda e: e["StartDateYear"]):
+        s0 = e["StartDateYear"] + ((e["StartDateMonth"] or 1) - 1) / 12
+        end = e["EndDateYear"]
+        f = end + ((e["EndDateMonth"] or 12) - 0.5) / 12 if end is not None else s0 + 0.5
+        vei = e["ExplosivityIndexMax"]
+        ev.append([idx[e["Volcano_Number"]], round(s0, 2), round(max(f, s0 + 0.5), 2), -1 if vei is None else int(vei)])
+    vo.land_backdrop(1920, 1080, f"{OUT}/volcano_land_d.webp")
+    vo.land_backdrop(645, 1398, f"{OUT}/volcano_land_p.webp")
+    print("volcanoes", len(pos), "volcanoes", len(ev), "eruptions")
+    return {"v": pos, "e": ev, "y0": vo.Y0, "y1": vo.NOW}
 
 
 if __name__ == "__main__":

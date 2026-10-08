@@ -56,6 +56,12 @@ export const SIZES = {
  "typhoon_decades_phone": 2.2,
  "typhoons_desktop": 7.3,
  "typhoons_phone": 4.4,
+ "volcanoes_japan_desktop": 0.5,
+ "volcanoes_japan_phone": 0.3,
+ "volcanoes_slab_desktop": 1.2,
+ "volcanoes_slab_phone": 0.7,
+ "volcanoes_stripes_desktop": 0.5,
+ "volcanoes_stripes_phone": 0.4,
  "west_desktop": 2.8,
  "west_phone": 1.0
 }

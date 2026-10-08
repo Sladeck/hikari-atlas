@@ -9,6 +9,7 @@ colors:
   soot-hairline: "#3a3530"
   night-rule: "#1c1a18"
   quake-amber: "#ffcf8a"
+  volcano-red: "#ff5640"
   tsunami-aqua: "#5ee6ff"
   typhoon-ice: "#7fe8ff"
   fuji-red: "#ff8a4c"
@@ -152,6 +153,7 @@ A warm-neutral ladder of greys on pure black, lit by one chapter colour at a tim
 
 ### Secondary (chapter lights)
 Each chapter owns one light, set per chapter in `src/sections.js` and used as the board row's line colour (`--lc`), the stage caption's tone (`--tone`), and the interface accent when that chapter is chosen.
+- **Volcano Red** (volcano-red): Volcanoes; a lava red set between the Earthquakes amber and the Tsunami aqua on the board, well away from Fuji's orange.
 - **Tsunami Aqua** (tsunami-aqua): Tsunami.
 - **Typhoon Ice** (typhoon-ice): Typhoons.
 - **Fuji Red** (fuji-red): Mount Fuji; in practice a red-orange sunrise tone.

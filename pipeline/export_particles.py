@@ -19,7 +19,7 @@ ARGS = sys.argv[1:]
 OUT = ARGS[ARGS.index("--out") + 1] if "--out" in ARGS else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "particles")
 os.makedirs(OUT, exist_ok=True)
 SETS = {"d": ("desktop", 36000), "p": ("phone", 22000)}
-SCENES = ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan"]
+SCENES = ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan", "volcanoes_japan"]
 ONLY = [a for a in ARGS if a in SCENES] or SCENES
 rng = np.random.default_rng(7)
 

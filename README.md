@@ -1,7 +1,7 @@
 # Hikari Atlas · 光の地図
 
-Japan drawn only with light, from real scientific data: earthquakes, the 2011 tsunami, typhoons,
-Mount Fuji, the rivers, the cherry blossom front and the railways. Every image is a free OLED wallpaper:
+Japan drawn only with light, from real scientific data: earthquakes, volcanoes, the 2011 tsunami,
+typhoons, Mount Fuji, the rivers, the cherry blossom front and the railways. Every image is a free OLED wallpaper:
 every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 ## Chapters
@@ -9,6 +9,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | Chapter | What it shows | Wallpapers |
 |---|---|---|
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
+| 火山 Volcanoes | 105 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
@@ -75,6 +76,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `sakura.py`, `sakura_map.py` | Sakura front chart and map | JMA first-bloom dates, Natural Earth coastline |
 | `sakura_stripes.py` | Sakura stripes | JMA first-bloom dates |
 | `kyoto.py` | Kyoto, 1,200 years | Kyoto peak-bloom dates since 812 (Aono et al., via Our World in Data) |
+| `volcanoes.py` | Volcano views and eruption stripes (first run fetches and caches `dl/gvp/`) | Smithsonian GVP web service, HydroRIVERS (land), USGS CSVs (plate) |
 | `rivers.py` | River views (first run caches Japan's reaches in `dl/hydrorivers/japan.npz`) | HydroRIVERS v1.0 Asia, Natural Earth land |
 | `trains.py` | Railway views | 国土数値情報 railway data |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
@@ -96,6 +98,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
 | `ne/land10.geojson` | `sakura_map.py`, `rivers.py` |
 | `kyoto/kyoto_peak_bloom.csv` | `kyoto.py` |
+| `gvp/volcanoes.json`, `eruptions.json` (fetched by `volcanoes.py`) | `volcanoes.py`, `export_web.py` |
 | `hydrorivers/raw/HydroRIVERS_v10_as_shp/` (unzipped Asia shapefile) | `rivers.py`, `export_web.py` |
 | `jprailway/data/*.rda` | `trains.py` |
 
@@ -110,6 +113,7 @@ The earthquake CSVs from USGS go in `pipeline/usgs/`.
 - Cherry blossoms: [JMA さくらの開花日](https://www.data.jma.go.jp/sakura/data/index.html), compiled by [akg314/sakura](https://github.com/akg314/sakura)
   (four misgeocoded station positions are corrected in the scripts); Kyoto since 812: Aono & Kazui (2008), Aono & Saito (2010), Katata (2026),
   via [Our World in Data](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto)
+- Volcanoes: [Global Volcanism Program, Smithsonian Institution, Volcanoes of the World](https://volcano.si.edu/)
 - Rivers: [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers), Lehner & Grill (2013), HydroSHEDS
 - Railways: [国土数値情報 鉄道データ, MLIT](https://nlftp.mlit.go.jp/ksj/), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway)
 - Coastline: [Natural Earth](https://www.naturalearthdata.com/)
