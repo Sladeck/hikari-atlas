@@ -116,6 +116,7 @@ onMounted(async () => {
 <style scoped>
 .section:focus { outline: none; }
 .back-row { padding-top: clamp(16px, 2.4vw, 28px); }
+@media (max-width: 860px) { .back-row { display: none; } }      /* phones: the sticky header's mark is the way back */
 .back { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--edge); background: #000;
   color: var(--fg); transition: border-color .25s, color .25s; }
 .back svg { width: 20px; height: 20px; transition: transform .4s var(--ease-out); }

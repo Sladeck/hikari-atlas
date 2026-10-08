@@ -10,7 +10,7 @@ import Icon from './Icon.vue'
 import ParticleStage from './ParticleStage.vue'
 import { SECTIONS } from '../sections.js'
 import { sections, t } from '../i18n.js'
-import { selected, reduce, touched } from '../station.js'
+import { selected, reduce, touched, select } from '../station.js'
 
 const route = useRoute()
 const base = import.meta.env.BASE_URL
@@ -29,12 +29,27 @@ function tint(sec) {
 watch([selected, shown], () => tint(shown.value ? s.value : route.meta.section), { immediate: true })
 
 function noWebGL() { webgl.value = false; window.hikariLoader?.done() }
-function poke() { if (home.value) touched() }
+// on touch the stage is swiped through the scenes, sideways; the board's rows open the chapters
+let swipe = null
+function poke(e) {
+  if (!home.value) return
+  touched()
+  swipe = e?.pointerType && e.pointerType !== 'mouse' ? { x: e.clientX, y: e.clientY } : null
+}
+function lift(e) {
+  if (!swipe) return
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y
+  swipe = null
+  if (Math.abs(dx) < 40 || Math.abs(dx) < 1.5 * Math.abs(dy)) return
+  const n = SECTIONS.length
+  select((selected.value + (dx < 0 ? 1 : n - 1)) % n)
+}
+function cancel() { swipe = null }
 </script>
 
 <template>
   <section class="layer" :class="{ shown, home }" :inert="!shown" :aria-hidden="!shown" :aria-label="t('preview')"
-           :style="{ '--tone': s.accent }" @pointerdown="poke" @keydown="poke">
+           :style="{ '--tone': s.accent }" @pointerdown="poke" @pointerup="lift" @pointercancel="cancel" @keydown="poke()">
     <ParticleStage v-if="webgl && armed" :scenes="scenes" :index="selected" :active="shown" @unsupported="noWebGL" />
     <template v-else-if="!webgl">
       <Transition name="still">
@@ -45,6 +60,8 @@ function poke() { if (home.value) touched() }
       </Transition>
     </template>
     <div class="veil" aria-hidden="true"></div>
+    <!-- on phones the words sit under the stage, never on the light; the slot keeps its height between scenes -->
+    <div class="cap-slot">
     <Transition name="cap" mode="out-in">
       <div :key="s.id + s.title" class="caption" :aria-live="shown ? 'polite' : 'off'">
         <p class="cap-title"><span class="cap-badge mono" aria-hidden="true">{{ s.code }}</span>{{ s.scene.title }}</p>
@@ -55,18 +72,20 @@ function poke() { if (home.value) touched() }
         </p>
       </div>
     </Transition>
+    </div>
   </section>
 </template>
 
 <style scoped>
 /* where it sits is the shell's business (App.vue); here only what it shows and how it comes and goes */
-.layer { overflow: hidden; background: #000; height: 100vh; height: 100svh; min-height: 520px;
+.layer { overflow: hidden; background: #000; height: 100vh; height: 100svh; min-height: 520px; touch-action: pan-y;
   transition: opacity .45s var(--ease-out), visibility 0s; }
 .layer:not(.shown) { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .35s ease, visibility 0s linear .35s; }
 .still { position: absolute; inset: 0; }
 .still img { width: 100%; height: 100%; object-fit: cover; }
 .still-enter-active, .still-leave-active { transition: opacity 1.2s var(--ease-out); }
 .still-enter-from, .still-leave-to { opacity: 0; }
+.cap-slot { display: contents; }
 /* a floor of darkness where the words sit, so text never fights the light */
 .veil { position: absolute; inset: auto 0 0 0; height: 42%; pointer-events: none;
   background: linear-gradient(to top, rgba(0, 0, 0, .92), rgba(0, 0, 0, .55) 45%, transparent); }
@@ -91,11 +110,15 @@ function poke() { if (home.value) touched() }
 
 /* ---------- phones: the front page's stage on top, the rail's board right under it ---------- */
 @media (max-width: 860px) {
-  .layer { height: 50vh; height: 50svh; min-height: 320px; border-bottom: 1px solid var(--line); }
+  .layer { --view: max(260px, 42svh); height: auto; min-height: 0; padding-top: var(--view); border-bottom: 1px solid var(--line); }
   .layer:not(.home) { display: none; }
-  .caption { gap: 6px; }
+  .layer :deep(.particle-stage), .still { inset: 0 0 auto 0; height: var(--view); }
+  .veil { display: none; }
+  .cap-slot { display: block; position: relative; min-height: 186px; padding: 4px 20px 22px; }   /* the tallest caption, measured */
+  .caption { position: static; gap: 6px; }
   .cap-line { font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 }
+@media (max-width: 360px) { .cap-slot { min-height: 216px; } }       /* titles wrap a line more */
 @media (prefers-reduced-motion: reduce) {
   .cap-enter-active, .cap-leave-active, .still-enter-active, .still-leave-active { transition: none; }
 }

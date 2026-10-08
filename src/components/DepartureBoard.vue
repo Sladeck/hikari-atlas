@@ -2,7 +2,8 @@
 // The atlas as a station departure board (発車標): one row per chapter, a line badge in the
 // chapter's own colour, its category (種別), destination and headline record (sources live on
 // each chapter page), in the site's current language. Rows are links. In preview mode, pointing
-// at a row selects it and the stage follows; on touch, the first tap selects and the second opens.
+// at a row selects it and the stage follows; on touch a tap opens the chapter at once (the stage
+// above is swiped instead, StageLayer.vue).
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { lang, t } from '../i18n.js'
 
@@ -24,17 +25,11 @@ function now() { clock.value = new Date().toLocaleTimeString('en-GB', { timeZone
 onMounted(() => { if (!props.compact) { now(); tick = setInterval(now, 15000) } })      // Japan time, like every board in Japan
 onBeforeUnmount(() => clearInterval(tick))
 
-function point(i) { if (hover && props.preview) emit('select', i) }
-// on touch, whether a tap previews or opens is decided when the finger lands: browsers that focus
-// links on tap would otherwise mark the row selected before the click arrives
-let press = null
-function down(e, i) { press = e.pointerType === 'mouse' ? null : { i, was: i === props.selected } }
-function focused(i) { if (!press && props.preview) emit('select', i) }                 // keyboard focus follows along
-function tap(e, i) {
-  const p = press; press = null
-  if (hover || !props.preview || !p || p.i !== i || p.was) return    // the link opens the chapter
-  e.preventDefault(); emit('select', i)                              // touch: first tap previews the scene
-}
+function point(e, i) { if (hover && e.pointerType === 'mouse' && props.preview) emit('select', i) }
+// keyboard focus follows along; a click or tap also focuses the link, and that one only opens it
+let pressing = false
+function focused(i) { if (!pressing && props.preview) emit('select', i) }
+function press(v) { pressing = v }
 </script>
 
 <template>
@@ -47,7 +42,7 @@ function tap(e, i) {
     <ol class="rows">
       <li v-for="(s, i) in sections" :key="s.id" :style="{ '--lc': s.accent }">
         <router-link :to="`/${s.id}`" class="row" :class="{ on: i === selected }"
-                     @pointerenter="point(i)" @pointerdown="down($event, i)" @focus="focused(i)" @click.capture="tap($event, i)">
+                     @pointerenter="point($event, i)" @pointerdown="press(true)" @pointercancel="press(false)" @focus="focused(i)" @click="press(false)">
           <span class="badge mono" aria-hidden="true">{{ s.code }}</span>
           <span class="kind">{{ s.kind }}</span>
           <span class="dest">{{ s.title }}</span>

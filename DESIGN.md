@@ -254,7 +254,7 @@ The atlas as a 発車標: one ruled row per chapter, separated by Night Rule hai
 - **Line badge:** a 40 by 30px mono code (EQ, TS, TY, FJ, SK, RW) outlined in the chapter colour, filled when chosen.
 - **Dwell line:** while the board turns over by itself, a 1px line in the chosen row's colour fills along its bottom edge over the dwell time (7s); it is hidden under reduced motion.
 - **Language:** every cell shows the current language only (One Language Rule).
-- **Touch:** on hover devices pointing selects; on touch the first tap previews and the second opens.
+- **Touch:** on hover devices pointing at a row previews it; on touch a tap on a row opens the chapter, and a sideways swipe on the stage steps to the next or previous scene.
 
 ### Live Stage
 A black frame (1px Night Rule border on chapter pages) holding the canvas, a top-left Ash caption at 13px, a large mono counter bottom-right in the accent, and controls bottom-left. On the front page the stage is frameless, with the veil and caption at its foot. Without WebGL it crossfades chapter stills over 1.2s.

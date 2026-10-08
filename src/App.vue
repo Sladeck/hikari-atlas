@@ -6,6 +6,7 @@ import IndexMenu from './components/IndexMenu.vue'
 import StationRail from './components/StationRail.vue'
 import StageLayer from './components/StageLayer.vue'
 import LangSwitch from './components/LangSwitch.vue'
+import Icon from './components/Icon.vue'
 import { SECTIONS } from './sections.js'
 import { sections, local, t } from './i18n.js'
 import { pageEntered } from './router.js'
@@ -43,7 +44,9 @@ watch([() => route.meta.section, sections], ([s]) => {
   <!-- phones only: on wider screens the rail carries the name and the chapters -->
   <header ref="top" class="top" :class="{ chapter: route.path !== '/' }">
     <div class="wrap top-row">
-      <router-link to="/" class="brand" :aria-label="t('home')">
+      <!-- on a chapter page the mark is the way back, pinned with the header while the chapter scrolls -->
+      <router-link to="/" class="brand" :aria-label="route.path !== '/' ? t('back') : t('home')">
+        <Icon v-if="route.path !== '/'" name="back" class="brand-back" />
         <span class="brand-mark" aria-hidden="true">光</span>
         <span class="brand-name">{{ t('name') }}</span>
       </router-link>
@@ -79,6 +82,12 @@ watch([() => route.meta.section, sections], ([s]) => {
 .brand { min-height: 44px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); }
 .brand-mark { font-family: var(--mincho); font-size: 22px; color: var(--accent); line-height: 1; transition: color .6s; }
 .brand-name { font-size: 15px; letter-spacing: .04em; }
+.top.chapter .brand { gap: 8px; padding: 0 12px 0 10px; border: 1px solid var(--edge); background: #000; transition: border-color .25s, color .25s; }
+.top.chapter .brand:hover, .top.chapter .brand:focus-visible { border-color: var(--accent); }
+.brand-back { width: 20px; height: 20px; }
+/* the narrowest phones keep the header on one line: the arrow alone, closer together */
+@media (max-width: 380px) { .top.chapter .top-row { column-gap: 8px; } .top.chapter .brand { width: 44px; padding: 0; justify-content: center; }
+  .top.chapter .brand-mark { display: none; } }
 .top-lang { margin-left: auto; }
 /* a narrow phone fits the mark, the switch and the index on one line by dropping the wordmark */
 @media (max-width: 420px) { .top.chapter .brand-name { display: none; } }
@@ -101,7 +110,7 @@ watch([() => route.meta.section, sections], ([s]) => {
   .shell { display: flex; flex-direction: column; }
   .side { position: static; align-self: stretch; height: auto; overflow: visible; border-right: 0; order: 1; }
   .shell:not(.home) .side { display: none; }
-  .layer { position: relative; }
+  .layer { position: relative; align-self: stretch; }       /* a column flex item would shrink to its absolute children: 0 px */
   .foot { order: 2; }
 }
 </style>
