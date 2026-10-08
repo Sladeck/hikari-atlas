@@ -4,6 +4,7 @@
 // of the "phone" projection. The loop pauses off-screen; reduced motion shows the final frame.
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Icon from '../Icon.vue'
+import { t } from '../../i18n.js'
 
 const props = defineProps({
   label: { type: String, required: true },
@@ -97,11 +98,11 @@ onBeforeUnmount(() => { cancelAnimationFrame(raf); io?.disconnect(); ro?.disconn
     <figcaption v-if="caption" class="cap">{{ caption }}</figcaption>
     <div class="counter mono" aria-live="off">{{ counterText }}</div>
     <div v-if="ready" class="controls">
-      <button type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? 'Pause animation' : 'Play animation'" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? 'Pause' : 'Play' }}</span></button>
-      <button type="button" class="ctl" aria-label="Replay animation from the start" @click="replay"><Icon name="replay" /><span class="t">Replay</span></button>
+      <button type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? t('pauseAnim') : t('playAnim')" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? t('pause') : t('play') }}</span></button>
+      <button type="button" class="ctl" :aria-label="t('replayAnim')" @click="replay"><Icon name="replay" /><span class="t">{{ t('replay') }}</span></button>
     </div>
-    <p v-if="!ready && !failed" class="status mono">Loading data…</p>
-    <p v-if="failed" class="status mono">The animation data could not load. The wallpapers below still work.</p>
+    <p v-if="!ready && !failed" class="status mono">{{ t('loadingData') }}</p>
+    <p v-if="failed" class="status mono">{{ t('failedData') }}</p>
   </figure>
 </template>
 

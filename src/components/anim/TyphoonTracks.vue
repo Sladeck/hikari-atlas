@@ -3,6 +3,7 @@
 // The bright head is the storm's eye; the trail stays as a thin line coloured by pressure.
 import Stage from './Stage.vue'
 import { load, meta, ramp, rgba, glowSprite } from './data.js'
+import { t } from '../../i18n.js'
 
 const pColor = ramp([[905, [1, 1, 1]], [935, [.7, 1, 1]], [960, [.1, .9, 1]], [985, [0, .55, 1]], [1006, [.05, .22, .95]]])
 let Y0 = 1951, Y1 = 2026                 // replaced by the exported range in init()
@@ -77,6 +78,6 @@ const counter = (p) => String(Math.min(Y1 - 1, Math.floor(Y0 + (Y1 - Y0) * p)))
 </script>
 
 <template>
-  <Stage label="Animation: every Northwest Pacific typhoon from 1951 to 2025 drawing its track, season by season" :duration="30" :hold="5"
-         :init="init" :reset="reset" :draw="draw" :counter="counter" caption="JMA best track · bright = below 930 hPa" />
+  <Stage :label="t('anim').typhoons[0]" :duration="30" :hold="5"
+         :init="init" :reset="reset" :draw="draw" :counter="counter" :caption="t('anim').typhoons[1]" />
 </template>

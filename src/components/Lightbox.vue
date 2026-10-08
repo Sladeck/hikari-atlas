@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import Icon from './Icon.vue'
+import { lang, t } from '../i18n.js'
 
 const props = defineProps({ items: Array, index: Number })
 const emit = defineEmits(['close', 'go'])
@@ -69,18 +70,18 @@ function tapImage() { if (touch) showUi.value = !showUi.value; else poke() }
 
 <template>
   <Teleport to="body">
-    <div ref="dialog" class="lb" :class="{ ui: showUi }" role="dialog" aria-modal="true" :aria-label="`${item.en}, ${item.kind} wallpaper`"
+    <div ref="dialog" class="lb" :class="{ ui: showUi }" role="dialog" aria-modal="true" :aria-label="t('alt', item.name, t(item.kind))"
          @click.self="emit('close')" @mousemove="poke" @touchstart.passive="touchstart" @touchend="touchend">
-      <img :src="src" :alt="`${item.en}, ${item.kind} wallpaper`" @click="tapImage" />
-      <span v-if="loading" class="status">Loading full resolution…</span>
-      <span v-if="failed" class="status">The full-size file did not load; this is the preview.</span>
+      <img :src="src" :alt="t('alt', item.name, t(item.kind))" @click="tapImage" />
+      <span v-if="loading" class="status">{{ t('loadingFull') }}</span>
+      <span v-if="failed" class="status">{{ t('failedFull') }}</span>
       <div class="bar">
-        <span class="cap"><span lang="ja" class="jp">{{ item.jp }}</span>{{ item.en }} · {{ item.kind === 'phone' ? 'Phone' : 'Desktop' }} <span class="mono">{{ item.size }} · {{ index + 1 }}/{{ items.length }}</span></span>
+        <span class="cap"><span :class="{ jp: lang === 'ja' }">{{ item.name }}</span> · {{ t(item.kind) }} <span class="mono">{{ item.size }} · {{ index + 1 }}/{{ items.length }}</span></span>
         <div class="nav">
-          <button type="button" class="ctl" aria-label="Previous image" @click="go(-1)"><Icon name="prev" /></button>
-          <button type="button" class="ctl" aria-label="Next image" @click="go(1)"><Icon name="next" /></button>
-          <a class="ctl" :href="`${base}wallpapers/full/${item.file}_${item.kind}.png`" :download="`hikari-${item.file}-${item.kind}.png`"><Icon name="download" />Download</a>
-          <button ref="closeBtn" type="button" class="ctl" @click="emit('close')"><Icon name="close" />Close</button>
+          <button type="button" class="ctl" :aria-label="t('prevImage')" @click="go(-1)"><Icon name="prev" /></button>
+          <button type="button" class="ctl" :aria-label="t('nextImage')" @click="go(1)"><Icon name="next" /></button>
+          <a class="ctl" :href="`${base}wallpapers/full/${item.file}_${item.kind}.png`" :download="`hikari-${item.file}-${item.kind}.png`"><Icon name="download" />{{ t('download') }}</a>
+          <button ref="closeBtn" type="button" class="ctl" @click="emit('close')"><Icon name="close" />{{ t('close') }}</button>
         </div>
       </div>
     </div>
@@ -96,7 +97,7 @@ function tapImage() { if (touch) showUi.value = !showUi.value; else poke() }
        transition: opacity .3s var(--ease-out), transform .3s var(--ease-out); pointer-events: none; cursor: default; }
 .lb.ui .bar { opacity: 1; transform: none; pointer-events: auto; }
 .cap { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.jp { font-family: var(--mincho); color: var(--fg); margin-right: 8px; }
+.jp { font-family: var(--mincho); color: var(--fg); }
 .cap .mono { font-size: 12px; margin-left: 6px; }
 .nav { display: flex; gap: 8px; flex-wrap: wrap; }
 .status { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); right: 20px; font-size: 13px; color: var(--dim); }

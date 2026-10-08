@@ -5,7 +5,9 @@ import gsap from 'gsap'
 import IndexMenu from './components/IndexMenu.vue'
 import StationRail from './components/StationRail.vue'
 import StageLayer from './components/StageLayer.vue'
+import LangSwitch from './components/LangSwitch.vue'
 import { SECTIONS } from './sections.js'
+import { sections, local, t } from './i18n.js'
 import { pageEntered } from './router.js'
 import { selected } from './station.js'
 
@@ -27,22 +29,26 @@ watch(
     const root = document.documentElement
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     gsap.to(root, { '--accent': s.accent, '--accent2': s.accent2, duration: reduce ? 0 : 0.9, ease: 'power2.out' })
-    document.title = `${s.title} · Hikari Atlas`
   },
   { immediate: true },
 )
+// the tab's title, in the current language
+watch([() => route.meta.section, sections], ([s]) => {
+  document.title = s ? `${local(s).title} · ${t('name')}` : t('name')
+}, { immediate: true })
 </script>
 
 <template>
-  <a class="skip" href="#main" @click.prevent="skip">Skip to content</a>
+  <a class="skip" href="#main" @click.prevent="skip">{{ t('skip') }}</a>
   <!-- phones only: on wider screens the rail carries the name and the chapters -->
-  <header ref="top" class="top">
+  <header ref="top" class="top" :class="{ chapter: route.path !== '/' }">
     <div class="wrap top-row">
-      <router-link to="/" class="brand" aria-label="Hikari Atlas, home">
+      <router-link to="/" class="brand" :aria-label="t('home')">
         <span class="brand-mark" aria-hidden="true">光</span>
-        <span class="brand-name">Hikari Atlas</span>
+        <span class="brand-name">{{ t('name') }}</span>
       </router-link>
-      <IndexMenu v-if="route.path !== '/'" :sections="SECTIONS" />
+      <LangSwitch class="top-lang" />
+      <IndexMenu v-if="route.path !== '/'" :sections="sections" />
     </div>
   </header>
 
@@ -60,8 +66,8 @@ watch(
     </div>
     <footer class="foot">
       <div class="foot-row">
-        <p>Japan drawn as light on pure black, from public scientific data. Every unlit pixel is exactly <span class="mono">#000000</span>, so OLED screens switch it off. Wallpapers are free to use.</p>
-        <p>Rendered in Python with NumPy, SciPy and Pillow. Animations run on the same data in the browser, with Vue and GSAP.</p>
+        <p>{{ t('foot1')[0] }}<span class="mono">#000000</span>{{ t('foot1')[1] }}</p>
+        <p>{{ t('foot2') }}</p>
       </div>
     </footer>
   </div>
@@ -69,11 +75,14 @@ watch(
 
 <style>
 .top { position: sticky; top: 0; z-index: 20; background: rgba(0, 0, 0, .82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-.top-row { display: flex; align-items: center; gap: 24px 40px; padding-block: 12px; flex-wrap: wrap; }
+.top-row { display: flex; align-items: center; gap: 12px 16px; padding-block: 12px; flex-wrap: wrap; }
 @media (min-width: 861px) { .top { display: none; } }
 .brand { min-height: 44px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); }
 .brand-mark { font-family: var(--mincho); font-size: 22px; color: var(--accent); line-height: 1; transition: color .6s; }
 .brand-name { font-size: 15px; letter-spacing: .04em; }
+.top-lang { margin-left: auto; }
+/* a narrow phone fits the mark, the switch and the index on one line by dropping the wordmark */
+@media (max-width: 420px) { .top.chapter .brand-name { display: none; } }
 .page-enter-active, .page-leave-active { transition: opacity .35s ease, transform .35s ease; }
 .page-enter-from { opacity: 0; transform: translateY(12px); }
 .page-leave-to { opacity: 0; transform: translateY(-8px); }

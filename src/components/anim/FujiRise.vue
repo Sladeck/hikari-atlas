@@ -4,6 +4,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import gsap from 'gsap'
 import Icon from '../Icon.vue'
+import { t } from '../../i18n.js'
 const base = import.meta.env.BASE_URL
 const el = ref(null), elev = ref('3,776 m'), playing = ref(true)
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -34,16 +35,16 @@ onBeforeUnmount(() => { tl?.kill(); io?.disconnect() })
 </script>
 
 <template>
-  <figure class="fuji" aria-label="Animation: Mount Fuji contour lines appearing from the summit downwards like sunrise">
+  <figure class="fuji" :aria-label="t('anim').fuji[0]">
     <picture ref="el" class="reveal" :style="{ '--sx': SX * 100 + '%', '--sy': SY * 100 + '%' }">
       <source media="(max-width: 640px)" :srcset="`${base}wallpapers/preview/fuji_phone.webp`" />
       <img :src="`${base}wallpapers/preview/fuji_desktop.webp`" alt="" width="1920" height="1080" />
     </picture>
-    <figcaption class="cap"><span lang="ja">赤富士</span> red Fuji · contours every 10 m</figcaption>
+    <figcaption class="cap">{{ t('anim').fuji[1] }}</figcaption>
     <div class="counter mono">{{ elev }}</div>
     <div class="controls">
-      <button v-if="!reduce" type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? 'Pause animation' : 'Play animation'" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? 'Pause' : 'Play' }}</span></button>
-      <button type="button" class="ctl" aria-label="Replay the sunrise reveal" @click="replay"><Icon name="replay" /><span class="t">Replay</span></button>
+      <button v-if="!reduce" type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? t('pauseAnim') : t('playAnim')" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? t('pause') : t('play') }}</span></button>
+      <button type="button" class="ctl" :aria-label="t('replayFuji')" @click="replay"><Icon name="replay" /><span class="t">{{ t('replay') }}</span></button>
     </div>
   </figure>
 </template>

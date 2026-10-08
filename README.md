@@ -38,8 +38,12 @@ npm run sizes                # after replacing wallpaper PNGs: refresh the sizes
   (22,000 on phones) into its scene (Fuji is real 3D); clicking opens the chapter's details. On the
   front page (`HomePage.vue`) the stage is the page and the board turns over by itself until touched
   (`src/station.js`). On a chapter page it lifts over the chapter while a row is pointed at and
-  falls back when the pointer leaves, keeping the scroll position. The rows alternate Japanese and
-  English like real station boards. Falls back to still images without WebGL.
+  falls back when the pointer leaves, keeping the scroll position. Without WebGL it shows the
+  chapters' still images instead.
+- **Languages** (`src/i18n.js`): the whole site in English or Japanese, one at a time, from the
+  EN / 日本語 switch (`LangSwitch.vue`) in the rail, or in the header on phones. Interface strings
+  live in `i18n.js`; chapter text is in `src/sections.js` (English) and `src/sections.ja.js`
+  (Japanese, same fields, wallpaper notes under `notes`). A new chapter needs both.
 - **Phones**: the stage sits on top with the board under it; on chapter pages the board moves into
   the header's 目次 button (`IndexMenu.vue`). A new chapter needs its `code`, `kind`, `record`,
   `scene` and `still` in `src/sections.js`, plus its particle scene from `export_particles.py`.

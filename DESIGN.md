@@ -130,7 +130,7 @@ components:
 
 Hikari Atlas is a black page on which only light is drawn. The ground is pixels switched off (#000000), and everything that shows up is either measured light from the data or the thin, warm interface that frames it. The interface never competes with the light: it is set in hairlines, outlines and quiet paper-white text, and it borrows its single colour from whichever chapter is in view. When the visitor moves between chapters, the whole interface re-tints to that chapter's light over most of a second.
 
-Japanese is identity, not decoration. Each chapter carries its kanji in Shippori Mincho, standing vertically (tategaki) beside its live stage on chapter pages, and the front page and chapter index are a station departure board (発車標) whose cells roll between Japanese and English faces the way real boards in Japanese stations do. Mono type appears only where something is counted or measured.
+Japanese is identity, not decoration. Each chapter carries its kanji in Shippori Mincho, standing vertically (tategaki) beside its live stage on chapter pages, and the front page and chapter index are a station departure board (発車標). The site speaks one language at a time, English or Japanese, chosen with a switch beside the rail's name; in Japanese, destinations and chapter and wallpaper names are set in Mincho. Mono type appears only where something is counted or measured.
 
 Density is calm: few elements, generous black, one live stage per view. Motion is slow and eased out (`cubic-bezier(.16, 1, .3, 1)`), pauses off-screen, and gives way to stills and side-by-side faces under reduced motion.
 
@@ -140,7 +140,7 @@ Density is calm: few elements, generous black, one live stage per view. Motion i
 - Square, outlined controls; the 6px rounded line badge is the only rounded control shape.
 - Depth by glow and darkness (accent halos, black veils), not by lifted cards.
 - Mincho for kanji and names, light-weight Zen Kaku Gothic for text, IBM Plex Mono for figures.
-- Japanese and English faces share one cell and roll past each other.
+- One language at a time: the board, captions and chapter text follow the language switch.
 
 ## Colors
 
@@ -182,7 +182,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 
 ### Hierarchy
 - **Display Kanji** (Mincho 700, clamp(44px, 7vw, 96px), 1.08): the chapter's vertical kanji, in the accent with a soft glow. The next-chapter link uses the same face larger, clamp(64px, 12vw, 168px), at 55% opacity until hovered.
-- **Display** (Gothic 300, clamp(30px, 2.5vw, 42px), 1.1, -0.02em): the rail's name, which rolls between 光の地図 (Mincho 700, +0.12em, in the accent) and Hikari Atlas.
+- **Display** (Gothic 300, clamp(30px, 2.5vw, 42px), 1.1, -0.02em): the rail's name: Hikari Atlas in English, 光の地図 in Japanese (Mincho 700, +0.12em, in the accent).
 - **Headline** (Gothic 300, clamp(30px, 3.6vw, 48px), 1.05, -0.015em, balanced wrap): chapter titles. The stage caption title uses the same voice at clamp(24px, 2.6vw, 40px).
 - **Title** (Gothic 300, 28px): gallery and method headings. **Title Mincho** (500, 28px, 1.15) names each wallpaper; a Japanese name never breaks mid-word.
 - **Destination Kanji** (Mincho 700, 22px, +0.06em): the board's Japanese destination face; the English face is Gothic 17px.
@@ -193,13 +193,13 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 ### Named Rules
 **The Mono-Is-Measurement Rule.** IBM Plex Mono is reserved for things that are counted or measured: records, sizes, scales, counters, clock, line codes. Never for prose or headings.
 
-**The Two Faces Rule.** Where Japanese and English name the same thing, they share one cell and roll past each other vertically (0.6 to 0.7 s, ease-out, every 4.2 s). Under reduced motion both faces sit side by side, the English one smaller in Ash.
+**The One Language Rule.** The whole site is in English or in Japanese, never both side by side. A two-option switch (EN / 日本語, each written in its own language) sits beside the rail's name on wide screens and in the header on phones; the choice is remembered per browser and first guessed from the browser's language, and `<html lang>` follows it. The vertical kanji on chapter pages stay in both languages: they are the chapter's emblem, not text to read.
 
 ## Layout
 
 Content sits in a centred column (max 1360px) with a fluid gutter (clamp(16px, 4vw, 56px)). The sticky header is translucent black (82%) with a 10px backdrop blur and a Night Rule underline; its measured height is published as `--hdr` so full-viewport stages fit beneath it.
 
-The site is one page in two panes. On wide screens a rail (clamp(320px, 26vw, 400px)) holds the rolling name, the departure board and the thesis at the left of every page; it stays put (sticky, full height, its own scroll) while the window scrolls the pane beside it, and only the pane changes on navigation. On the front page the pane is the live stage, full height and edge to edge, with no header bar anywhere on wide screens. On a chapter page the same stage waits out of sight and lifts over the pane (0.45s fade) while a board row is pointed at for 140ms or more, falling back 240ms after the pointer leaves the rail and the stage, on Escape, or on a tap outside its caption. Pages inside the pane size themselves against it through container queries, not the window. At 860px and below it becomes one column: the header returns, the front page stage sits on top at half the viewport height (min 320px) with the board directly under it, and on chapter pages the rail is hidden and the board lives in the header's index menu.
+The site is one page in two panes. On wide screens a rail (clamp(320px, 26vw, 400px)) holds the name with the language switch, the departure board and the thesis at the left of every page; it stays put (sticky, full height, its own scroll) while the window scrolls the pane beside it, and only the pane changes on navigation. On the front page the pane is the live stage, full height and edge to edge, with no header bar anywhere on wide screens. On a chapter page the same stage waits out of sight and lifts over the pane (0.45s fade) while a board row is pointed at for 140ms or more, falling back 240ms after the pointer leaves the rail and the stage, on Escape, or on a tap outside its caption. Pages inside the pane size themselves against it through container queries, not the window. At 860px and below it becomes one column: the header returns, the front page stage sits on top at half the viewport height (min 320px) with the board directly under it, and on chapter pages the rail is hidden and the board lives in the header's index menu.
 
 Chapter pages pair the vertical kanji with a stage column, then alternate desktop and phone wallpapers in wide, generously spaced rows (clamp(56px, 8vw, 104px) apart), then method and sources in a 220px / fluid split, then the next chapter.
 
@@ -245,14 +245,14 @@ The atlas as a 発車標: one ruled row per chapter, separated by Night Rule hai
 - **Row:** Ash at rest; on hover or selection the text turns Paper Light and the row fills with its chapter colour mixed 8% into black; the destination turns to the chapter colour with a glow; a stroked arrow fades in from 6px left. Focus is a 2px outline in the row's colour, inset.
 - **Line badge:** a 40 by 30px mono code (EQ, TS, TY, FJ, SK, RW) outlined in the chapter colour, filled when chosen.
 - **Dwell line:** while the board turns over by itself, a 1px line in the chosen row's colour fills along its bottom edge over the dwell time (7s); it is hidden under reduced motion.
-- **Faces:** every cell follows the Two Faces Rule.
+- **Language:** every cell shows the current language only (One Language Rule).
 - **Touch:** on hover devices pointing selects; on touch the first tap previews and the second opens.
 
 ### Live Stage
 A black frame (1px Night Rule border on chapter pages) holding the canvas, a top-left Ash caption at 13px, a large mono counter bottom-right in the accent, and controls bottom-left. On the front page the stage is frameless, with the veil and caption at its foot. Without WebGL it crossfades chapter stills over 1.2s.
 
 ### Wallpaper Card
-A desktop shot (16:9) beside a phone silhouette, alternating sides from row to row; shots brighten (1.18) on hover and open in a pure black lightbox whose bar fades in from below. The meta row holds the Mincho name with its English subtitle, a light note, and download controls with mono file sizes.
+A desktop shot (16:9) beside a phone silhouette, alternating sides from row to row; shots brighten (1.18) on hover and open in a pure black lightbox whose bar fades in from below. The meta row holds the wallpaper's name (Mincho in Japanese, light Gothic in English), a light note, and download controls with mono file sizes.
 
 ## Do's and Don'ts
 
@@ -260,7 +260,7 @@ A desktop shot (16:9) beside a phone silhouette, alternating sides from row to r
 - **Do** keep every unlit pixel at #000000, including control fills, panels and the lightbox.
 - **Do** take the accent from the chapter in view and tween it on navigation; on the board, give each row its own chapter colour.
 - **Do** outline interactive controls in Ember Edge, square-cornered, with at least 44px touch targets.
-- **Do** set Japanese names in Shippori Mincho and let paired Japanese and English labels share one rolling cell, side by side under reduced motion.
+- **Do** set Japanese names in Shippori Mincho, and show one language at a time.
 - **Do** reserve IBM Plex Mono with tabular figures for measurements, codes, sizes and the clock.
 - **Do** protect text over live light with a black halo or the veil rather than a panel.
 - **Do** ease motion with `cubic-bezier(.16, 1, .3, 1)`, pause off-screen, and fall back to stills under reduced motion or without WebGL.

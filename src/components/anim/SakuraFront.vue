@@ -4,6 +4,7 @@
 // Desktop: date left -> right, latitude bottom -> top. Narrow screens: date top -> bottom.
 import Stage from './Stage.vue'
 import { load, meta } from './data.js'
+import { t, lang } from '../../i18n.js'
 
 let S, n = 0, M, flowers = [], petals = [], bloomIdx = 0, layer, lctx, live = []
 const WHITE = [1, .97, .98], PINK = [1, .42, .66]
@@ -108,11 +109,11 @@ function stamp(f, r, a) { drawFlower(lctx, f, r, 0.75 * a) }
 const counter = (p) => {
   const doy = Math.round(M ? M.doy0 + (M.doy1 - M.doy0) * p : 1)
   const d = new Date(2001, 0, 1); d.setDate(d.getDate() + doy - 1)
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+  return d.toLocaleDateString(lang.value === 'ja' ? 'ja-JP' : 'en-GB', { day: 'numeric', month: lang.value === 'ja' ? 'long' : 'short' })
 }
 </script>
 
 <template>
-  <Stage label="Animation: the cherry blossom front sweeping from Okinawa in January to Hokkaido in May, 1953 to 2018" :duration="18" :hold="5"
-         :init="init" :reset="reset" :draw="draw" :counter="counter" caption="First bloom · 102 cities · 1953 white → 2018 pink" />
+  <Stage :label="t('anim').sakura[0]" :duration="18" :hold="5"
+         :init="init" :reset="reset" :draw="draw" :counter="counter" :caption="t('anim').sakura[1]" />
 </template>

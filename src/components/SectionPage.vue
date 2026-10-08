@@ -10,17 +10,18 @@ import SakuraFront from './anim/SakuraFront.vue'
 import TokyoTrains from './anim/TokyoTrains.vue'
 import TsunamiVideo from './anim/TsunamiVideo.vue'
 import FujiRise from './anim/FujiRise.vue'
-import { SECTIONS } from '../sections.js'
+import { sections, local, lang, t } from '../i18n.js'
 
 const props = defineProps({ section: { type: Object, required: true } })
+const sec = computed(() => local(props.section))                 // this chapter in the current language
 const ANIMS = { quakes: QuakeTimelapse, typhoons: TyphoonTracks, sakura: SakuraFront, trains: TokyoTrains, tsunami: TsunamiVideo, fuji: FujiRise }
 const anim = computed(() => ANIMS[props.section.anim])
-const next = computed(() => SECTIONS[(SECTIONS.findIndex((s) => s.id === props.section.id) + 1) % SECTIONS.length])
-const nextLine = computed(() => next.value.lede.split('. ')[0] + '.')
+const next = computed(() => sections.value[(sections.value.findIndex((s) => s.id === props.section.id) + 1) % sections.value.length])
+const nextLine = computed(() => (lang.value === 'ja' ? next.value.lede.split('。')[0] + '。' : next.value.lede.split('. ')[0] + '.'))
 
 // fullscreen viewer: every image of this section, desktop then phone
 const items = computed(() =>
-  props.section.wallpapers.flatMap((w) => [
+  sec.value.wallpapers.flatMap((w) => [
     { ...w, kind: 'desktop', size: '3840×2160' },
     { ...w, kind: 'phone', size: '1290×2796' },
   ]),
@@ -44,57 +45,57 @@ onMounted(async () => {
 
 <template>
   <main id="main" ref="root" class="section" tabindex="-1">
-    <section class="hero wrap" :aria-labelledby="`${section.id}-title`">
+    <section class="hero wrap" :aria-labelledby="`${sec.id}-title`">
       <div class="tate" lang="ja" aria-hidden="true">
-        <p class="tate-word"><span v-for="(c, i) in section.kanji" :key="i" class="tate-char">{{ c }}</span></p>
-        <p class="tate-kana"><span v-for="(c, i) in section.kana" :key="i">{{ c }}</span></p>
+        <p class="tate-word"><span v-for="(c, i) in sec.kanji" :key="i" class="tate-char">{{ c }}</span></p>
+        <p class="tate-kana"><span v-for="(c, i) in sec.kana" :key="i">{{ c }}</span></p>
       </div>
       <div class="stage-col">
         <component :is="anim" class="stage" />
         <div class="intro">
           <div class="intro-text">
-            <h1 :id="`${section.id}-title`">{{ section.title }}</h1>
-            <p class="lede">{{ section.lede }}</p>
+            <h1 :id="`${sec.id}-title`">{{ sec.title }}</h1>
+            <p class="lede">{{ sec.lede }}</p>
             <p class="data mono">
-              <span v-for="f in section.facts" :key="f[1]"><b>{{ f[0] }}</b> {{ f[1] }}</span>
+              <span v-for="f in sec.facts" :key="f[0] + f[1]"><b>{{ f[0] }}</b> {{ f[1] }}</span>
             </p>
           </div>
-          <div class="scale" role="img" :aria-label="`${section.scale.label} colour scale from ${section.scale.from} to ${section.scale.to}`">
-            <span class="scale-label">{{ section.scale.label }}</span>
-            <span class="bar" :style="{ background: `linear-gradient(90deg, ${section.scale.stops.join(',')})` }"></span>
-            <span class="ends mono"><span>{{ section.scale.from }}</span><span>{{ section.scale.to }}</span></span>
+          <div class="scale" role="img" :aria-label="t('scale', sec.scale.label, sec.scale.from, sec.scale.to)">
+            <span class="scale-label">{{ sec.scale.label }}</span>
+            <span class="bar" :style="{ background: `linear-gradient(90deg, ${sec.scale.stops.join(',')})` }"></span>
+            <span class="ends mono"><span>{{ sec.scale.from }}</span><span>{{ sec.scale.to }}</span></span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="wrap gallery" :aria-labelledby="`${section.id}-wp`">
+    <section class="wrap gallery" :aria-labelledby="`${sec.id}-wp`">
       <header class="gallery-head">
-        <h2 :id="`${section.id}-wp`">Wallpapers <span class="count">{{ section.wallpapers.length * 2 }} PNG · desktop 3840×2160 · phone 1290×2796</span></h2>
-        <nav v-if="section.wallpapers.length > 2" class="jump" aria-label="Jump to a wallpaper">
-          <button v-for="w in section.wallpapers" :key="w.file" type="button" @click="jump(w.file)">
-            <span lang="ja">{{ w.jp }}</span> {{ w.en }}
+        <h2 :id="`${sec.id}-wp`">{{ t('wallpapers') }} <span class="count">{{ t('countLine', sec.wallpapers.length * 2) }}</span></h2>
+        <nav v-if="sec.wallpapers.length > 2" class="jump" :class="{ ja: lang === 'ja' }" :aria-label="t('jump')">
+          <button v-for="w in sec.wallpapers" :key="w.file" type="button" @click="jump(w.file)">
+            {{ w.name }}
           </button>
         </nav>
       </header>
-      <WallpaperCard v-for="(w, i) in section.wallpapers" :id="`wp-${w.file}`" :key="w.file" :w="w" :flip="i % 2 === 1" @view="view" />
+      <WallpaperCard v-for="(w, i) in sec.wallpapers" :id="`wp-${w.file}`" :key="w.file" :w="w" :flip="i % 2 === 1" @view="view" />
     </section>
 
-    <section class="wrap method" :aria-labelledby="`${section.id}-how`">
-      <h2 :id="`${section.id}-how`">How it's made</h2>
+    <section class="wrap method" :aria-labelledby="`${sec.id}-how`">
+      <h2 :id="`${sec.id}-how`">{{ t('how') }}</h2>
       <dl>
-        <div v-for="m in section.method" :key="m[0]"><dt>{{ m[0] }}</dt><dd>{{ m[1] }}</dd></div>
+        <div v-for="m in sec.method" :key="m[0]"><dt>{{ m[0] }}</dt><dd>{{ m[1] }}</dd></div>
       </dl>
       <p class="sources">
-        <span class="sources-label">Sources</span>
-        <a v-for="s in section.sources" :key="s[1]" :href="s[1]" target="_blank" rel="noopener">{{ s[0] }}</a>
+        <span class="sources-label">{{ t('sources') }}</span>
+        <a v-for="s in sec.sources" :key="s[1]" :href="s[1]" target="_blank" rel="noopener">{{ s[0] }}</a>
       </p>
     </section>
 
     <router-link :to="`/${next.id}`" class="next" :style="{ '--next': next.accent }">
       <span class="next-kanji" lang="ja" aria-hidden="true">{{ next.kanji }}</span>
       <span class="next-text">
-        <span class="next-label">Next</span>
+        <span class="next-label">{{ t('next') }}</span>
         <span class="next-title">{{ next.title }} <Icon name="arrow" class="next-arrow" /></span>
         <span class="next-line">{{ nextLine }}</span>
       </span>
@@ -132,7 +133,7 @@ h1 { margin: 0; font-family: var(--sans); font-weight: 300; font-size: clamp(30p
 .jump { display: flex; flex-wrap: wrap; gap: 8px; }
 .jump button { background: #000; border: 1px solid var(--edge); color: var(--dim); padding: 8px 14px; min-height: 44px; cursor: pointer; font-size: 14px; transition: color .2s, border-color .2s; }
 .jump button:hover { color: var(--accent); border-color: var(--accent); }
-.jump span { font-family: var(--mincho); color: var(--fg); margin-right: 4px; }
+.jump.ja button { font-family: var(--mincho); font-weight: 500; }
 
 .method { padding-block: 48px 40px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 20px 48px; }
 .method h2 { margin: 0; font-weight: 300; font-size: 28px; }

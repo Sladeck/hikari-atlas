@@ -3,6 +3,7 @@
 // Trains are bright dots shuttling end to end; the Shinkansen run faster, in white.
 import Stage from './Stage.vue'
 import { load, meta, rgba, glowSprite } from './data.js'
+import { t } from '../../i18n.js'
 
 let T, lines = [], base, trains = [], clock = 0
 async function init() {
@@ -55,6 +56,6 @@ const counter = () => {
 </script>
 
 <template>
-  <Stage label="Animation: trains moving along every railway line in central Tokyo, in official line colours" :duration="1e9" :hold="0"
-         :init="init" :reset="reset" :draw="draw" :counter="counter" caption="Central Tokyo · trains illustrative, not timetable" />
+  <Stage :label="t('anim').trains[0]" :duration="1e9" :hold="0"
+         :init="init" :reset="reset" :draw="draw" :counter="counter" :caption="t('anim').trains[1]" />
 </template>

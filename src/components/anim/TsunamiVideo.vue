@@ -3,6 +3,7 @@
 // The counter converts video time to hours after the earthquake.
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Icon from '../Icon.vue'
+import { t } from '../../i18n.js'
 const base = import.meta.env.BASE_URL
 // `playing` mirrors the video's own play/pause events, so the button stays truthful when the
 // browser refuses autoplay (iOS Low Power Mode, data saver); `wanted` is the visitor's choice
@@ -30,17 +31,17 @@ onBeforeUnmount(() => { cancelAnimationFrame(raf); io?.disconnect() })
 </script>
 
 <template>
-  <figure class="tv" aria-label="Animation: the 2011 Tōhoku tsunami spreading across the Pacific over 24 hours, simulated">
+  <figure class="tv" :aria-label="t('anim').tsunami[0]">
     <video ref="v" :poster="`${base}video/tsunami_poster.webp`" muted loop playsinline preload="auto"
-           aria-label="Simulated tsunami spreading across the Pacific Ocean" @play="playing = true" @pause="playing = false">
+           :aria-label="t('anim').tsunami[2]" @play="playing = true" @pause="playing = false">
       <source :src="`${base}video/tsunami.webm`" type="video/webm" />
       <source :src="`${base}video/tsunami.mp4`" type="video/mp4" />
     </video>
-    <figcaption class="cap">Simulated · hours after 11 March 2011, 14:46 JST</figcaption>
+    <figcaption class="cap">{{ t('anim').tsunami[1] }}</figcaption>
     <div class="counter mono">{{ hours }}</div>
     <div class="controls">
-      <button type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? 'Pause animation' : 'Play animation'" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? 'Pause' : 'Play' }}</span></button>
-      <button type="button" class="ctl" aria-label="Replay animation from the start" @click="replay"><Icon name="replay" /><span class="t">Replay</span></button>
+      <button type="button" class="ctl" :aria-pressed="!playing" :aria-label="playing ? t('pauseAnim') : t('playAnim')" @click="toggle"><Icon :name="playing ? 'pause' : 'play'" /><span class="t">{{ playing ? t('pause') : t('play') }}</span></button>
+      <button type="button" class="ctl" :aria-label="t('replayAnim')" @click="replay"><Icon name="replay" /><span class="t">{{ t('replay') }}</span></button>
     </div>
   </figure>
 </template>

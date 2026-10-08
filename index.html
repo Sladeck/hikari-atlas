@@ -55,6 +55,12 @@
           setTimeout(function () { el.classList.add('done'); window.dispatchEvent(new Event('hikari:revealed')); setTimeout(function () { el.remove(); }, 1000); }, wait + 250);
         }
         window.hikariLoader = { set: set, done: done, get closed() { return closed; } };
+        // the visitor's language before the app arrives (same rule as src/i18n.js)
+        var l = null; try { l = localStorage.getItem('hikari-lang'); } catch (e) {}
+        if (l === 'ja' || (l !== 'en' && /^ja\b/i.test(navigator.language || ''))) {
+          document.documentElement.lang = 'ja'; st.textContent = '光を集めています';
+          el.querySelector('.name').textContent = '光の地図'; el.setAttribute('aria-label', '光の地図を読み込み中');
+        }
         set(0.06);
         setTimeout(done, 15000);                                  // safety net on a very slow network
       })();

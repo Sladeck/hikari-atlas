@@ -3,6 +3,7 @@
 // into a persistent layer of light. M7+ send out a ring. 2011 lights up the whole trench.
 import Stage from './Stage.vue'
 import { load, ramp, glowSprite } from './data.js'
+import { t } from '../../i18n.js'
 
 const depthColor = ramp([[0, [1, .86, .62]], [60, [1, .45, .18]], [150, [.9, .16, .3]], [350, [.55, .2, .85]], [650, [.25, .35, 1]]])
 const Y0 = 1973, Y1 = 2026.8
@@ -62,6 +63,6 @@ const counter = (p) => String(Math.min(2026, Math.floor(Y0 + (Y1 - Y0) * p)))
 </script>
 
 <template>
-  <Stage label="Animation: earthquakes around Japan appearing year by year from 1973 to 2026" :duration="26" :hold="5"
-         :init="init" :reset="reset" :draw="draw" :counter="counter" caption="M4.5+ · USGS" />
+  <Stage :label="t('anim').quakes[0]" :duration="26" :hold="5"
+         :init="init" :reset="reset" :draw="draw" :counter="counter" :caption="t('anim').quakes[1]" />
 </template>

@@ -11,13 +11,14 @@ import gsap from 'gsap'
 import Icon from './Icon.vue'
 import ParticleStage from './ParticleStage.vue'
 import { SECTIONS } from '../sections.js'
+import { sections, t } from '../i18n.js'
 import { selected, peeking, reduce, touched, hold, unpeek } from '../station.js'
 
 const route = useRoute()
 const base = import.meta.env.BASE_URL
 const home = computed(() => route.path === '/')
 const shown = computed(() => home.value || peeking.value)
-const s = computed(() => SECTIONS[selected.value])
+const s = computed(() => sections.value[selected.value])
 const scenes = SECTIONS.map((x) => x.scene)
 const webgl = ref(true)
 const armed = ref(shown.value)                        // the stage loads the first time it is needed
@@ -40,7 +41,7 @@ onBeforeUnmount(() => removeEventListener('keydown', key))
 </script>
 
 <template>
-  <section class="layer" :class="{ shown, home }" :inert="!shown" :aria-hidden="!shown" aria-label="Chapter preview"
+  <section class="layer" :class="{ shown, home }" :inert="!shown" :aria-hidden="!shown" :aria-label="t('preview')"
            :style="{ '--tone': s.accent }" @pointerdown="poke" @keydown="poke"
            @pointerenter="hold" @pointerleave="leave" @click="tap">
     <ParticleStage v-if="webgl && armed" :scenes="scenes" :index="selected" :active="shown" @unsupported="noWebGL" />
@@ -54,12 +55,12 @@ onBeforeUnmount(() => removeEventListener('keydown', key))
     </template>
     <div class="veil" aria-hidden="true"></div>
     <Transition name="cap" mode="out-in">
-      <div :key="s.id" class="caption" :aria-live="shown ? 'polite' : 'off'">
+      <div :key="s.id + s.title" class="caption" :aria-live="shown ? 'polite' : 'off'">
         <p class="cap-title"><span class="cap-badge mono" aria-hidden="true">{{ s.code }}</span>{{ s.scene.title }}</p>
         <p class="cap-line">{{ s.scene.line }}</p>
         <p class="cap-act">
-          <router-link :to="`/${s.id}`" class="cap-go">Open {{ s.title }} <Icon name="arrow" /></router-link>
-          <span class="cap-count">{{ s.wallpapers.length * 2 }} wallpapers</span>
+          <router-link :to="`/${s.id}`" class="cap-go">{{ t('open', s.title) }} <Icon name="arrow" /></router-link>
+          <span class="cap-count">{{ t('count', s.wallpapers.length * 2) }}</span>
         </p>
       </div>
     </Transition>

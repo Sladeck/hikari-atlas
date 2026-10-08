@@ -37,8 +37,8 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
   (render, then `publish.py`, then `npm run sizes`), and served from `public/`.
 - Chapters today: Earthquakes, Tsunami, Typhoons, Mount Fuji, Sakura front, Railways.
   Planned: Autumn leaves (紅葉前線), Volcanoes, Rivers, Japan at night, bringing it to about ten.
-- The front page is a scroll-driven WebGL particle journey through one scene per chapter; it does
-  not scale to ten chapters and needs a new way to present them.
+- Every page holds a departure board of the chapters in a rail; pointing at a row shows that
+  chapter's particle scene on a live stage, clicking opens it. This scales to ten chapters.
 
 ## Capabilities and Constraints
 
@@ -46,7 +46,7 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 - Each chapter: kanji name, title, lede, three facts, colour scale, live animation, wallpapers,
   method notes, sources, and its own accent colour.
 - Animations must pause off-screen, respect reduced motion, and fall back to stills without WebGL.
-- Bilingual is planned: structure and copy must be ready for a full Japanese version
+- Bilingual: the whole site exists in English and Japanese, one language at a time, chosen by the visitor
   (Japanese is currently identity: kanji names and titles; text is English).
 - Open decision: hosting and domain.
 

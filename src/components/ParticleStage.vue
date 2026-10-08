@@ -5,6 +5,7 @@
 // from its place in the current scene to its place in the chosen one.
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import gsap from 'gsap'
+import { ui } from '../i18n.js'
 
 const props = defineProps({
   scenes: { type: Array, required: true },      // [{ file, threeD }]
@@ -153,7 +154,7 @@ async function loadScenes() {
   const L = window.hikariLoader
   const total = N * 10 * props.scenes.length, got = new Array(props.scenes.length).fill(0)
   const report = () => L?.set(0.12 + 0.83 * got.reduce((a, b) => a + b, 0) / total,
-    `Gathering light · ${Math.round(100 * got.reduce((a, b) => a + b, 0) / total)}%`)
+    `${ui('gathering')} · ${Math.round(100 * got.reduce((a, b) => a + b, 0) / total)}%`)
   return Promise.all(props.scenes.map(async (s, i) => {
     const r = await get(`${base}particles/${s.file}_${set}.bin`)
     let buf
@@ -176,7 +177,7 @@ const lost = (e) => { e.preventDefault(); if (alive) emit('unsupported') }
 onMounted(async () => {
   try { if (!setup()) return emit('unsupported') } catch (e) { console.error(e); return emit('unsupported') }
   canvas.value.addEventListener('webglcontextlost', lost)
-  window.hikariLoader?.set(0.1, 'Gathering light')
+  window.hikariLoader?.set(0.1, ui('gathering'))
   size()
   set = W / H < 0.9 ? 'p' : 'd'
   let bins
@@ -186,7 +187,7 @@ onMounted(async () => {
   }
   if (!alive) return                                     // left the page while the data was arriving
   const L = window.hikariLoader
-  L?.set(0.97, 'Lighting')
+  L?.set(0.97, ui('lighting'))
   buffers = bins.map(upload)
   const rnd = new Float32Array(N); for (let i = 0; i < N; i++) rnd[i] = Math.random()
   randBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, randBuf); gl.bufferData(gl.ARRAY_BUFFER, rnd, gl.STATIC_DRAW)
