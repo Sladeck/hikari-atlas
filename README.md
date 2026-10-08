@@ -1,7 +1,7 @@
 # Hikari Atlas · 光の地図
 
 Japan drawn only with light, from real scientific data: earthquakes, the 2011 tsunami, typhoons,
-Mount Fuji, the cherry blossom front and the railways. Every image is a free OLED wallpaper:
+Mount Fuji, the rivers, the cherry blossom front and the railways. Every image is a free OLED wallpaper:
 every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 ## Chapters
@@ -12,6 +12,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
+| 川 Rivers | 42,611 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |
 
@@ -58,7 +59,7 @@ npm run sizes                # after replacing wallpaper PNGs: refresh the sizes
 ## The images (`pipeline/`)
 
 Python 3 with NumPy, SciPy, pandas, Pillow (plus `pyreadr`/`rdata`, `tifffile`, `h5py`,
-`scikit-image`). Run the scripts from inside `pipeline/`: each one writes PNGs to `pipeline/out/`, and
+`scikit-image`, `pyshp`). Run the scripts from inside `pipeline/`: each one writes PNGs to `pipeline/out/`, and
 the two `export_*` scripts write the site's data straight into `public/data` and `public/particles`.
 
 | Script | Output | Data |
@@ -74,6 +75,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `sakura.py`, `sakura_map.py` | Sakura front chart and map | JMA first-bloom dates, Natural Earth coastline |
 | `sakura_stripes.py` | Sakura stripes | JMA first-bloom dates |
 | `kyoto.py` | Kyoto, 1,200 years | Kyoto peak-bloom dates since 812 (Aono et al., via Our World in Data) |
+| `rivers.py` | River views (first run caches Japan's reaches in `dl/hydrorivers/japan.npz`) | HydroRIVERS v1.0 Asia, Natural Earth land |
 | `trains.py` | Railway views | 国土数値情報 railway data |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
 | `publish.py` | Copies renders to `public/` and writes the gallery previews | the renders above |
@@ -92,8 +94,9 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
 | `Typhoon-Search/bst_all.txt` | `typhoons.py`, `export_web.py` |
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
-| `ne/land10.geojson` | `sakura_map.py` |
+| `ne/land10.geojson` | `sakura_map.py`, `rivers.py` |
 | `kyoto/kyoto_peak_bloom.csv` | `kyoto.py` |
+| `hydrorivers/raw/HydroRIVERS_v10_as_shp/` (unzipped Asia shapefile) | `rivers.py`, `export_web.py` |
 | `jprailway/data/*.rda` | `trains.py` |
 
 The earthquake CSVs from USGS go in `pipeline/usgs/`.
@@ -107,6 +110,7 @@ The earthquake CSVs from USGS go in `pipeline/usgs/`.
 - Cherry blossoms: [JMA さくらの開花日](https://www.data.jma.go.jp/sakura/data/index.html), compiled by [akg314/sakura](https://github.com/akg314/sakura)
   (four misgeocoded station positions are corrected in the scripts); Kyoto since 812: Aono & Kazui (2008), Aono & Saito (2010), Katata (2026),
   via [Our World in Data](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto)
+- Rivers: [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers), Lehner & Grill (2013), HydroSHEDS
 - Railways: [国土数値情報 鉄道データ, MLIT](https://nlftp.mlit.go.jp/ksj/), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway)
 - Coastline: [Natural Earth](https://www.naturalearthdata.com/)
 

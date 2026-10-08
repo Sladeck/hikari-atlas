@@ -67,6 +67,7 @@ const UI = {
       trains: ['Animation: trains moving along every railway line in central Tokyo, in official line colours', 'Central Tokyo · trains illustrative, not timetable'],
       tsunami: ['Animation: the 2011 Tōhoku tsunami spreading across the Pacific over 24 hours, simulated', 'Simulated · hours after 11 March 2011, 14:46 JST', 'Simulated tsunami spreading across the Pacific Ocean'],
       fuji: ['Animation: Mount Fuji contour lines appearing from the summit downwards like sunrise', 'Red Fuji · contours every 10 m'],
+      rivers: ['Animation: every river in Japan flowing from its springs down to the sea', 'Distance from the farthest spring · HydroRIVERS'],
     },
   },
   ja: {
@@ -119,6 +120,7 @@ const UI = {
       trains: ['アニメーション：都心のすべての鉄道路線を、公式のラインカラーで走る列車', '都心 · 列車の動きはイメージで、時刻表ではありません'],
       tsunami: ['アニメーション：2011年東北地方太平洋沖地震の津波が、24時間かけて太平洋に広がるシミュレーション', 'シミュレーション · 2011年3月11日14時46分からの経過時間', '太平洋に広がる津波のシミュレーション'],
       fuji: ['アニメーション：朝焼けのように、富士山の等高線が山頂から下へ現れる', '赤富士 · 10 mごとの等高線'],
+      rivers: ['アニメーション：日本のすべての川が、源流から海へと流れ下る', 'もっとも遠い源流からの距離 · HydroRIVERS'],
     },
   },
 }

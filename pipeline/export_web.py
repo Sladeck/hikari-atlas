@@ -4,7 +4,7 @@ Coordinates are pre-projected with the same projections as the wallpapers and
 normalised to 0..1 of a 16:9 (desktop) and a 1290x2796 (phone) frame, so the
 browser only has to scale and draw.
 
-Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [--out DIR]
+Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [--out DIR]
 With no names every dataset is exported; meta.json keeps the entries of the ones left out.
 """
 import json, os, sys, warnings
@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 from common import WEB_PUBLIC, EquiProj
 
 DW, DH, PW, PH = 3840, 2160, 1290, 2796
-NAMES = ("quakes", "typhoons", "sakura", "trains")
+NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers")
 
 
 # ---------------------------------------------------------------- earthquakes
@@ -88,6 +88,39 @@ def trains(OUT):
     np.array(tpts, np.float32).tofile(f"{OUT}/trains_tokyo.f32")
     print("trains", len(lines), "lines", len(tpts), "points")
     return {"lines": lines, "n_points": len(tpts)}
+
+
+# ---------------------------------------------------------------- rivers (whole country)
+def rivers(OUT):
+    """Every reach in the national view, for the animation that runs the rivers from their springs to the sea.
+    rivers.u16: x, y (desktop frame), x, y (phone frame) per point, 0..65535 of the frame;
+    rivers_reach.u16: distance from the reach's mouth to the sea (10 m), its length (10 m) and its
+    average discharge (0.01 m3/s) per reach; rivers_offsets.u32: first point of each reach.
+    A reach's points run from upstream to downstream, as in HydroRIVERS."""
+    import rivers as rv
+    R = rv.load()
+    main = R["pts"][::7]; main = main[main[:, 1] > 30.9]
+    Pd, Pp = rv.RotProj(DW, DH, main), rv.RotProj(PW, PH, main)
+    off, pts = R["off"], R["pts"]
+    xs, offs = [], [0]
+    for i in range(len(off) - 1):
+        g = pts[off[i]:off[i + 1]]
+        if len(g) > 3:                                    # keep the ends, thin the middle
+            g = np.concatenate([g[:1], g[1:-1:2], g[-1:]])
+        a, b = Pd(g[:, 0], g[:, 1]); c, e = Pp(g[:, 0], g[:, 1])
+        xs.append(np.stack([a / DW, b / DH, c / PW, e / PH], 1))
+        offs.append(offs[-1] + len(g))
+    X = np.concatenate(xs)
+    q16 = lambda v: np.clip(np.round(v * 65535), 0, 65535).astype("<u2")
+    # points just off the frame are kept (clipped to its edge) so rivers run cleanly out of the picture
+    q16(np.clip(X, 0, 1)).tofile(f"{OUT}/rivers.u16")
+    reach = np.stack([np.round(R["DIST_DN_KM"] * 100), np.round(R["LENGTH_KM"] * 100),
+                      np.round(R["DIS_AV_CMS"] * 100)], 1)
+    np.clip(reach, 0, 65535).astype("<u2").tofile(f"{OUT}/rivers_reach.u16")
+    np.array(offs, "<u4").tofile(f"{OUT}/rivers_offsets.u32")
+    print("rivers", len(offs) - 1, "reaches", len(X), "points")
+    # the longest path from a spring to the sea: a reach's distance to the sea plus its own length
+    return {"reaches": len(offs) - 1, "points": len(X), "maxKm": round(float((R["DIST_DN_KM"] + R["LENGTH_KM"]).max()), 1)}
 
 
 if __name__ == "__main__":

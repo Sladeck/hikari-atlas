@@ -12,6 +12,7 @@ colors:
   tsunami-aqua: "#5ee6ff"
   typhoon-ice: "#7fe8ff"
   fuji-red: "#ff8a4c"
+  river-blue: "#8fb4ff"
   sakura-pink: "#ff8fbf"
   railway-green: "#7dff9a"
 typography:
@@ -154,6 +155,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 - **Tsunami Aqua** (tsunami-aqua): Tsunami.
 - **Typhoon Ice** (typhoon-ice): Typhoons.
 - **Fuji Red** (fuji-red): Mount Fuji; in practice a red-orange sunrise tone.
+- **River Blue** (river-blue): Rivers; a periwinkle kept clear of the Tsunami and Typhoon cyans, and placed between Fuji and Sakura on the board.
 - **Sakura Pink** (sakura-pink): Sakura front.
 - **Railway Green** (railway-green): Railways.
 
