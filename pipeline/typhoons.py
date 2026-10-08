@@ -40,13 +40,13 @@ def pcolor(p):
     return np.stack([np.interp(p, ks, cs[:, i]) for i in range(3)], -1)
 
 
-def render(storms, W, H, out):
+def render(storms, W, H, out, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5):
     phone = H > W
     box = (112, 166, 6, 52) if phone else (100, 178, 4, 52)
     P = EquiProj(W, H, *box, margin=0.0, mode="fill")
     cv = Canvas(W, H)
     z = min(W, H) / 2160
-    k = 1.6 if phone else 1.0
+    k = 1.1 if phone else 1.0                                   # phone lines a little heavier (smaller screen)
     n_strong = 0
     for s in storms:
         x, y = P(s[:, 2], s[:, 3])
@@ -56,12 +56,12 @@ def render(storms, W, H, out):
         strong = pres.min() <= 930                               # a violent typhoon at its peak
         n_strong += strong
         if strong:   # bright line, brightest near the peak
-            w = k * 0.034 * (0.3 + np.clip((1000 - pres) / 60, 0, 1.6) ** 1.6)
+            w = strong_k * k * 0.034 * (0.3 + np.clip((1000 - pres) / 60, 0, 1.6) ** 1.6)
         else:        # faint background haze of every other storm
-            w = np.full(len(pres), k * 0.0024)
+            w = np.full(len(pres), weak_k * k * 0.0024)
         w = np.where(grade == 6, w * 0.3, w)
         cv.add_polyline(x, y, col, w)
-    im = cv.finish(core=0.6 * max(1, z), glow=4 * z, glow_amt=0.3, gain=5.0, black=1.6e-2)
+    im = cv.finish(core=core * max(1, z), glow=4 * z, glow_amt=0.3, gain=gain, black=1.6e-2)
     yrs = (int(min(s[0, 0] for s in storms)), int(max(s[0, 0] for s in storms)))
     caption(im, f"台風  Typhoons of the Northwest Pacific  ·  {len(storms):,} storms, "
                 f"{n_strong} below 930 hPa highlighted  ·  {yrs[0]}–{yrs[1]}  ·  JMA best track", ramp=RAMP)
