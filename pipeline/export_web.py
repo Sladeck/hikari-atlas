@@ -13,6 +13,20 @@ warnings.filterwarnings("ignore")
 from common import WEB_PUBLIC, EquiProj
 
 DW, DH, PW, PH = 3840, 2160, 1290, 2796
+# the phone stage (anim/Stage.vue) shows a 3:4 window from the middle of the tall PW x PH frame:
+# national views are framed for that window and placed in the middle of the frame
+PV = round(PW * 4 / 3)
+
+
+class Band:
+    """A projection made for the PW x PV window, moved to the middle of the PW x PH frame."""
+    def __init__(self, P):
+        self.P, self.dy = P, (PH - PV) / 2
+        self.theta = getattr(P, "theta", 0.0)
+
+    def __call__(self, lon, lat):
+        x, y = self.P(lon, lat)
+        return x, y + self.dy
 NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes", "momiji", "night")
 
 
@@ -21,7 +35,7 @@ def quakes(OUT):
     import render_views as rv
     df = rv.load()
     v = rv.VIEWS["japan"]
-    Pd = rv.Proj(v, DW, DH, df[df.mag >= 5.0]); Pp = rv.Proj(v, PW, PH, df[df.mag >= 5.0])
+    Pd = rv.Proj(v, DW, DH, df[df.mag >= 5.0]); Pp = Band(rv.Proj(v, PW, PV, df[df.mag >= 5.0]))
     xd, yd = Pd(df.lon.values, df.lat.values); xp, yp = Pp(df.lon.values, df.lat.values)
     t = df.time.dt.year.values + (df.time.dt.dayofyear.values - 1) / 366
     o = np.argsort(t)
@@ -37,7 +51,8 @@ def typhoons(OUT):
     import typhoons as ty
     storms = [s for s in ty.load(ty.BST) if s[0, 0] <= ty.LAST]
     Ed = EquiProj(DW, DH, 100, 178, 4, 52, margin=0, mode="fill")
-    Ep = EquiProj(PW, PH, 112, 166, 6, 52, margin=0, mode="fill")
+    # the phone stage shows a 3:4 window from the middle of the tall frame: fit the basin across its width
+    Ep = EquiProj(PW, PH, 112, 166, 6, 52, margin=0.02, mode="fit")
     pts, offs = [], [0]
     for s in storms:
         a, b = Ed(s[:, 2], s[:, 3]); c, d = Ep(s[:, 2], s[:, 3])
@@ -100,7 +115,7 @@ def rivers(OUT):
     import rivers as rv
     R = rv.load()
     main = R["pts"][::7]; main = main[main[:, 1] > 30.9]
-    Pd, Pp = rv.RotProj(DW, DH, main), rv.RotProj(PW, PH, main)
+    Pd, Pp = rv.RotProj(DW, DH, main), Band(rv.RotProj(PW, PV, main))
     off, pts = R["off"], R["pts"]
     xs, offs = [], [0]
     for i in range(len(off) - 1):
@@ -177,7 +192,7 @@ def night(OUT):
     import night as nt
     A = nt.lights()
     d0, d1 = nt.export_nightfall(OUT, 960, 540, "d", A)
-    p0, p1 = nt.export_nightfall(OUT, 430, 932, "p", A)
+    p0, p1 = nt.export_nightfall(OUT, 430, 932, "p", A, view=round(430 * 4 / 3))
     print("night", d0, d1, p0, p1)
     return {"d": [d0, d1], "p": [p0, p1], "date": "2025-09-23"}
 

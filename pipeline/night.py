@@ -143,20 +143,26 @@ def sunset_jst(lon, lat, doy=EQUINOX[1]):
     return 720 - 4 * (np.asarray(lon) - ha) - eqt + 540
 
 
-def export_nightfall(OUT, W, H, tag, A):
+def export_nightfall(OUT, W, H, tag, A, view=None):
     """The night view small enough to rebuild in the browser every frame: the finished light (WebP)
-    and the minute each pixel's sun sets (PNG, 0 = no light), on the same frame as the wallpaper."""
-    F = Frame(W, H)
+    and the minute each pixel's sun sets (PNG, 0 = no light), on the same frame as the wallpaper.
+    `view`: frame the country for a W x view window (the phone stage's 3:4) in the middle of W x H."""
+    V = view or H
+    F = Frame(W, V)
     L = sample(A, F)
     I = np.clip(L, 0, 1) ** 1.8
     img = np.clip(1 - np.exp(-lamp(np.clip(L, 0, 1)) * I[..., None] * 1.3 * 1.9), 0, 1) ** 0.9
-    Image.fromarray((img * 255 + 0.5).astype(np.uint8)).save(f"{OUT}/night_{tag}.webp", quality=88)
-    Y, X = np.mgrid[0:H, 0:W].astype(np.float32) + 0.5
+    Y, X = np.mgrid[0:V, 0:W].astype(np.float32) + 0.5
     lon, lat = F.lonlat(X, Y)
     t = sunset_jst(lon, lat)
     lit = img.max(-1) > 0.02
     t0, t1 = float(np.floor(t[lit].min())), float(np.ceil(t[lit].max()))
     code = np.where(lit, 1 + np.round((t - t0) / (t1 - t0) * 254), 0).astype(np.uint8)
+    if V < H:                                            # black above and below the window
+        top = (H - V) // 2
+        img = np.pad(img, ((top, H - V - top), (0, 0), (0, 0)))
+        code = np.pad(code, ((top, H - V - top), (0, 0)))
+    Image.fromarray((img * 255 + 0.5).astype(np.uint8)).save(f"{OUT}/night_{tag}.webp", quality=88)
     Image.fromarray(code).save(f"{OUT}/night_{tag}_t.png")
     return t0, t1
 
