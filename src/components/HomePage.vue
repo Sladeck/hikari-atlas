@@ -1,254 +1,165 @@
 <script setup>
-// Front page: the strongest stills, one plate per chapter, full bleed, no video.
-// Each still is uncovered by its own logic as it scrolls in (the "develop" effect):
-//   tsunami   a wavefront ring spreading from the epicentre
-//   fuji      light stepping down from the summit, ring by ring
-//   izu       a sweep along the trench
-//   typhoons  a sweep up from the tropics toward Japan
-//   tokyo     light radiating from Tokyo Station
-//   sakura    the calendar, January to May
-// Driven by CSS scroll timelines (animation-timeline: view()) on a registered --p (0..1);
-// browsers without them get the same --p from a tiny scroll handler; reduced motion gets --p = 1.
-// As each plate takes the screen, the interface takes on that plate's light.
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+// Front page: the atlas as a departure board beside one live stage. Choosing a row (pointing at
+// it, focusing it, or the first tap on a phone) sends the cloud of light to that chapter's scene;
+// opening it goes to the chapter. Left alone, the board moves on one row every few seconds, like a
+// station board turning over, and stops for a while whenever the visitor touches it.
+// Without WebGL the stage crossfades between the chapters' stills.
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import gsap from 'gsap'
 import Icon from './Icon.vue'
-import ParticleJourney from './ParticleJourney.vue'
+import DepartureBoard from './DepartureBoard.vue'
+import ParticleStage from './ParticleStage.vue'
 import { SECTIONS } from '../sections.js'
 
 const base = import.meta.env.BASE_URL
-const S = Object.fromEntries(SECTIONS.map((s) => [s.id, s]))
-
-// origin / direction of each reveal, in fractions of the image (desktop, then phone render)
-const PLATES = [
-  { img: 'tsunami', sec: 'tsunami', kind: 'wave', o: [0.152, 0.209], op: [0.339, 0.237],
-    title: 'The 2011 tsunami crossing the Pacific',
-    line: 'Undersea ridges bend the wave into beams aimed at Hawaii, Chile and New Zealand. Computed from the physics, not drawn.' },
-  { img: 'fuji_side', sec: 'fuji', kind: 'rings', dir: 'to bottom', dirp: 'to bottom',
-    title: 'Fuji, ring by ring',
-    line: 'Contour lines every 10 metres, lifted to their true height and seen from 30 km south. The notch on the right flank is the 1707 crater.' },
-  { img: 'izu', sec: 'earthquakes', kind: 'sweep', dir: 'to right', dirp: 'to bottom',
-    title: 'A plate sinking 680 km',
-    line: 'Along the Izu–Bonin Trench, the amber quakes are the surface. The violet ones beside them are the same ocean floor, hundreds of kilometres down.' },
-  { img: 'typhoons', sec: 'typhoons', kind: 'sweep', dir: 'to top right', dirp: 'to top',
-    title: 'Seventy-five years of typhoons',
-    line: 'Born in the tropics, they drift west, then curve north toward Japan. The white arcs fell below 930 hPa.' },
-  { img: 'trains_tokyo', sec: 'railways', kind: 'radial', o: [0.556, 0.495], op: [0.703, 0.497],
-    title: 'Tokyo, every line in its own colour',
-    line: 'The green Yamanote loop, the orange Chūō line cutting through it, the Shinkansen in white. Light spreads from Tokyo Station.' },
-  { img: 'sakura', sec: 'sakura', kind: 'sweep', dir: 'to right', dirp: 'to bottom',
-    title: 'The cherry blossom front',
-    line: 'Sixty-six springs at 102 cities. The front leaves Okinawa in January and reaches Wakkanai in late May.' },
-]
-const vars = (p) => ({
-  '--tone': S[p.sec].accent,
-  ...(p.o ? { '--ox': p.o[0] * 100 + '%', '--oy': p.o[1] * 100 + '%', '--oxp': p.op[0] * 100 + '%', '--oyp': p.op[1] * 100 + '%' } : {}),
-  ...(p.dir ? { '--dir': p.dir, '--dirp': p.dirp } : {}),
-})
-
-const root = ref(null)
-let io, raf = 0, onScroll
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-const fallback = ref(reduce)
-const native = typeof CSS !== 'undefined' && CSS.supports?.('animation-timeline: view()')
+const DWELL = 7                                       // seconds per row when the board runs by itself
+const REST = 25                                       // seconds the board waits after the visitor's last touch
 
-function tint(id) {
-  const s = S[id]
-  gsap.to(document.documentElement, { '--accent': s.accent, '--accent2': s.accent2, duration: reduce ? 0 : 0.8, ease: 'power2.out' })
+const selected = ref(0)
+const webgl = ref(true)
+const en = ref(false)                                 // the board's face: Japanese or English, title included
+const auto = ref(!reduce)
+const s = computed(() => SECTIONS[selected.value])
+const scenes = SECTIONS.map((x) => x.scene)
+let timer = 0, resumeAt = 0, flip = 0
+
+function tint(sec) {
+  gsap.to(document.documentElement, { '--accent': sec.accent, '--accent2': sec.accent2, duration: reduce ? 0 : 0.8, ease: 'power2.out' })
 }
+watch(selected, (i) => tint(SECTIONS[i]))
+
+// the board turning over on its own
+function schedule() {
+  clearTimeout(timer)
+  if (reduce) return
+  timer = setTimeout(() => {
+    if (document.visibilityState === 'visible' && performance.now() >= resumeAt) {
+      selected.value = (selected.value + 1) % SECTIONS.length
+      auto.value = true
+    }
+    schedule()
+  }, DWELL * 1000)
+}
+function touched() {
+  resumeAt = performance.now() + REST * 1000
+  auto.value = false
+  schedule()
+}
+function select(i) { touched(); selected.value = i }
+function noWebGL() { webgl.value = false; window.hikariLoader?.done() }
 
 onMounted(() => {
   document.title = 'Hikari Atlas'
-  tint('earthquakes')
-  io = new IntersectionObserver((entries) => {
-    for (const e of entries) if (e.isIntersecting) tint(e.target.dataset.sec)
-  }, { rootMargin: '-45% 0px -45% 0px' })
-  root.value.querySelectorAll('[data-sec]').forEach((el) => io.observe(el))
-
-  if (!fallback.value) return
-  window.hikariLoader?.done()
-  startFallback()
+  tint(s.value)
+  schedule()
+  if (!reduce) flip = setInterval(() => { en.value = !en.value }, 4200)
 })
-
-function startFallback() {
-  const media = [...root.value.querySelectorAll('.plate .develop')]
-  if (reduce) { media.forEach((m) => m.style.setProperty('--p', 1)); return }
-
-  // fallback for browsers without scroll timelines: same curve, computed on scroll
-  if (!native) {
-    const update = () => {
-      raf = 0
-      const vh = innerHeight
-      for (const m of media) {
-        const r = m.getBoundingClientRect()
-        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.35 + r.height * 0.6)))
-        m.style.setProperty('--p', p.toFixed(3))
-      }
-    }
-    onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
-    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll)
-    update()
-  }
-
-  // the opening: the map develops along the arc while the name surfaces out of the dark
-  const hero = root.value.querySelector('.home-hero .develop')
-  gsap.timeline({ defaults: { ease: 'expo.out' } })
-    .fromTo(hero, { '--p': 0 }, { '--p': 1, duration: 2.6, ease: 'power2.inOut' })
-    .from('.hero-name', { opacity: 0, y: 16, filter: 'blur(8px)', duration: 1.2 }, 0.9)
-    .from('.hero-thesis, .hero-go', { opacity: 0, y: 10, duration: 0.9, stagger: 0.12 }, 1.4)
-}
-async function noWebGL() { window.hikariLoader?.done(); fallback.value = true; await nextTick(); root.value.querySelectorAll('[data-sec]').forEach((el) => io.observe(el)); startFallback() }
-onBeforeUnmount(() => {
-  io?.disconnect()
-  if (onScroll) { removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll) }
-  cancelAnimationFrame(raf)
-})
+onBeforeUnmount(() => { clearTimeout(timer); clearInterval(flip) })
 </script>
 
 <template>
-  <main id="main" ref="root" class="home" tabindex="-1">
-    <ParticleJourney v-if="!fallback" @unsupported="noWebGL" />
-    <template v-else>
-    <section class="home-hero" data-sec="earthquakes" aria-labelledby="home-title">
-      <span class="develop sweep timed" style="--dir: to right; --dirp: to bottom">
-        <picture>
-          <source media="(max-width: 700px)" :srcset="`${base}wallpapers/feature/japan_p.webp`" />
-          <img :src="`${base}wallpapers/feature/japan_d.webp`" alt="About 30,000 earthquakes around Japan drawn as points of light, tracing the island arc" width="2560" height="1440" fetchpriority="high" />
-        </picture>
-      </span>
-      <div class="hero-copy wrap">
-        <h1 id="home-title" class="hero-name"><span lang="ja">光の地図</span>Hikari Atlas</h1>
-        <p class="hero-thesis">Japan drawn only with light, from real data: 30,167 earthquakes, 1,951 typhoons, a tsunami, 5,843 cherry blossoms and every railway line. Every unlit pixel is pure black, made for OLED screens. All wallpapers are free.</p>
-        <router-link to="/earthquakes" class="hero-go">Start with the earthquakes <Icon name="arrow" /></router-link>
+  <main id="main" class="home" tabindex="-1">
+    <section class="station" aria-labelledby="home-title" @pointerdown="touched" @keydown="touched">
+      <div class="side">
+        <div class="intro">
+          <h1 id="home-title" class="title" :class="{ en, still: reduce }">
+            <span class="visually-hidden">Hikari Atlas, <span lang="ja">光の地図</span></span>
+            <span class="face jp" lang="ja" aria-hidden="true">光の地図</span><span class="face" aria-hidden="true">Hikari Atlas</span>
+          </h1>
+          <p class="thesis">Japan drawn only with light, from real data. Pick a destination and the light rebuilds itself; every chapter ends in free OLED wallpapers.</p>
+        </div>
+        <DepartureBoard :sections="SECTIONS" :selected="selected" :dwell="auto ? DWELL : 0" :face="reduce ? null : en" @select="select" />
+      </div>
+
+      <div class="stage" :style="{ '--tone': s.accent }">
+        <ParticleStage v-if="webgl" :scenes="scenes" :index="selected" @unsupported="noWebGL" />
+        <template v-else>
+          <Transition name="still">
+            <picture :key="s.still" class="still">
+              <source media="(max-width: 860px)" :srcset="`${base}wallpapers/feature/${s.still}_p.webp`" />
+              <img :src="`${base}wallpapers/feature/${s.still}_d.webp`" alt="" width="2560" height="1440" />
+            </picture>
+          </Transition>
+        </template>
+        <div class="veil" aria-hidden="true"></div>
+        <Transition name="cap" mode="out-in">
+          <div :key="s.id" class="caption" aria-live="polite">
+            <p class="cap-title"><span class="cap-badge mono" aria-hidden="true">{{ s.code }}</span>{{ s.scene.title }}</p>
+            <p class="cap-line">{{ s.scene.line }}</p>
+            <p class="cap-act">
+              <router-link :to="`/${s.id}`" class="cap-go">Open {{ s.title }} <Icon name="arrow" /></router-link>
+              <span class="cap-count">{{ s.wallpapers.length * 2 }} wallpapers</span>
+            </p>
+          </div>
+        </Transition>
       </div>
     </section>
-
-    <router-link v-for="p in PLATES" :key="p.img" :to="`/${p.sec}`" class="plate" :data-sec="p.sec" :style="vars(p)">
-      <span class="develop" :class="p.kind">
-        <picture>
-          <source media="(max-width: 700px)" :srcset="`${base}wallpapers/feature/${p.img}_p.webp`" />
-          <img :src="`${base}wallpapers/feature/${p.img}_d.webp`" :alt="`${p.title}: ${S[p.sec].title} wallpaper`" width="2560" height="1440" loading="lazy" />
-        </picture>
-      </span>
-      <span class="plate-copy wrap">
-        <span class="plate-kanji" lang="ja" aria-hidden="true"><span v-for="(c, i) in S[p.sec].kanji" :key="i">{{ c }}</span></span>
-        <span class="plate-text">
-          <span class="plate-title">{{ p.title }}</span>
-          <span class="plate-line">{{ p.line }}</span>
-          <span class="plate-go">{{ S[p.sec].title }} <Icon name="arrow" /></span>
-        </span>
-      </span>
-    </router-link>
-    </template>
-
-    <nav class="chapters wrap" aria-label="All chapters">
-      <h2>Six chapters</h2>
-      <ul>
-        <li v-for="s in SECTIONS" :key="s.id">
-          <router-link :to="`/${s.id}`" :style="{ '--tone': s.accent }">
-            <span class="ch-kanji" lang="ja" aria-hidden="true">{{ s.kanji }}</span>
-            <span class="ch-title">{{ s.title }}</span>
-            <span class="ch-count">{{ s.wallpapers.length * 2 }} wallpapers</span>
-          </router-link>
-        </li>
-      </ul>
-    </nav>
   </main>
 </template>
 
-<style>
-/* registered so it can be animated and inherited by the wavefront ring */
-@property --p { syntax: '<number>'; inherits: true; initial-value: 1; }
-@keyframes develop { from { --p: 0; } to { --p: 1; } }
-</style>
-
 <style scoped>
-.home { overflow-x: clip; }
 .home:focus { outline: none; }
-picture, img { display: block; width: 100%; }
-img { height: auto; }
+.station { display: grid; grid-template-columns: minmax(440px, 40%) minmax(0, 1fr);
+  height: calc(100vh - var(--hdr, 0px)); height: calc(100svh - var(--hdr, 0px)); min-height: 560px; }
 
-/* ---------- develop: each still is uncovered by its own logic ---------- */
-.develop { display: block; position: relative; --p: 1; --soft: 14%; }
-.develop picture { -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
-/* linear sweeps (arc, trench, tropics to Japan, the calendar) */
-.sweep picture {
-  -webkit-mask-image: linear-gradient(var(--dir), #000 calc(var(--p) * 130% - var(--soft)), transparent calc(var(--p) * 130%));
-          mask-image: linear-gradient(var(--dir), #000 calc(var(--p) * 130% - var(--soft)), transparent calc(var(--p) * 130%)); }
-/* Fuji: the line of light steps down in bands, like contour rings catching the sun */
-.rings { --q: round(down, var(--p) * 24, 1) / 24; }
-.rings picture {
-  -webkit-mask-image: linear-gradient(var(--dir), #000 calc(var(--q) * 120% - 4%), transparent calc(var(--q) * 120%));
-          mask-image: linear-gradient(var(--dir), #000 calc(var(--q) * 120% - 4%), transparent calc(var(--q) * 120%)); }
-/* radial: Tokyo Station; wave: the epicentre, with a bright wavefront at the edge */
-.radial picture, .wave picture {
-  -webkit-mask-image: radial-gradient(circle at var(--ox) var(--oy), #000 calc(var(--p) * 150% - 10%), transparent calc(var(--p) * 150%));
-          mask-image: radial-gradient(circle at var(--ox) var(--oy), #000 calc(var(--p) * 150% - 10%), transparent calc(var(--p) * 150%)); }
-.wave::after { content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen;
-  background: radial-gradient(circle at var(--ox) var(--oy), transparent calc(var(--p) * 150% - 2.2%),
-    color-mix(in srgb, var(--tone) 70%, transparent) calc(var(--p) * 150% - .6%), transparent calc(var(--p) * 150% + .4%));
-  opacity: calc(1 - var(--p) * var(--p)); }
-/* scroll-linked where the browser can; .timed (the hero) is driven by GSAP instead */
-@supports (animation-timeline: view()) {
-  .plate .develop { animation: develop linear both; animation-timeline: view(); animation-range: entry 0% cover 52%; }
-}
-@media (max-width: 700px) {
-  .sweep, .rings { --dir: var(--dirp) !important; }
-  .radial, .wave { --ox: var(--oxp); --oy: var(--oyp); }
+/* ---------- the board side ---------- */
+.side { display: flex; flex-direction: column; gap: clamp(16px, 3vh, 32px); min-height: 0; overflow-y: auto;
+  padding: clamp(24px, 4.5vh, 48px) clamp(16px, 2.5vw, 40px) 24px var(--gutter); scrollbar-width: thin; }
+.intro { display: grid; gap: 12px; }
+/* the name turns over with the board: 光の地図 and Hikari Atlas share one line */
+.title { position: relative; display: grid; margin: 0; height: 1.1em; overflow: hidden;
+  font-weight: 300; font-size: clamp(36px, 3.6vw, 56px); line-height: 1.1; letter-spacing: -.02em; }
+.face { grid-area: 1 / 1; white-space: nowrap; transition: transform .7s var(--ease-out), opacity .7s var(--ease-out); }
+.face.jp { font-family: var(--mincho); font-weight: 700; letter-spacing: .12em; color: var(--accent); }
+.face:not(.jp) { transform: translateY(100%); opacity: 0; }
+.title.en .face.jp { transform: translateY(-100%); opacity: 0; }
+.title.en .face:not(.jp) { transform: none; opacity: 1; }
+.title.still { height: auto; display: flex; flex-wrap: wrap; gap: 0 .4em; }
+.title.still .face { transform: none; opacity: 1; }
+.thesis { margin: 0; max-width: 52ch; font-weight: 300; font-size: 16px; color: var(--dim); }
+.side .board { --row: 48px; }
+
+/* ---------- the stage ---------- */
+.stage { position: relative; overflow: hidden; background: #000; border-left: 1px solid var(--line); }
+.still { position: absolute; inset: 0; }
+.still img { width: 100%; height: 100%; object-fit: cover; }
+.still-enter-active, .still-leave-active { transition: opacity 1.2s var(--ease-out); }
+.still-enter-from, .still-leave-to { opacity: 0; }
+/* a floor of darkness where the words sit, so text never fights the light */
+.veil { position: absolute; inset: auto 0 0 0; height: 42%; pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, .92), rgba(0, 0, 0, .55) 45%, transparent); }
+.caption { position: absolute; left: clamp(20px, 3vw, 48px); right: clamp(20px, 3vw, 48px); bottom: clamp(20px, 4vh, 44px);
+  display: grid; gap: 10px; max-width: 760px; }
+.cap-title { margin: 0; font-weight: 300; font-size: clamp(24px, 2.6vw, 40px); line-height: 1.1; text-wrap: balance; text-shadow: 0 0 20px #000; }
+/* the chosen row's line badge, carried onto the stage */
+.cap-badge { display: inline-grid; place-items: center; min-width: 2.6em; height: 1.6em; padding: 0 .45em; margin-right: .6em;
+  vertical-align: .35em; border-radius: 6px; background: var(--tone); color: #000; font-size: .42em; letter-spacing: .06em; }
+.cap-line { margin: 0; font-weight: 300; color: var(--fg); opacity: .78; max-width: 58ch; text-shadow: 0 0 14px #000; }
+.cap-act { margin: 4px 0 0; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 22px; }
+.cap-go { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 18px; border: 1px solid var(--tone);
+  color: var(--tone); text-decoration: none; background: #000; transition: background-color .3s, color .3s; }
+.cap-go:hover { background: var(--tone); color: #000; }
+.cap-go svg { width: 18px; height: 18px; transition: transform .5s var(--ease-out); }
+.cap-go:hover svg { transform: translateX(5px); }
+.cap-count { font-size: 14px; color: var(--dim); }
+.cap-enter-active { transition: opacity .7s var(--ease-out) .35s, transform .7s var(--ease-out) .35s, filter .7s var(--ease-out) .35s; }
+.cap-leave-active { transition: opacity .3s ease, filter .3s ease; }
+.cap-enter-from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
+.cap-leave-to { opacity: 0; filter: blur(4px); }
+
+/* ---------- phones and narrow windows: the stage on top, the board below ---------- */
+@media (max-width: 860px) {
+  .station { display: flex; flex-direction: column; height: auto; min-height: 0; }
+  .stage { order: -1; height: 50vh; height: 50svh; min-height: 320px; border-left: 0; border-bottom: 1px solid var(--line); }
+  .side { overflow: visible; padding: 18px var(--gutter) 8px; }
+  .intro { order: 2; padding-top: 16px; }                      /* the board comes first, right under the stage */
+  .thesis { display: none; }                                   /* the footer says the same just below */
+  .side .board { --row: 54px; }
+  .caption { gap: 6px; }
+  .cap-line { font-size: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .develop { --p: 1 !important; animation: none !important; }
-  .wave::after { display: none; }
+  .cap-enter-active, .cap-leave-active, .still-enter-active, .still-leave-active { transition: none; }
 }
-
-/* ---------- opening plate ---------- */
-.home-hero { position: relative; }
-.home-hero img { aspect-ratio: 16 / 9; object-fit: cover; }
-.hero-copy { position: relative; margin-top: clamp(-260px, -18vw, -120px); padding-bottom: clamp(40px, 6vw, 88px);
-  display: grid; gap: 20px; justify-items: start; }
-.hero-copy::before { content: ''; position: absolute; inset: -80px -100vw 0; z-index: -1;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, .78) 45%, #000 80%); }
-.hero-name { margin: 0; font-weight: 300; font-size: clamp(44px, 7vw, 104px); line-height: .95; letter-spacing: -.02em; }
-.hero-name span { display: block; font-family: var(--mincho); font-weight: 700; font-size: .42em; letter-spacing: .3em; color: var(--accent); margin-bottom: .5em; }
-.hero-thesis { margin: 0; max-width: 58ch; font-weight: 300; font-size: clamp(17px, 1.5vw, 20px); color: var(--fg); }
-.hero-go { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 20px; border: 1px solid var(--edge);
-  color: var(--fg); text-decoration: none; transition: border-color .3s, color .3s; }
-.hero-go:hover { border-color: var(--accent); color: var(--accent); }
-.hero-go svg, .plate-go svg { width: 18px; height: 18px; transition: transform .5s var(--ease-out); }
-.hero-go:hover svg, .plate:hover .plate-go svg { transform: translateX(6px); }
-
-/* ---------- plates ---------- */
-.plate { display: block; position: relative; text-decoration: none; color: var(--fg); margin-top: clamp(48px, 9vw, 140px); }
-.plate img { aspect-ratio: 16 / 9; object-fit: cover; transition: filter 1s var(--ease-out); }
-.plate:hover img { filter: brightness(1.12); }
-.plate:focus-visible { outline: none; }
-.plate:focus-visible img { outline: 2px solid var(--tone); outline-offset: -2px; }
-.plate-copy { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(16px, 3vw, 40px); align-items: start;
-  padding-top: clamp(20px, 2.5vw, 32px); }
-.plate-kanji { font-family: var(--mincho); font-weight: 700; font-size: clamp(40px, 5vw, 72px); line-height: 1.05; color: var(--tone);
-  display: flex; flex-direction: column; align-items: center; }
-.plate-text { display: grid; gap: 10px; max-width: 64ch; }
-.plate-title { font-weight: 300; font-size: clamp(24px, 3vw, 40px); line-height: 1.15; text-wrap: balance; }
-.plate-line { font-weight: 300; color: var(--dim); }
-.plate-go { display: inline-flex; align-items: center; gap: 10px; color: var(--tone); padding-block: 8px; }
-
-/* ---------- closing index ---------- */
-.chapters { margin-top: clamp(72px, 12vw, 180px); padding-block: 40px 24px; border-top: 1px solid var(--line); }
-.chapters h2 { margin: 0 0 24px; font-weight: 300; font-size: 28px; }
-.chapters ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); }
-.chapters li { background: #000; }
-.chapters a { display: grid; gap: 4px; padding: clamp(20px, 3vw, 36px); min-height: 100%; text-decoration: none; color: var(--fg); transition: background .4s; }
-.chapters a:hover { background: color-mix(in srgb, var(--tone) 7%, #000); }
-.ch-kanji { font-family: var(--mincho); font-weight: 700; font-size: clamp(40px, 5vw, 64px); line-height: 1.1; color: var(--tone); }
-.ch-title { font-size: 18px; }
-.ch-count { font-size: 14px; color: var(--dim); }
-
-@media (max-width: 700px) {
-  .home-hero img, .plate img { aspect-ratio: 860 / 1864; max-height: 88vh; max-height: 88svh; object-fit: cover; object-position: 50% 40%; }
-  .hero-copy { margin-top: -16vh; }
-  .plate-kanji { flex-direction: row; font-size: 40px; }
-  .plate-copy { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .chapters ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (prefers-reduced-motion: reduce) { .plate img, .hero-go svg, .plate-go svg { transition: none; } }
 </style>

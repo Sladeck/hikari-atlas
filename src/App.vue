@@ -2,7 +2,7 @@
 import { watch, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import gsap from 'gsap'
-import TabNav from './components/TabNav.vue'
+import IndexMenu from './components/IndexMenu.vue'
 import { SECTIONS } from './sections.js'
 import { pageEntered } from './router.js'
 
@@ -31,13 +31,13 @@ watch(
 
 <template>
   <a class="skip" href="#main" @click.prevent="skip">Skip to content</a>
-  <header ref="top" class="top">
+  <header ref="top" class="top" :class="{ 'on-home': route.path === '/' }">
     <div class="wrap top-row">
       <router-link to="/" class="brand" aria-label="Hikari Atlas, home">
         <span class="brand-mark" aria-hidden="true">光</span>
         <span class="brand-name">Hikari Atlas</span>
       </router-link>
-      <TabNav :sections="SECTIONS" />
+      <IndexMenu v-if="route.path !== '/'" :sections="SECTIONS" />
     </div>
   </header>
 
@@ -58,6 +58,8 @@ watch(
 <style>
 .top { position: sticky; top: 0; z-index: 20; background: rgba(0, 0, 0, .82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .top-row { display: flex; align-items: center; gap: 24px 40px; padding-block: 12px; flex-wrap: wrap; }
+/* on wide screens the front page's own title leads its board, so the bar steps aside there */
+@media (min-width: 861px) { .top.on-home { display: none; } }
 .brand { min-height: 44px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg); }
 .brand-mark { font-family: var(--mincho); font-size: 22px; color: var(--accent); line-height: 1; transition: color .6s; }
 .brand-name { font-size: 15px; letter-spacing: .04em; }

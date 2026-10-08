@@ -1,9 +1,17 @@
 // Content for every section: copy, colours, wallpapers, method notes and sources.
+// code, kind and record fill the front page's departure board; scene is the chapter's
+// particle scene there (public/particles/<file>_{d,p}.bin) and still its no-WebGL fallback
+// (public/wallpapers/feature/<still>_{d,p}.webp).
 // Wallpaper files live in public/wallpapers/{preview,full}/<file>_{desktop,phone}.{webp,png}
 
 export const SECTIONS = [
   {
     id: 'earthquakes',
+    code: 'EQ',
+    kind: { jp: '大地', en: 'Earth' },
+    record: '30,167 quakes',
+    scene: { file: 'japan', title: 'Every earthquake since 1973', line: '30,167 quakes of magnitude 4.5 and up. No coastline is drawn: the plates draw Japan by themselves.' },
+    still: 'japan',
     short: 'Quakes',
     kanji: '地震',
     kana: 'じしん',
@@ -45,6 +53,11 @@ export const SECTIONS = [
   },
   {
     id: 'tsunami',
+    code: 'TS',
+    kind: { jp: '海', en: 'Sea' },
+    record: '24 hours, 2011',
+    scene: { file: 'tsunami', title: 'The 2011 tsunami crossing the Pacific', line: 'Undersea ridges bend the wave into beams aimed at Hawaii, Chile and New Zealand. Computed from the physics, not drawn.' },
+    still: 'tsunami',
     short: 'Tsunami',
     kanji: '津波',
     kana: 'つなみ',
@@ -75,6 +88,11 @@ export const SECTIONS = [
   },
   {
     id: 'typhoons',
+    code: 'TY',
+    kind: { jp: '空', en: 'Sky' },
+    record: '1,951 storms',
+    scene: { file: 'typhoons', title: 'Seventy-five years of typhoons', line: 'Born in the tropics, they drift west, then curve north toward Japan. The white arcs fell below 930 hPa.' },
+    still: 'typhoons',
     short: 'Typhoons',
     kanji: '台風',
     kana: 'たいふう',
@@ -104,6 +122,11 @@ export const SECTIONS = [
   },
   {
     id: 'fuji',
+    code: 'FJ',
+    kind: { jp: '大地', en: 'Earth' },
+    record: '3,776 m',
+    scene: { file: 'fuji3d', threeD: true, title: 'Mount Fuji, built from light', line: 'Every point sits at its real place on the mountain, from 1,000 m up to the 3,776 m summit, slowly turning.' },
+    still: 'fuji_side',
     short: 'Fuji',
     kanji: '富士山',
     kana: 'ふじさん',
@@ -133,6 +156,11 @@ export const SECTIONS = [
   },
   {
     id: 'sakura',
+    code: 'SK',
+    kind: { jp: '季節', en: 'Season' },
+    record: '5,843 blooms',
+    scene: { file: 'sakura', title: 'The cherry blossom front', line: 'Sixty-six springs at 102 cities. The front leaves Okinawa in January and reaches Wakkanai in late May.' },
+    still: 'sakura',
     short: 'Sakura',
     kanji: '桜',
     kana: 'さくら',
@@ -169,6 +197,11 @@ export const SECTIONS = [
   },
   {
     id: 'railways',
+    code: 'RW',
+    kind: { jp: '暮らし', en: 'Life' },
+    record: '603 lines',
+    scene: { file: 'trains_tokyo', title: 'Tokyo, every line in its own colour', line: 'The green Yamanote loop, the orange Chūō line cutting through it, the Shinkansen in white.' },
+    still: 'trains_tokyo',
     short: 'Rail',
     kanji: '鉄道',
     kana: 'てつどう',
