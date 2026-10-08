@@ -28,7 +28,7 @@ watch(
     selected.value = SECTIONS.findIndex((x) => x.id === s.id)   // back on the front page, the stage opens on this chapter
     const root = document.documentElement
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    gsap.to(root, { '--accent': s.accent, '--accent2': s.accent2, duration: reduce ? 0 : 0.9, ease: 'power2.out' })
+    gsap.to(root, { '--accent': s.accent, duration: reduce ? 0 : 0.9, ease: 'power2.out' })
   },
   { immediate: true },
 )

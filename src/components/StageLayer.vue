@@ -24,7 +24,7 @@ watch(shown, (v) => { if (v) armed.value = true })
 
 // the interface wears the light of whatever the stage shows, and the chapter's own once it falls back
 function tint(sec) {
-  if (sec) gsap.to(document.documentElement, { '--accent': sec.accent, '--accent2': sec.accent2, duration: reduce ? 0 : 0.8, ease: 'power2.out' })
+  if (sec) gsap.to(document.documentElement, { '--accent': sec.accent, duration: reduce ? 0 : 0.8, ease: 'power2.out' })
 }
 watch([selected, shown], () => tint(shown.value ? s.value : route.meta.section), { immediate: true })
 

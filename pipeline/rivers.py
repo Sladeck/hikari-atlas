@@ -4,7 +4,8 @@ Data: HydroRIVERS v1.0, Asia (Lehner & Grill 2013), dl/hydrorivers/raw/. Each re
 long-term average discharge (DIS_AV_CMS, m3/s), the reach it flows into (NEXT_DOWN, 0 at the sea),
 and the outlet reach of its whole river system (MAIN_RIV), which names the basin.
 Only reaches on Japan's land are kept: Natural Earth 10 m land polygons inside Japan's box, minus
-the continent, Sakhalin, Jeju and Taiwan. The first run caches them in dl/hydrorivers/japan.npz.
+the continent, Sakhalin, Jeju and Taiwan. The box takes in all four Northern Territories (Kunashir,
+Iturup, Shikotan and the Habomai islets) and stops short of Urup. The first run caches them in dl/hydrorivers/japan.npz.
 
     python rivers.py              # every view, desktop and phone, into out/
     python rivers.py japan kanto  # some of them
@@ -20,7 +21,7 @@ from common import Canvas, caption, save, EquiProj, dl, DESKTOP, PHONE
 
 SHP = dl("hydrorivers", "raw", "HydroRIVERS_v10_as_shp", "HydroRIVERS_v10_as")
 CACHE = dl("hydrorivers", "japan.npz")
-BOX = (122.5, 146.2, 24.0, 45.8)          # lon0, lon1, lat0, lat1
+BOX = (122.5, 149.0, 24.0, 45.8)          # lon0, lon1, lat0, lat1: Yonaguni to Iturup, Urup left out
 
 
 def japan_polygons():

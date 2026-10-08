@@ -7,11 +7,10 @@
   --bg: #000000;                 /* pixels off */
   --fg: #e6e0d8;                 /* warm paper white */
   --dim: #a39b90;
-  --edge: #5e564d;               /* interactive borders: 3:1 on black */
+  --edge: #625a51;               /* interactive borders: 3.1:1 on black */
   --faint: #3a3530;              /* hairlines only, never the edge of a control */
   --line: #1c1a18;
   --accent: #ffcf8a;             /* re-set per section */
-  --accent2: #8c33d9;
   --mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;

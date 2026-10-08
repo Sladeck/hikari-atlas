@@ -37,14 +37,31 @@ def fetch():
     print(f"{len(v)} volcanoes, {len(e)} eruptions -> {dl('gvp')}")
 
 
+# the Northern Territories (Kunashir, Iturup, Shikotan; the Habomai islets have none), which the
+# Smithsonian lists under Russia; the box stops short of Urup
+NT = "Country<>'Japan' AND Longitude BETWEEN 145.3 AND 149.0 AND Latitude BETWEEN 43.3 AND 45.7"
+
+
+def fetch_nt():
+    v = _get("Smithsonian_VOTW_Holocene_Volcanoes", NT)
+    nums = ",".join(str(f["properties"]["Volcano_Number"]) for f in v)
+    e = _get("Smithsonian_VOTW_Holocene_Eruptions", f"Volcano_Number IN ({nums})")
+    json.dump([f["properties"] for f in v], open(dl("gvp", "volcanoes_nt.json"), "w"), ensure_ascii=False)
+    json.dump([f["properties"] for f in e], open(dl("gvp", "eruptions_nt.json"), "w"), ensure_ascii=False)
+    print(f"{len(v)} Northern Territories volcanoes, {len(e)} eruptions -> {dl('gvp')}")
+
+
 def load():
     if not os.path.exists(dl("gvp", "eruptions.json")):
         fetch()
-    return json.load(open(dl("gvp", "volcanoes.json"))), json.load(open(dl("gvp", "eruptions.json")))
+    if not os.path.exists(dl("gvp", "eruptions_nt.json")):
+        fetch_nt()
+    return tuple(json.load(open(dl("gvp", f"{k}.json"))) + json.load(open(dl("gvp", f"{k}_nt.json")))
+                 for k in ("volcanoes", "eruptions"))
 
 
 NOW = 2026
-BOX = (123.3, 146.3, 22.6, 45.9)            # every volcano, Yonaguni to Shiretoko, Ogasawara to Rishiri
+BOX = (123.3, 149.0, 22.6, 45.9)            # every volcano, Yonaguni to Iturup, Ogasawara to Rishiri
 
 # years since the last confirmed eruption -> ember colour: white-hot this century, cooling to deep red
 EMBER = [(0, (1.00, 0.97, 0.90)), (1.4, (1.00, 0.86, 0.55)), (2.0, (1.00, 0.62, 0.25)),
@@ -195,7 +212,7 @@ def render_stripes(W, H, out):
     im = cv.finish(core=0.8, glow=5 * max(z, 0.6), glow_amt=0.35, gain=2.2, black=1.2e-2)
     d = ImageDraw.Draw(im)
     f = ImageFont.truetype(F_LIGHT, int(20 * z))
-    for n, (jp, en) in (LABELS.items() if not phone else []):    # 61 phone columns are too narrow to name
+    for n, (jp, en) in (LABELS.items() if not phone else []):    # 68 phone columns are too narrow to name
         hit = [v for v in vols if name[v] == n]
         if not hit:
             continue
@@ -235,6 +252,16 @@ if __name__ == "__main__" and "--info" in sys.argv:
     print("box:", lon.min(), lon.max(), lat.min(), lat.max())
     far = [(v["Volcano_Name"], v["Longitude"], v["Latitude"]) for v in V if v["Longitude"] > 145.3 or v["Latitude"] < 30]
     print("east of 145.3E or south of 30N:", far)
+    # the slab under the arc: quakes deeper than 40 km within 30 km of the land volcanoes over the Pacific plate
+    import render_views as rv, rivers
+    q = rv.load(); q = q[q.depth > 40]
+    _, inside = rivers.japan_mask()
+    arc = [v for v in V if v["Subregion"] in ("Northeast Japan Volcanic Arc", "Kuril Volcanic Arc")
+           and inside(v["Longitude"], v["Latitude"])]
+    d = [q.depth.values[np.hypot((q.lon.values - v["Longitude"]) * np.cos(np.radians(v["Latitude"])),
+                                 q.lat.values - v["Latitude"]) * 111.2 < 30] for v in arc]
+    print(f"slab: median {np.median(np.concatenate(d)):.1f} km under {sum(len(x) > 0 for x in d)} land volcanoes "
+          f"of the Northeast Japan and Kuril arcs ({sum(map(len, d))} quakes)")
 
 
 if __name__ == "__main__" and "--info" not in sys.argv:

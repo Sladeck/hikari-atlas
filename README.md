@@ -10,11 +10,11 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | Chapter | What it shows | Wallpapers |
 |---|---|---|
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
-| 火山 Volcanoes | 105 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
+| 火山 Volcanoes | 116 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
-| 川 Rivers | 42,611 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
+| 川 Rivers | 42,984 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 紅葉 Autumn leaves | The first red maple at 90 JMA cities, 1953 to 2025, and the ginkgo's first yellow; both now come later | 4: the leaf front, ginkgo gold, a map of how much later, stripes |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |
@@ -103,7 +103,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
 | `ne/land10.geojson` | `sakura_map.py`, `rivers.py`, `night.py` |
 | `kyoto/kyoto_peak_bloom.csv` | `kyoto.py` |
-| `gvp/volcanoes.json`, `eruptions.json` (fetched by `volcanoes.py`) | `volcanoes.py`, `export_web.py` |
+| `gvp/volcanoes.json`, `eruptions.json`, and `volcanoes_nt.json`, `eruptions_nt.json` for the Northern Territories (fetched by `volcanoes.py`) | `volcanoes.py`, `export_web.py` |
 | `hydrorivers/raw/HydroRIVERS_v10_as_shp/` (unzipped Asia shapefile) | `rivers.py`, `export_web.py` |
 | `jma-phenology/015.csv`, `013.csv` (JMA 生物季節観測累年値) | `momiji.py`, `export_web.py` |
 | `jprailway/data/*.rda` | `trains.py` |

@@ -73,7 +73,7 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 2. Black is free light: every element earns its pixels on an OLED screen.
 3. Wonder first, then the download: the animations draw visitors in, the wallpapers reward them.
 4. Every claim is cited and every approximation is stated.
-5. Japan only.
+5. Japan only, with all four islands of the Northern Territories (Kunashir, Iturup, Shikotan, the Habomai islets) wherever the data covers them.
 
 ## Accessibility & Inclusion
 

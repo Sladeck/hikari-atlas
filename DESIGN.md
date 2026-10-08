@@ -5,12 +5,12 @@ colors:
   pixels-off: "#000000"
   paper-light: "#e6e0d8"
   ash: "#a39b90"
-  ember-edge: "#5e564d"
+  ember-edge: "#625a51"
   soot-hairline: "#3a3530"
   night-rule: "#1c1a18"
   quake-amber: "#ffcf8a"
   volcano-red: "#ff5640"
-  tsunami-aqua: "#5ee6ff"
+  tsunami-aqua: "#3ff2d0"
   typhoon-ice: "#7fe8ff"
   fuji-red: "#ff8a4c"
   river-blue: "#8fb4ff"
@@ -156,7 +156,7 @@ A warm-neutral ladder of greys on pure black, lit by one chapter colour at a tim
 ### Secondary (chapter lights)
 Each chapter owns one light, set per chapter in `src/sections.js` and used as the board row's line colour (`--lc`), the stage caption's tone (`--tone`), and the interface accent when that chapter is chosen.
 - **Volcano Red** (volcano-red): Volcanoes; a lava red set between the Earthquakes amber and the Tsunami aqua on the board, well away from Fuji's orange.
-- **Tsunami Aqua** (tsunami-aqua): Tsunami.
+- **Tsunami Aqua** (tsunami-aqua): Tsunami; a sea-green aqua taken from the teal in its wave ramp, so it stands apart from the Typhoon ice on the board.
 - **Typhoon Ice** (typhoon-ice): Typhoons.
 - **Fuji Red** (fuji-red): Mount Fuji; in practice a red-orange sunrise tone.
 - **River Blue** (river-blue): Rivers; a periwinkle kept clear of the Tsunami and Typhoon cyans, and placed between Fuji and Sakura on the board.
@@ -169,7 +169,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 - **Pixels Off** (pixels-off): the page, every stage, every control fill, the dropped index panel, the lightbox.
 - **Paper Light** (paper-light): primary text; warm, never pure white.
 - **Ash** (ash): secondary text, labels, counts, idle board rows.
-- **Ember Edge** (ember-edge): the border of every interactive control at rest.
+- **Ember Edge** (ember-edge): the border of every interactive control at rest; 3.1:1 on black.
 - **Soot Hairline** (soot-hairline): non-interactive hairlines (board header rule, index panel border, phone-frame rim, scrollbar).
 - **Night Rule** (night-rule): the faintest dividers: header and footer rules, board row separators, stage frames.
 

@@ -19,7 +19,7 @@ from common import Canvas, caption, save, dl, DESKTOP, PHONE
 
 TIF = dl("blackmarble", "BlackMarble_2016_D1_geo_gray.tif")
 CROP = dl("blackmarble", "japan_2016.png")
-LON0, LON1, LAT0, LAT1 = 122.0, 147.0, 23.0, 46.5
+LON0, LON1, LAT0, LAT1 = 122.0, 149.5, 23.0, 46.5
 PX = 240                                            # pixels per degree (15 arc-seconds)
 
 

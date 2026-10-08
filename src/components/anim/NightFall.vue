@@ -1,5 +1,5 @@
 <script setup>
-// Nightfall across Japan on the autumn equinox: the sun sets first over eastern Hokkaido and last
+// Nightfall across Japan on the autumn equinox: the sun sets first over Iturup and eastern Hokkaido, last
 // over the Ryukyus, and every light comes on as dusk reaches it. Each pixel knows the minute its
 // sun sets (NOAA's solar equations, computed in night.py); the clock is Japan time.
 import Stage from './Stage.vue'
