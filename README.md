@@ -12,7 +12,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
 | 台風 Typhoons | 1,784 storms tracked by JMA, 1951 to 2019, coloured by central pressure | 1 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
-| 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, and Kyoto since 812 | 3 |
+| 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |
 
 Each wallpaper comes in desktop (3840×2160) and phone (1290×2796) versions.
@@ -55,6 +55,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `typhoons.py` | Typhoon tracks | JMA RSMC Tokyo best track (`bst_all.txt`) |
 | `fuji.py`, `fuji_side.py`, `fuji_points.py` | Fuji from above, from the south, in 3D | 30 m elevation model of Fuji |
 | `sakura.py`, `sakura_map.py` | Sakura front chart and map | JMA first-bloom dates, Natural Earth coastline |
+| `sakura_stripes.py` | Sakura stripes | JMA first-bloom dates |
 | `kyoto.py` | Kyoto, 1,200 years | Kyoto peak-bloom dates since 812 (Aono et al., via Our World in Data) |
 | `trains.py` | Railway views | 国土数値情報 railway data |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |

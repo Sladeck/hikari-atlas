@@ -24,6 +24,8 @@ export const SIZES = {
  "sakura_map_desktop": 0.8,
  "sakura_map_phone": 0.5,
  "sakura_phone": 0.6,
+ "sakura_stripes_desktop": 1.9,
+ "sakura_stripes_phone": 1.1,
  "tohoku_2011_desktop": 2.1,
  "tohoku_2011_phone": 1.1,
  "tohoku_desktop": 2.9,
