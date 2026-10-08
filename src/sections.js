@@ -92,6 +92,9 @@ export const SECTIONS = [
     scale: { label: 'Central pressure', from: '1006 hPa', to: '905 hPa', stops: ['#0d38f2', '#008cff', '#1ae6ff', '#b3ffff', '#ffffff'] },
     wallpapers: [
       { file: 'typhoons', jp: '台風', en: 'Northwest Pacific typhoons', note: 'Every storm is a faint line; those that reached 930 hPa or lower are drawn bright, whitest where they peaked. The fan opening north-east is the recurve that brings typhoons to Japan.' },
+      { file: 'typhoon_decades', jp: '十年ごと', en: 'Decade by decade', note: 'The same map once for every decade since 1951. The count hardly moves: about 24 to 30 storms a season, four or five of them deepening below 930 hPa, in every full decade. The last panel holds only the six seasons from 2020 to 2025, with fewer violent storms so far (20).' },
+      { file: 'isewan_1959', jp: '伊勢湾台風', en: 'Typhoon Vera, 1959', note: 'The deadliest typhoon of postwar Japan. Vera deepened to 895 hPa on 23 September, made landfall on the Kii Peninsula on the evening of the 26th and drove a storm surge into Ise Bay; more than 5,000 people died or went missing. Each bead is six hours of travel: they spread apart as the storm races north across Honshu.' },
+      { file: 'hagibis_2019', jp: '令和元年東日本台風', en: 'Typhoon Hagibis, 2019', note: 'Hagibis deepened to 915 hPa on 7 October, then curved north and made landfall on the Izu Peninsula on the evening of the 12th, its rain bursting river banks across eastern Japan. Each bead is six hours: the slow, bright days over the ocean, then the long strides as it sped away past Tōhoku.' },
     ],
     method: [
       ['Data', 'JMA RSMC Tokyo best track: 6-hourly position, grade and central pressure of every storm since 1951.'],

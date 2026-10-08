@@ -48,8 +48,9 @@ const base = import.meta.env.BASE_URL
 /* phone silhouette: rounded glass edge, a faint rim, the wallpaper true to its ratio */
 .phone { display: block; border-radius: 13% / 6%; padding: 3.5%; background: #000; box-shadow: 0 0 0 1px var(--faint), 0 18px 40px -12px rgba(0, 0, 0, .9); overflow: hidden; }
 .phone img { border-radius: 10% / 4.6%; aspect-ratio: 1290 / 2796; }
-.meta { display: grid; grid-template-columns: minmax(0, 15ch) minmax(0, 60ch) auto; gap: 12px 40px; align-items: start; }
+.meta { display: grid; grid-template-columns: minmax(15ch, max-content) minmax(0, 60ch) auto; gap: 12px 40px; align-items: start; }
 h3 { margin: 0; font-family: var(--mincho); font-weight: 500; font-size: 28px; line-height: 1.15; }
+h3 > span { white-space: nowrap; }            /* a Japanese name never breaks mid-word */
 h3 small { display: block; font-family: var(--sans); font-size: 14px; color: var(--dim); margin-top: 6px; font-weight: 400; }
 .meta p { margin: 0; font-weight: 300; }
 .dl { display: flex; flex-direction: column; gap: 8px; }

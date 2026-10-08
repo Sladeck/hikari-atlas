@@ -40,13 +40,11 @@ def pcolor(p):
     return np.stack([np.interp(p, ks, cs[:, i]) for i in range(3)], -1)
 
 
-def render(storms, W, H, out, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5):
-    phone = H > W
-    box = (112, 166, 6, 52) if phone else (100, 178, 4, 52)
+def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5):
+    """Draw every storm into a W x H image of the lon/lat box; returns (image, storms below 930 hPa)."""
     P = EquiProj(W, H, *box, margin=0.0, mode="fill")
     cv = Canvas(W, H)
     z = min(W, H) / 2160
-    k = 1.1 if phone else 1.0                                   # phone lines a little heavier (smaller screen)
     n_strong = 0
     for s in storms:
         x, y = P(s[:, 2], s[:, 3])
@@ -61,7 +59,13 @@ def render(storms, W, H, out, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5):
             w = np.full(len(pres), weak_k * k * 0.0024)
         w = np.where(grade == 6, w * 0.3, w)
         cv.add_polyline(x, y, col, w)
-    im = cv.finish(core=core * max(1, z), glow=4 * z, glow_amt=0.3, gain=gain, black=1.6e-2)
+    return cv.finish(core=core * max(1, z), glow=4 * z, glow_amt=0.3, gain=gain, black=1.6e-2), n_strong
+
+
+def render(storms, W, H, out):
+    phone = H > W
+    box = (112, 166, 6, 52) if phone else (100, 178, 4, 52)
+    im, n_strong = tracks(storms, W, H, box, k=1.1 if phone else 1.0)   # phone lines a little heavier (smaller screen)
     yrs = (int(min(s[0, 0] for s in storms)), int(max(s[0, 0] for s in storms)))
     caption(im, f"台風  Typhoons of the Northwest Pacific  ·  {len(storms):,} storms, "
                 f"{n_strong} below 930 hPa highlighted  ·  {yrs[0]}–{yrs[1]}  ·  JMA best track", ramp=RAMP)
