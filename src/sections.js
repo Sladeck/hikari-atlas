@@ -349,4 +349,42 @@ export const SECTIONS = [
       ['jprailway (paithiov909)', 'https://github.com/paithiov909/jprailway'],
     ],
   },
+  {
+    id: 'night',
+    code: 'NT',
+    kind: { jp: '暮らし', en: 'Life' },
+    record: 'Night of 2016',
+    scene: { file: 'night_japan', title: 'Japan at night, from space', line: 'The real light of the cities, as a satellite saw it. The Tōkaidō burns from Tokyo to Osaka; four-fifths of the land stays dark.' },
+    still: 'night_japan',
+    short: 'Night',
+    kanji: '夜',
+    kana: 'よる',
+    title: 'Japan at night',
+    accent: '#b9a3ff',
+    accent2: '#ffd27a',
+    anim: 'night',
+    lede:
+      'The only chapter that is light already: Japan as NASA\'s Suomi NPP satellite saw it on the clearest nights of 2016. The Tōkaidō corridor burns almost unbroken from Tokyo to Osaka, and a box around Kantō holds a third of all the light on a tenth of the land. Around four-fifths of the islands stays dark: the mountains, where the rivers begin.',
+    facts: [
+      ['500 m', 'per pixel'],
+      ['32%', 'of the light in Kantō'],
+      ['81%', 'of the land dark'],
+    ],
+    scale: { label: 'Light', from: 'dim towns', to: 'city cores', stops: ['#ff8c33', '#ffbd6b', '#ffe6b8', '#ffffff'] },
+    wallpapers: [
+      { file: 'night_japan', jp: '夜の日本', en: 'Japan at night', note: 'Every light on Japan\'s islands in 2016, the same rotated frame as the Rivers chapter, warm amber where the light is faint and white where it is brightest. The lights of Korea, China and Russia are switched off at the coast, so the islands float alone.' },
+      { file: 'night_tokaido', jp: '東海道', en: 'The Tōkaidō corridor', note: 'Tokyo, Nagoya and Osaka, and the almost unbroken string of cities between them along the old Tōkaidō road, where the Shinkansen runs today. Tokyo Bay is the dark notch in the brightest light. The phone wallpaper holds Kantō alone.' },
+      { file: 'night_rivers', jp: '光と川', en: 'Light and rivers', note: 'The lights over the faint river network of the Rivers chapter. The cities crowd onto the plains where the rivers meet the sea; upstream, the valleys stay dark all the way to the springs.' },
+    ],
+    method: [
+      ['Data', 'NASA Earth Observatory Black Marble 2016: a composite of the best cloud-free nights of each month of the year from the VIIRS day/night band on the Suomi NPP satellite, at 15 arc-seconds (about 500 m). This grayscale image is NASA\'s visual stretch of the light, not a calibrated measurement, so the shares on this page are measured in the image.'],
+      ['Japan', 'Only light on Japan\'s islands, the land of the Rivers chapter grown by about 4 km for the coast and its harbours, is kept. The rest of the picture is pixels switched off.'],
+      ['Light', 'The stretch is eased back towards linear light so the city cores keep their streets, then coloured from amber for the faintest glow to white for the brightest.'],
+      ['Animation', 'Nightfall on the autumn equinox, 23 September 2025: each pixel comes on over about 20 minutes after its own sunset, computed from NOAA\'s solar equations. Night falls first on eastern Hokkaido, around 17:15 JST, and last on the Ryukyus, after 18:40; Tokyo goes dark at 17:38.'],
+    ],
+    sources: [
+      ['NASA Earth Observatory, Black Marble 2016 (Suomi NPP VIIRS)', 'https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/'],
+      ['NOAA Global Monitoring Laboratory, General solar position calculations', 'https://gml.noaa.gov/grad/solcalc/solareqns.PDF'],
+    ],
+  },
 ]

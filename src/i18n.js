@@ -71,6 +71,7 @@ const UI = {
       rivers: ['Animation: every river in Japan flowing from its springs down to the sea', 'Distance from the farthest spring · HydroRIVERS'],
       volcanoes: ['Animation: every confirmed eruption in Japan since 1600, year by year', 'Confirmed eruptions since 1600 · Smithsonian GVP'],
       momiji: ['Animation: the autumn leaf front sweeping from Hokkaido in October to Kyushu in December, 1953 to 2025', 'First red maple · 90 cities · 1953 gold → 2025 crimson'],
+      night: ['Animation: nightfall across Japan on the autumn equinox, the lights coming on as the sun sets', 'Nightfall on 23 September 2025 · NASA Black Marble 2016'],
     },
   },
   ja: {
@@ -127,6 +128,7 @@ const UI = {
       rivers: ['アニメーション：日本のすべての川が、源流から海へと流れ下る', 'もっとも遠い源流からの距離 · HydroRIVERS'],
       volcanoes: ['アニメーション：1600年以降に日本で確認されたすべての噴火を1年ずつ', '1600年以降に確認された噴火 · Smithsonian GVP'],
       momiji: ['アニメーション：1953年から2025年まで、10月の北海道から12月の九州へと南下する紅葉前線', 'かえでの紅葉日 · 90都市 · 1953年 金 → 2025年 深紅'],
+      night: ['アニメーション：秋分の日、日が沈むにつれて灯っていく日本の光', '2025年9月23日の日暮れ · NASAブラックマーブル2016'],
     },
   },
 }

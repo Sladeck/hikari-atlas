@@ -17,6 +17,7 @@ colors:
   sakura-pink: "#ff8fbf"
   autumn-crimson: "#ff4a5e"
   railway-green: "#7dff9a"
+  night-lavender: "#b9a3ff"
 typography:
   display-kanji:
     fontFamily: "Shippori Mincho, Hiragino Mincho ProN, Yu Mincho, serif"
@@ -162,6 +163,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 - **Sakura Pink** (sakura-pink): Sakura front.
 - **Autumn Crimson** (autumn-crimson): Autumn leaves; a rose crimson kept apart from the Volcano Red, with the maple gold as its second light.
 - **Railway Green** (railway-green): Railways.
+- **Night Lavender** (night-lavender): Japan at night; the one cool violet on the board, so the chapter made of real city light (amber to white) is not confused with the warm chapters.
 
 ### Neutral
 - **Pixels Off** (pixels-off): the page, every stage, every control fill, the dropped index panel, the lightbox.

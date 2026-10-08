@@ -1,7 +1,8 @@
 # Hikari Atlas · 光の地図
 
 Japan drawn only with light, from real scientific data: earthquakes, volcanoes, the 2011 tsunami,
-typhoons, Mount Fuji, the rivers, the cherry blossom front, the autumn leaves and the railways. Every image is a free OLED wallpaper:
+typhoons, Mount Fuji, the rivers, the cherry blossom front, the autumn leaves, the railways and the
+islands' own lights at night. Every image is a free OLED wallpaper:
 every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 ## Chapters
@@ -17,6 +18,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 紅葉 Autumn leaves | The first red maple at 90 JMA cities, 1953 to 2025, and the ginkgo's first yellow; both now come later | 4: the leaf front, ginkgo gold, a map of how much later, stripes |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |
+| 夜 Japan at night | Japan's own lights from NASA's Black Marble 2016, Korea, China and Russia switched off | 3: Japan, the Tōkaidō corridor, light and rivers |
 
 Each wallpaper comes in desktop (3840×2160) and phone (1290×2796) versions.
 
@@ -81,6 +83,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `rivers.py` | River views (first run caches Japan's reaches in `dl/hydrorivers/japan.npz`) | HydroRIVERS v1.0 Asia, Natural Earth land |
 | `momiji.py` | Autumn leaf front, ginkgo, map and stripes | JMA phenology CSVs (かえで紅葉, いちょう黄葉), sakura station positions |
 | `trains.py` | Railway views | 国土数値情報 railway data |
+| `night.py` | Japan at night views, and the nightfall layers for the animation | NASA Black Marble 2016 tile D1, the rivers.py land mask |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
 | `publish.py` | Copies renders to `public/` and writes the gallery previews | the renders above |
 
@@ -98,13 +101,13 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
 | `Typhoon-Search/bst_all.txt` | `typhoons.py`, `export_web.py` |
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
-| `ne/land10.geojson` | `sakura_map.py`, `rivers.py` |
+| `ne/land10.geojson` | `sakura_map.py`, `rivers.py`, `night.py` |
 | `kyoto/kyoto_peak_bloom.csv` | `kyoto.py` |
 | `gvp/volcanoes.json`, `eruptions.json` (fetched by `volcanoes.py`) | `volcanoes.py`, `export_web.py` |
 | `hydrorivers/raw/HydroRIVERS_v10_as_shp/` (unzipped Asia shapefile) | `rivers.py`, `export_web.py` |
 | `jma-phenology/015.csv`, `013.csv` (JMA 生物季節観測累年値) | `momiji.py`, `export_web.py` |
-| `jprailway/data/*.rda` | `momiji.py` | Autumn leaf front, ginkgo, map and stripes | JMA phenology CSVs (かえで紅葉, いちょう黄葉), sakura station positions |
-| `trains.py` |
+| `jprailway/data/*.rda` | `trains.py` |
+| `blackmarble/BlackMarble_2016_D1_geo_gray.tif` (cut to `japan_2016.png` on first run) | `night.py`, `export_web.py` |
 
 The earthquake CSVs from USGS go in `pipeline/usgs/`.
 
@@ -121,6 +124,7 @@ The earthquake CSVs from USGS go in `pipeline/usgs/`.
 - Rivers: [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers), Lehner & Grill (2013), HydroSHEDS
 - Autumn leaves: [JMA 生物季節観測累年値](https://www.data.jma.go.jp/sakura/data/download_ruinenchi.html) (かえでの紅葉, いちょうの黄葉)
 - Railways: [国土数値情報 鉄道データ, MLIT](https://nlftp.mlit.go.jp/ksj/), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway)
+- Night lights: [NASA Earth Observatory, Black Marble 2016](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/) (Suomi NPP VIIRS); sunset times from [NOAA's solar equations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF)
 - Coastline: [Natural Earth](https://www.naturalearthdata.com/)
 
 The tsunami starts from an idealised seafloor uplift, not the published rupture model, so wave

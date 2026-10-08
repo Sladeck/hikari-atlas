@@ -19,8 +19,13 @@ ARGS = sys.argv[1:]
 OUT = ARGS[ARGS.index("--out") + 1] if "--out" in ARGS else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "particles")
 os.makedirs(OUT, exist_ok=True)
 SETS = {"d": ("desktop", 36000), "p": ("phone", 22000)}
-SCENES = ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan", "volcanoes_japan", "momiji"]
+SCENES = ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan", "volcanoes_japan", "momiji", "night_japan"]
 ONLY = [a for a in ARGS if a in SCENES] or SCENES
+# how strongly a scene's points follow its brightness: city lights are mostly faint towns around a few
+# blinding cores, so the night scene samples gently, or every point would pile into Tokyo and Osaka
+GAMMA = {"night_japan": 0.55}
+# and its lights cover a few percent of the frame, so its points are fainter or they stack past white
+ALPHA = {"night_japan": 0.6}
 rng = np.random.default_rng(7)
 
 
@@ -92,8 +97,8 @@ meta = {"scenes": SCENES, "sets": {}}
 for key, (kind, n) in SETS.items():
     total = 0
     for sc in ONLY:
-        x, y, z, rgb, a = fuji3d(n) if sc == "fuji3d" else from_render(sc, kind, n)
-        total += write(f"{sc}_{key}", x, y, z, rgb, a)
+        x, y, z, rgb, a = fuji3d(n) if sc == "fuji3d" else from_render(sc, kind, n, GAMMA.get(sc, 1.35))
+        total += write(f"{sc}_{key}", x, y, z, rgb, a * ALPHA.get(sc, 1.0))
     meta["sets"][key] = {"n": n, "aspect": 3840 / 2160 if key == "d" else 1290 / 2796}
     print(kind, n, "points/scene,", total // 1024, "KB total")
 json.dump(meta, open(f"{OUT}/meta.json", "w"))

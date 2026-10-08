@@ -4,7 +4,7 @@ Coordinates are pre-projected with the same projections as the wallpapers and
 normalised to 0..1 of a 16:9 (desktop) and a 1290x2796 (phone) frame, so the
 browser only has to scale and draw.
 
-Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [volcanoes] [momiji] [--out DIR]
+Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [volcanoes] [momiji] [night] [--out DIR]
 With no names every dataset is exported; meta.json keeps the entries of the ones left out.
 """
 import json, os, sys, warnings
@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 from common import WEB_PUBLIC, EquiProj
 
 DW, DH, PW, PH = 3840, 2160, 1290, 2796
-NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes", "momiji")
+NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes", "momiji", "night")
 
 
 # ---------------------------------------------------------------- earthquakes
@@ -169,6 +169,17 @@ def momiji(OUT):
     print("momiji", rec.shape)
     return {"n": len(rec), "fields": ["season", "lat", "year", "doy"], "doy0": mo.DOY0, "doy1": mo.DOY1,
             "y0": int(d.year.min()), "y1": int(d.year.max()), "cities": cities}
+
+
+# ---------------------------------------------------------------- night (nightfall on the equinox)
+def night(OUT):
+    """The national night view at 960x540 and 430x932 with each pixel's sunset minute (night.py)."""
+    import night as nt
+    A = nt.lights()
+    d0, d1 = nt.export_nightfall(OUT, 960, 540, "d", A)
+    p0, p1 = nt.export_nightfall(OUT, 430, 932, "p", A)
+    print("night", d0, d1, p0, p1)
+    return {"d": [d0, d1], "p": [p0, p1], "date": "2025-09-23"}
 
 
 if __name__ == "__main__":

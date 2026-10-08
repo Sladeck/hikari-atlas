@@ -1,1 +1,1 @@
-{"scenes": ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan", "volcanoes_japan", "momiji"], "sets": {"d": {"n": 36000, "aspect": 1.7777777777777777}, "p": {"n": 22000, "aspect": 0.4613733905579399}}}
+{"scenes": ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo", "rivers_japan", "volcanoes_japan", "momiji", "night_japan"], "sets": {"d": {"n": 36000, "aspect": 1.7777777777777777}, "p": {"n": 22000, "aspect": 0.4613733905579399}}}
