@@ -46,6 +46,10 @@ onMounted(async () => {
 
 <template>
   <main id="main" ref="root" class="section" tabindex="-1">
+    <!-- the way back to the front page's live stage, which opens on this chapter -->
+    <div class="wrap back-row">
+      <router-link to="/" class="back" :aria-label="t('back')" :title="t('back')"><Icon name="back" /></router-link>
+    </div>
     <section class="hero wrap" :aria-labelledby="`${sec.id}-title`">
       <div class="tate" lang="ja" aria-hidden="true">
         <p class="tate-word"><span v-for="(c, i) in sec.kanji" :key="i" class="tate-char">{{ c }}</span></p>
@@ -108,7 +112,14 @@ onMounted(async () => {
 
 <style scoped>
 .section:focus { outline: none; }
-.hero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(16px, 3vw, 40px); padding-block: clamp(20px, 4vw, 48px) 32px; }
+.back-row { padding-top: clamp(16px, 2.4vw, 28px); }
+.back { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--edge); background: #000;
+  color: var(--fg); transition: border-color .25s, color .25s; }
+.back svg { width: 20px; height: 20px; transition: transform .4s var(--ease-out); }
+.back:hover, .back:focus-visible { border-color: var(--accent); color: var(--accent); }
+.back:hover svg { transform: translateX(-3px); }
+.back:focus-visible { outline-offset: 3px; }
+.hero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(16px, 3vw, 40px); padding-block: clamp(12px, 2vw, 24px) 32px; }
 /* tategaki: kanji stacked top to bottom, kana in a thin column beside them */
 .tate { display: flex; gap: 12px; align-items: flex-start; padding-top: 4px; }
 .tate p { margin: 0; display: flex; flex-direction: column; align-items: center; }

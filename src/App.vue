@@ -52,8 +52,7 @@ watch([() => route.meta.section, sections], ([s]) => {
     </div>
   </header>
 
-  <!-- one page: the rail stays, only the pane beside it changes; the live stage is the front page,
-       and lifts over a chapter while a board row is pointed at -->
+  <!-- one page: the rail stays, only the pane beside it changes; the live stage is the front page -->
   <div class="shell" :class="{ home: route.path === '/' }">
     <StationRail class="side" />
     <StageLayer />
@@ -96,7 +95,7 @@ watch([() => route.meta.section, sections], ([s]) => {
 .side { grid-area: side; position: sticky; top: 0; align-self: start; height: 100vh; height: 100svh; overflow-y: auto;
   border-right: 1px solid var(--line); scrollbar-width: thin; }
 .pane { grid-area: pane; min-width: 0; container: pane / inline-size; }
-/* the stage shares the pane's cell and stays in view over a scrolled chapter */
+/* the stage shares the pane's cell; it is the front page and stays out of sight on chapter pages */
 .layer { grid-area: pane; position: sticky; top: 0; align-self: start; z-index: 5; }
 @media (max-width: 860px) {
   .shell { display: flex; flex-direction: column; }

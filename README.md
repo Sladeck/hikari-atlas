@@ -34,13 +34,13 @@ npm run sizes                # after replacing wallpaper PNGs: refresh the sizes
   departure board (発車標, `DepartureBoard.vue`) of every chapter at the left of every page; only
   the pane beside it changes. Pages size themselves against the pane (container queries on `pane`),
   not the window.
-- **Live stage** (`src/components/StageLayer.vue`, `ParticleStage.vue`): two phases on every page.
-  Pointing at a board row shows that chapter's animation, rebuilding the same 36,000 points of light
-  (22,000 on phones) into its scene (Fuji is real 3D); clicking opens the chapter's details. On the
-  front page (`HomePage.vue`) the stage is the page and the board turns over by itself until touched
-  (`src/station.js`). On a chapter page it lifts over the chapter while a row is pointed at and
-  falls back when the pointer leaves, keeping the scroll position. Without WebGL it shows the
-  chapters' still images instead.
+- **Live stage** (`src/components/StageLayer.vue`, `ParticleStage.vue`): two phases. On the front
+  page (`HomePage.vue`) the stage is the page: pointing at a board row shows that chapter's
+  animation, rebuilding the same 36,000 points of light (22,000 on phones) into its scene (Fuji is
+  real 3D), and the board turns over by itself until touched (`src/station.js`). Clicking opens the
+  chapter's details. On a chapter page the board is plain navigation, and an arrow at the top left
+  of the content returns to the front page, which opens on that chapter. Without WebGL the stage
+  shows the chapters' still images instead.
 - **Languages** (`src/i18n.js`): the whole site in English or Japanese, one at a time, from the
   EN / 日本語 switch (`LangSwitch.vue`) in the rail, or in the header on phones. Interface strings
   live in `i18n.js`; chapter text is in `src/sections.js` (English) and `src/sections.ja.js`

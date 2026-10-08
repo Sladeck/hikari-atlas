@@ -10,6 +10,7 @@ const P = {
   close: 'M6 6l12 12M18 6L6 18',
   download: 'M12 4v11m0 0l-5-5m5 5l5-5M5 20h14',
   arrow: 'M5 12h14m0 0l-6-6m6 6l-6 6',
+  back: 'M19 12H5m0 0l6-6m-6 6l6 6',
 }
 </script>
 

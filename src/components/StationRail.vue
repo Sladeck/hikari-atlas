@@ -1,43 +1,30 @@
 <script setup>
 // The rail: the atlas's name and its departure board, held at the left of every page so any chapter
-// is one click away, with the language switch beside the name. Pointing at a row shows that chapter on the live stage (StageLayer), clicking
-// opens it. On the front page the stage is the page and the board turns over by itself; on a
-// chapter page the board marks where the visitor is, and pointing at a row lifts the stage over
-// the chapter until the pointer leaves.
-import { computed, onBeforeUnmount } from 'vue'
+// is one click away, with the language switch beside the name. On the front page, pointing at a row
+// shows that chapter on the live stage (StageLayer) and the board turns over by itself; clicking
+// opens the chapter. On a chapter page the board is plain navigation: it marks where the visitor is,
+// and a row opens its chapter straight away. The way back to the stage is the front page.
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import DepartureBoard from './DepartureBoard.vue'
 import LangSwitch from './LangSwitch.vue'
 import { sections, lang, t } from '../i18n.js'
-import { selected, auto, peeking, DWELL, select, touched, peek, hold, unpeek } from '../station.js'
+import { selected, auto, DWELL, select, touched } from '../station.js'
 
 const route = useRoute()
 const home = computed(() => route.path === '/')
 const here = computed(() => sections.value.findIndex((s) => s.id === route.meta.section?.id))
-onBeforeUnmount(() => clearTimeout(intent))
 function poke() { if (home.value) touched() }
-// a pointer only crossing the rail on its way somewhere does not lift the stage: it has to rest on a row
-let intent = 0
-function choose(i) {
-  clearTimeout(intent)
-  if (home.value) select(i)
-  else if (peeking.value) peek(i)
-  else intent = setTimeout(() => peek(i), 140)
-}
-function leave(e) { clearTimeout(intent); if (peeking.value && e.pointerType === 'mouse') unpeek(240) }
-// keyboard: the peek lasts while focus is on the board or on the stage's own link
-function out(e) { if (peeking.value && !e.relatedTarget?.closest('.rail, .layer')) unpeek() }
 </script>
 
 <template>
-  <aside class="rail" :aria-label="t('name')" @pointerdown="poke" @keydown="poke"
-         @pointerenter="hold" @pointerleave="leave" @focusout="out">
+  <aside class="rail" :aria-label="t('name')" @pointerdown="poke" @keydown="poke">
     <div class="rail-top">
       <router-link to="/" class="name" :class="{ ja: lang === 'ja' }" :aria-label="t('home')">{{ t('name') }}</router-link>
       <LangSwitch />
     </div>
-    <DepartureBoard :sections="sections" :selected="home || peeking ? selected : here" preview
-                    :dwell="home && auto ? DWELL : 0" @select="choose" />
+    <DepartureBoard :sections="sections" :selected="home ? selected : here" :preview="home"
+                    :dwell="home && auto ? DWELL : 0" @select="select" />
     <p class="thesis">{{ t('thesis') }}</p>
   </aside>
 </template>

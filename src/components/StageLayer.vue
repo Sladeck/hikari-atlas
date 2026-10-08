@@ -1,29 +1,26 @@
 <script setup>
-// The live stage, held by the shell beside the rail. On the front page it is the page itself.
-// On a chapter page it waits out of sight and lifts over the chapter while the visitor points at
-// a board row (a peek: see the chapter before opening it); it falls back when the pointer leaves
-// the rail and the stage, on Escape, or on a tap outside the caption.
-// Choosing a row sends the same cloud of light to that chapter's scene; opening it shows the chapter.
+// The live stage, held by the shell beside the rail: on the front page it is the page itself.
+// Choosing a board row sends the same cloud of light to that chapter's scene; opening it shows the
+// chapter, and the stage waits out of sight (drawing nothing) until the visitor comes back.
 // Without WebGL it crossfades between the chapters' stills.
-import { ref, computed, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import gsap from 'gsap'
 import Icon from './Icon.vue'
 import ParticleStage from './ParticleStage.vue'
 import { SECTIONS } from '../sections.js'
 import { sections, t } from '../i18n.js'
-import { selected, peeking, reduce, touched, hold, unpeek } from '../station.js'
+import { selected, reduce, touched } from '../station.js'
 
 const route = useRoute()
 const base = import.meta.env.BASE_URL
 const home = computed(() => route.path === '/')
-const shown = computed(() => home.value || peeking.value)
+const shown = home
 const s = computed(() => sections.value[selected.value])
 const scenes = SECTIONS.map((x) => x.scene)
 const webgl = ref(true)
 const armed = ref(shown.value)                        // the stage loads the first time it is needed
 watch(shown, (v) => { if (v) armed.value = true })
-watch(() => route.path, () => { peeking.value = false })
 
 // the interface wears the light of whatever the stage shows, and the chapter's own once it falls back
 function tint(sec) {
@@ -33,17 +30,11 @@ watch([selected, shown], () => tint(shown.value ? s.value : route.meta.section),
 
 function noWebGL() { webgl.value = false; window.hikariLoader?.done() }
 function poke() { if (home.value) touched() }
-function leave(e) { if (peeking.value && e.pointerType === 'mouse') unpeek(240) }
-function tap(e) { if (peeking.value && !e.target.closest('a')) unpeek() }
-function key(e) { if (e.key === 'Escape') unpeek() }
-watch(peeking, (v) => (v ? addEventListener('keydown', key) : removeEventListener('keydown', key)))
-onBeforeUnmount(() => removeEventListener('keydown', key))
 </script>
 
 <template>
   <section class="layer" :class="{ shown, home }" :inert="!shown" :aria-hidden="!shown" :aria-label="t('preview')"
-           :style="{ '--tone': s.accent }" @pointerdown="poke" @keydown="poke"
-           @pointerenter="hold" @pointerleave="leave" @click="tap">
+           :style="{ '--tone': s.accent }" @pointerdown="poke" @keydown="poke">
     <ParticleStage v-if="webgl && armed" :scenes="scenes" :index="selected" :active="shown" @unsupported="noWebGL" />
     <template v-else-if="!webgl">
       <Transition name="still">
