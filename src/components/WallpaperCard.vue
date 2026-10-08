@@ -42,9 +42,12 @@ const base = import.meta.env.BASE_URL
 .flip .shots { grid-template-columns: minmax(0, .26fr) minmax(0, 1fr); }
 .flip .d { order: 2; }
 .shot { all: unset; display: block; cursor: zoom-in; min-width: 0; position: relative; }
-.shot img { width: 100%; height: auto; transition: transform .8s var(--ease-out), filter .8s var(--ease-out); }
+.shot img { width: 100%; height: auto; }
+/* the pictures are never retouched on hover: they grow a little towards the visitor instead */
+.d img, .phone { transition: transform .8s var(--ease-out); }
 .d img { aspect-ratio: 16 / 9; }
-.shot:hover img { filter: brightness(1.18); }
+.d:hover img, .d:focus-visible img { transform: scale(1.03); }
+.p:hover .phone, .p:focus-visible .phone { transform: scale(1.05); }
 .shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
 /* phone silhouette: rounded glass edge, a faint rim, the wallpaper true to its ratio */
 .phone { display: block; border-radius: 13% / 6%; padding: 3.5%; background: #000; box-shadow: 0 0 0 1px var(--faint), 0 18px 40px -12px rgba(0, 0, 0, .9); overflow: hidden; }
