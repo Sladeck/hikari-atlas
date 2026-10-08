@@ -70,6 +70,7 @@ const UI = {
       fuji: ['Animation: Mount Fuji contour lines appearing from the summit downwards like sunrise', 'Red Fuji · contours every 10 m'],
       rivers: ['Animation: every river in Japan flowing from its springs down to the sea', 'Distance from the farthest spring · HydroRIVERS'],
       volcanoes: ['Animation: every confirmed eruption in Japan since 1600, year by year', 'Confirmed eruptions since 1600 · Smithsonian GVP'],
+      momiji: ['Animation: the autumn leaf front sweeping from Hokkaido in October to Kyushu in December, 1953 to 2025', 'First red maple · 90 cities · 1953 gold → 2025 crimson'],
     },
   },
   ja: {
@@ -125,6 +126,7 @@ const UI = {
       fuji: ['アニメーション：朝焼けのように、富士山の等高線が山頂から下へ現れる', '赤富士 · 10 mごとの等高線'],
       rivers: ['アニメーション：日本のすべての川が、源流から海へと流れ下る', 'もっとも遠い源流からの距離 · HydroRIVERS'],
       volcanoes: ['アニメーション：1600年以降に日本で確認されたすべての噴火を1年ずつ', '1600年以降に確認された噴火 · Smithsonian GVP'],
+      momiji: ['アニメーション：1953年から2025年まで、10月の北海道から12月の九州へと南下する紅葉前線', 'かえでの紅葉日 · 90都市 · 1953年 金 → 2025年 深紅'],
     },
   },
 }

@@ -35,8 +35,8 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 - Vue 3 + Vite static site with hash routing, so the build works from any folder or static host.
 - Wallpapers and animation data are produced offline by the Python pipeline in `pipeline/`
   (render, then `publish.py`, then `npm run sizes`), and served from `public/`.
-- Chapters today: Earthquakes, Volcanoes, Tsunami, Typhoons, Mount Fuji, Rivers, Sakura front, Railways.
-  Planned: Autumn leaves (紅葉前線), Japan at night, bringing it to about ten.
+- Chapters today: Earthquakes, Volcanoes, Tsunami, Typhoons, Mount Fuji, Rivers, Sakura front, Autumn leaves, Railways.
+  Planned: Japan at night, bringing it to ten.
 - Every page holds a departure board of the chapters in a rail; pointing at a row shows that
   chapter's particle scene on a live stage, clicking opens it. This scales to ten chapters.
 
@@ -54,7 +54,7 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 
 - Name: Hikari Atlas · 光の地図. The 光 glyph is the mark (loading screen, header).
 - Each chapter keeps its kanji name and its own light: amber quakes, aqua tsunami, ice typhoons,
-  lava red, red Fuji, river blue, pink sakura, line-colour railways.
+  lava red, red Fuji, river blue, pink sakura, autumn crimson, line-colour railways.
 - Voice: plain, precise English; honest about method (approximations and exaggerations are stated,
   as with the tsunami source model and the ×2 depth of the 3D plates).
 - Credit to Blackbody / Alistair Roberts stays.

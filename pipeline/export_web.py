@@ -4,7 +4,7 @@ Coordinates are pre-projected with the same projections as the wallpapers and
 normalised to 0..1 of a 16:9 (desktop) and a 1290x2796 (phone) frame, so the
 browser only has to scale and draw.
 
-Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [volcanoes] [--out DIR]
+Usage: python export_web.py [quakes] [typhoons] [sakura] [trains] [rivers] [volcanoes] [momiji] [--out DIR]
 With no names every dataset is exported; meta.json keeps the entries of the ones left out.
 """
 import json, os, sys, warnings
@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 from common import WEB_PUBLIC, EquiProj
 
 DW, DH, PW, PH = 3840, 2160, 1290, 2796
-NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes")
+NAMES = ("quakes", "typhoons", "sakura", "trains", "rivers", "volcanoes", "momiji")
 
 
 # ---------------------------------------------------------------- earthquakes
@@ -149,6 +149,26 @@ def volcanoes(OUT):
     vo.land_backdrop(645, 1398, f"{OUT}/volcano_land_p.webp")
     print("volcanoes", len(pos), "volcanoes", len(ev), "eruptions")
     return {"v": pos, "e": ev, "y0": vo.Y0, "y1": vo.NOW}
+
+
+# ---------------------------------------------------------------- autumn leaves (the maple front)
+def momiji(OUT):
+    """Same layout as sakura: per first red maple, [season 0..1, latitude 0..1, year, day of autumn]."""
+    import momiji as mo
+    d = mo.load("kaede")
+    lat0, lat1 = d.lat.min() - 0.6, d.lat.max() + 0.6
+    rec = np.stack([(d.doy.values - mo.DOY0) / (mo.DOY1 - mo.DOY0), (d.lat.values - lat0) / (lat1 - lat0),
+                    d.year.values, d.doy.values], 1).astype(np.float32)
+    rec.tofile(f"{OUT}/momiji.f32")
+    cities = []
+    for c in ["KAGOSHIMA", "FUKUOKA", "KYOTO", "TOKYO", "SENDAI", "SAPPORO", "ASAHIKAWA"]:
+        r = d[d.romaji == c]
+        if len(r):
+            cities.append({"name": c.title(), "b": float((r.lat.iloc[0] - lat0) / (lat1 - lat0)),
+                           "a": float((np.percentile(r.doy, 98) - mo.DOY0) / (mo.DOY1 - mo.DOY0))})
+    print("momiji", rec.shape)
+    return {"n": len(rec), "fields": ["season", "lat", "year", "doy"], "doy0": mo.DOY0, "doy1": mo.DOY1,
+            "y0": int(d.year.min()), "y1": int(d.year.max()), "cities": cities}
 
 
 if __name__ == "__main__":

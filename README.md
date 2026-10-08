@@ -1,7 +1,7 @@
 # Hikari Atlas · 光の地図
 
 Japan drawn only with light, from real scientific data: earthquakes, volcanoes, the 2011 tsunami,
-typhoons, Mount Fuji, the rivers, the cherry blossom front and the railways. Every image is a free OLED wallpaper:
+typhoons, Mount Fuji, the rivers, the cherry blossom front, the autumn leaves and the railways. Every image is a free OLED wallpaper:
 every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 ## Chapters
@@ -15,6 +15,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
 | 川 Rivers | 42,611 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
+| 紅葉 Autumn leaves | The first red maple at 90 JMA cities, 1953 to 2025, and the ginkgo's first yellow; both now come later | 4: the leaf front, ginkgo gold, a map of how much later, stripes |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |
 
 Each wallpaper comes in desktop (3840×2160) and phone (1290×2796) versions.
@@ -78,6 +79,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `kyoto.py` | Kyoto, 1,200 years | Kyoto peak-bloom dates since 812 (Aono et al., via Our World in Data) |
 | `volcanoes.py` | Volcano views and eruption stripes (first run fetches and caches `dl/gvp/`) | Smithsonian GVP web service, HydroRIVERS (land), USGS CSVs (plate) |
 | `rivers.py` | River views (first run caches Japan's reaches in `dl/hydrorivers/japan.npz`) | HydroRIVERS v1.0 Asia, Natural Earth land |
+| `momiji.py` | Autumn leaf front, ginkgo, map and stripes | JMA phenology CSVs (かえで紅葉, いちょう黄葉), sakura station positions |
 | `trains.py` | Railway views | 国土数値情報 railway data |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
 | `publish.py` | Copies renders to `public/` and writes the gallery previews | the renders above |
@@ -100,7 +102,9 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `kyoto/kyoto_peak_bloom.csv` | `kyoto.py` |
 | `gvp/volcanoes.json`, `eruptions.json` (fetched by `volcanoes.py`) | `volcanoes.py`, `export_web.py` |
 | `hydrorivers/raw/HydroRIVERS_v10_as_shp/` (unzipped Asia shapefile) | `rivers.py`, `export_web.py` |
-| `jprailway/data/*.rda` | `trains.py` |
+| `jma-phenology/015.csv`, `013.csv` (JMA 生物季節観測累年値) | `momiji.py`, `export_web.py` |
+| `jprailway/data/*.rda` | `momiji.py` | Autumn leaf front, ginkgo, map and stripes | JMA phenology CSVs (かえで紅葉, いちょう黄葉), sakura station positions |
+| `trains.py` |
 
 The earthquake CSVs from USGS go in `pipeline/usgs/`.
 
@@ -115,6 +119,7 @@ The earthquake CSVs from USGS go in `pipeline/usgs/`.
   via [Our World in Data](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto)
 - Volcanoes: [Global Volcanism Program, Smithsonian Institution, Volcanoes of the World](https://volcano.si.edu/)
 - Rivers: [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers), Lehner & Grill (2013), HydroSHEDS
+- Autumn leaves: [JMA 生物季節観測累年値](https://www.data.jma.go.jp/sakura/data/download_ruinenchi.html) (かえでの紅葉, いちょうの黄葉)
 - Railways: [国土数値情報 鉄道データ, MLIT](https://nlftp.mlit.go.jp/ksj/), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway)
 - Coastline: [Natural Earth](https://www.naturalearthdata.com/)
 

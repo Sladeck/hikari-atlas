@@ -15,6 +15,7 @@ colors:
   fuji-red: "#ff8a4c"
   river-blue: "#8fb4ff"
   sakura-pink: "#ff8fbf"
+  autumn-crimson: "#ff4a5e"
   railway-green: "#7dff9a"
 typography:
   display-kanji:
@@ -159,6 +160,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 - **Fuji Red** (fuji-red): Mount Fuji; in practice a red-orange sunrise tone.
 - **River Blue** (river-blue): Rivers; a periwinkle kept clear of the Tsunami and Typhoon cyans, and placed between Fuji and Sakura on the board.
 - **Sakura Pink** (sakura-pink): Sakura front.
+- **Autumn Crimson** (autumn-crimson): Autumn leaves; a rose crimson kept apart from the Volcano Red, with the maple gold as its second light.
 - **Railway Green** (railway-green): Railways.
 
 ### Neutral
