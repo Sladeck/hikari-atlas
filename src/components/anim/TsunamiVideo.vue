@@ -51,6 +51,6 @@ video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; object-
 .counter { position: absolute; right: clamp(12px, 2vw, 24px); bottom: clamp(8px, 1.6vw, 18px); font-size: clamp(28px, 5vw, 64px); font-weight: 300; color: var(--accent); font-variant-numeric: tabular-nums; pointer-events: none; text-shadow: 0 0 24px #000; }
 .cap { position: absolute; left: clamp(12px, 2vw, 24px); top: clamp(10px, 1.6vw, 18px); font-size: 13px; color: var(--dim); text-shadow: 0 0 6px #000; pointer-events: none; }
 .controls { position: absolute; left: clamp(12px, 2vw, 24px); bottom: clamp(10px, 1.6vw, 18px); display: flex; gap: 6px; }
-@media (max-width: 640px) { .controls .t { display: none; } }
-@media (max-width: 640px) { video { aspect-ratio: 4 / 3; } }
+@container pane (max-width: 640px) { .controls .t { display: none; } }
+@container pane (max-width: 640px) { video { aspect-ratio: 4 / 3; } }
 </style>

@@ -182,7 +182,7 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 
 ### Hierarchy
 - **Display Kanji** (Mincho 700, clamp(44px, 7vw, 96px), 1.08): the chapter's vertical kanji, in the accent with a soft glow. The next-chapter link uses the same face larger, clamp(64px, 12vw, 168px), at 55% opacity until hovered.
-- **Display** (Gothic 300, clamp(36px, 3.6vw, 56px), 1.1, -0.02em): the front page title, which rolls between 光の地図 (Mincho 700, +0.12em, in the accent) and Hikari Atlas.
+- **Display** (Gothic 300, clamp(30px, 2.5vw, 42px), 1.1, -0.02em): the rail's name, which rolls between 光の地図 (Mincho 700, +0.12em, in the accent) and Hikari Atlas.
 - **Headline** (Gothic 300, clamp(30px, 3.6vw, 48px), 1.05, -0.015em, balanced wrap): chapter titles. The stage caption title uses the same voice at clamp(24px, 2.6vw, 40px).
 - **Title** (Gothic 300, 28px): gallery and method headings. **Title Mincho** (500, 28px, 1.15) names each wallpaper; a Japanese name never breaks mid-word.
 - **Destination Kanji** (Mincho 700, 22px, +0.06em): the board's Japanese destination face; the English face is Gothic 17px.
@@ -199,11 +199,11 @@ Each chapter owns one light, set per chapter in `src/sections.js` and used as th
 
 Content sits in a centred column (max 1360px) with a fluid gutter (clamp(16px, 4vw, 56px)). The sticky header is translucent black (82%) with a 10px backdrop blur and a Night Rule underline; its measured height is published as `--hdr` so full-viewport stages fit beneath it.
 
-The front page is a full-height station: on wide screens a board column takes 40% (at least 440px) on the left and the live stage fills the remaining 60% edge to edge, with no header bar. At 860px and below it becomes one column: the header returns, the stage sits on top at half the viewport height (min 320px), the board follows directly, then the title; the thesis is hidden on phones because the footer says the same.
+The site is one page in two panes. On wide screens a rail (clamp(320px, 26vw, 400px)) holds the rolling name, the departure board and the thesis at the left of every page; it stays put (sticky, full height, its own scroll) while the window scrolls the pane beside it, and only the pane changes on navigation. On the front page the pane is the live stage, full height and edge to edge, with no header bar anywhere on wide screens. On a chapter page the same stage waits out of sight and lifts over the pane (0.45s fade) while a board row is pointed at for 140ms or more, falling back 240ms after the pointer leaves the rail and the stage, on Escape, or on a tap outside its caption. Pages inside the pane size themselves against it through container queries, not the window. At 860px and below it becomes one column: the header returns, the front page stage sits on top at half the viewport height (min 320px) with the board directly under it, and on chapter pages the rail is hidden and the board lives in the header's index menu.
 
 Chapter pages pair the vertical kanji with a stage column, then alternate desktop and phone wallpapers in wide, generously spaced rows (clamp(56px, 8vw, 104px) apart), then method and sources in a 220px / fluid split, then the next chapter.
 
-The departure board sizes itself to its own container, not the window: four or five grid columns (badge, type, destination, record, arrow) with 16px column gaps, dropping the type column below 460px. Row height is set per context (58px default, 48px on the front page desktop, 54px on phones, 50px in the header index).
+The departure board sizes itself to its own container, not the window: four or five grid columns (badge, type, destination, record, arrow) with 16px column gaps, dropping the type column below 460px. Row height is set per context (58px default, 48px in the rail, 54px on phones, 50px in the header index).
 
 Breakpoints in use: 860px (one-column switch), 640px (touch-size controls), 560px and 520px (phone refinements). Every touch target is at least 44px.
 
@@ -236,7 +236,7 @@ Outlined, black-filled and quiet until touched.
 - **Index button:** the header's 目次 / Chapters disclosure, 44px, 14px text with a Mincho 目次; the chevron turns 180 degrees when open; below 520px only 目次 shows.
 
 ### Navigation
-- **Header:** the 光 mark in Mincho 22px in the accent, then Hikari Atlas at 15px with +0.04em tracking; the index button sits at the right on every page except the front page.
+- **Header:** the 光 mark in Mincho 22px in the accent, then Hikari Atlas at 15px with +0.04em tracking; shown only at 860px and below; the index button sits at the right on every page except the front page.
 - **Index panel:** the departure board in compact form dropped under the header (max 560px wide, full width below 520px), black with a Soot Hairline border and the drop-into-black shadow; it opens with a top-down clip reveal and closes on Escape, outside click or navigation.
 - **Next chapter:** each chapter ends with the next chapter's large kanji and title in that chapter's own light.
 

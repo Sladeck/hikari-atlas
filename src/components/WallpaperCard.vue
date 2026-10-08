@@ -56,12 +56,12 @@ h3 small { display: block; font-family: var(--sans); font-size: 14px; color: var
 .dl { display: flex; flex-direction: column; gap: 8px; }
 .dl .ctl { justify-content: flex-start; min-height: 44px; }
 .dl .mono { color: var(--dim); font-size: 12px; margin-left: auto; padding-left: 10px; }
-@media (max-width: 860px) {
+@container pane (max-width: 860px) {
   .meta { grid-template-columns: minmax(0, 1fr); }
   .dl { flex-direction: row; flex-wrap: wrap; }
   .dl .ctl { flex: 1 1 240px; }
 }
-@media (max-width: 520px) {
+@container pane (max-width: 520px) {
   .shots, .flip .shots { grid-template-columns: minmax(0, 1fr) minmax(0, .34fr); gap: 12px; }
   .flip .d { order: 0; }
 }

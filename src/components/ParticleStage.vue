@@ -9,6 +9,7 @@ import gsap from 'gsap'
 const props = defineProps({
   scenes: { type: Array, required: true },      // [{ file, threeD }]
   index: { type: Number, default: 0 },
+  active: { type: Boolean, default: true },     // false while the stage is hidden: no frames drawn
 })
 const emit = defineEmits(['unsupported', 'ready'])
 const base = import.meta.env.BASE_URL
@@ -112,7 +113,7 @@ function size() {
 
 function frame(now) {
   raf = requestAnimationFrame(frame)
-  if (!visible || !loaded || !W || !H) return
+  if (!visible || !props.active || !loaded || !W || !H) return
   const time = (now - startT) / 1000
   intro = reduce ? 1 : Math.min(1, Math.max(0, time / 2.8))
   bindScene(buffers[from], 'aPos', 'aCol'); bindScene(buffers[to], 'bPos', 'bCol')

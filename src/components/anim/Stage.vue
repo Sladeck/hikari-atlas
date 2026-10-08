@@ -111,6 +111,6 @@ canvas { display: block; }
 .counter { position: absolute; right: clamp(12px, 2vw, 24px); bottom: clamp(8px, 1.6vw, 18px); font-size: clamp(28px, 5vw, 64px); font-weight: 300; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: -.02em; pointer-events: none; text-shadow: 0 0 24px #000, 0 0 8px #000; }
 .cap { position: absolute; left: clamp(12px, 2vw, 24px); top: clamp(10px, 1.6vw, 18px); font-size: 13px; color: var(--dim); pointer-events: none; text-shadow: 0 0 6px #000; }
 .controls { position: absolute; left: clamp(12px, 2vw, 24px); bottom: clamp(10px, 1.6vw, 18px); display: flex; gap: 6px; }
-@media (max-width: 640px) { .controls .t { display: none; } }
+@container pane (max-width: 640px) { .controls .t { display: none; } }
 .status { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; color: var(--dim); font-size: 13px; padding: 16px; text-align: center; }
 </style>

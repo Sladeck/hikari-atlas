@@ -157,12 +157,12 @@ h1 { margin: 0; font-family: var(--sans); font-weight: 300; font-size: clamp(30p
 .next:hover .next-arrow { transform: translateX(8px); }
 .next-line { color: var(--dim); font-weight: 300; max-width: 60ch; }
 
-@media (max-width: 860px) {
+@container pane (max-width: 860px) {
   .intro, .method { grid-template-columns: minmax(0, 1fr); }
   .scale { max-width: 320px; }
   .sources { grid-column: 1; }
 }
-@media (max-width: 560px) {
+@container pane (max-width: 560px) {
   .hero { grid-template-columns: minmax(0, 1fr); padding-top: 16px; }
   .tate { align-items: baseline; }
   .tate p { flex-direction: row; }

@@ -2,8 +2,8 @@
 // The atlas as a station departure board (発車標): one row per chapter, a line badge in the
 // chapter's own colour, its category (種別), destination and headline record (sources live on
 // each chapter page). Like the boards in Japanese stations, the rows alternate between Japanese
-// and English every few seconds. Rows are links. With a mouse, pointing at a row selects it (the
-// front page's stage follows); on touch, the first tap selects and the second opens.
+// and English every few seconds. Rows are links. In preview mode (the front page), pointing at a row
+// selects it and the stage follows; on touch, the first tap selects and the second opens.
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
@@ -12,6 +12,7 @@ const props = defineProps({
   compact: { type: Boolean, default: false },     // the header's index menu: rows only
   dwell: { type: Number, default: 0 },            // seconds until the board moves on by itself (0 = still)
   face: { type: Boolean, default: null },         // English face when true; null = the board keeps its own time
+  preview: { type: Boolean, default: false },     // rows preview a scene before opening (the front page's stage)
 })
 const emit = defineEmits(['select'])
 
@@ -30,15 +31,15 @@ onMounted(() => {
 onBeforeUnmount(() => { clearInterval(flip); clearInterval(tick) })
 
 const heads = [['種別', 'Type'], ['行先', 'Destination'], ['記録', 'Record']]
-function point(i) { if (hover) emit('select', i) }
+function point(i) { if (hover && props.preview) emit('select', i) }
 // on touch, whether a tap previews or opens is decided when the finger lands: browsers that focus
 // links on tap would otherwise mark the row selected before the click arrives
 let press = null
 function down(e, i) { press = e.pointerType === 'mouse' ? null : { i, was: i === props.selected } }
-function focused(i) { if (!press) emit('select', i) }                 // keyboard focus follows along
+function focused(i) { if (!press && props.preview) emit('select', i) }                 // keyboard focus follows along
 function tap(e, i) {
   const p = press; press = null
-  if (hover || props.compact || !p || p.i !== i || p.was) return    // the link opens the chapter
+  if (hover || !props.preview || !p || p.i !== i || p.was) return    // the link opens the chapter
   e.preventDefault(); emit('select', i)                              // touch: first tap previews the scene
 }
 </script>

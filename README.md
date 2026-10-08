@@ -29,14 +29,20 @@ npm run preview -- --host    # serve the built site
 npm run sizes                # after replacing wallpaper PNGs: refresh the sizes on the download buttons
 ```
 
-- **Front page** (`src/components/HomePage.vue`): a station departure board (発車標,
-  `DepartureBoard.vue`) of every chapter beside one live WebGL stage (`ParticleStage.vue`).
-  Choosing a row rebuilds the same 36,000 points of light (22,000 on phones) into that chapter's
-  scene; Fuji is real 3D. The rows alternate Japanese and English like real station boards, and the
-  board turns over by itself until touched. Falls back to still images without WebGL.
-- **Chapter index** (`src/components/IndexMenu.vue`): the 目次 button in the header drops the same
-  board down from any chapter page. A new chapter needs its `code`, `kind`, `record`, `scene` and
-  `still` in `src/sections.js`, plus its particle scene from `export_particles.py`.
+- **One page, two panes** (`src/App.vue`): a rail (`StationRail.vue`) holds the name and a station
+  departure board (発車標, `DepartureBoard.vue`) of every chapter at the left of every page; only
+  the pane beside it changes. Pages size themselves against the pane (container queries on `pane`),
+  not the window.
+- **Live stage** (`src/components/StageLayer.vue`, `ParticleStage.vue`): two phases on every page.
+  Pointing at a board row shows that chapter's animation, rebuilding the same 36,000 points of light
+  (22,000 on phones) into its scene (Fuji is real 3D); clicking opens the chapter's details. On the
+  front page (`HomePage.vue`) the stage is the page and the board turns over by itself until touched
+  (`src/station.js`). On a chapter page it lifts over the chapter while a row is pointed at and
+  falls back when the pointer leaves, keeping the scroll position. The rows alternate Japanese and
+  English like real station boards. Falls back to still images without WebGL.
+- **Phones**: the stage sits on top with the board under it; on chapter pages the board moves into
+  the header's 目次 button (`IndexMenu.vue`). A new chapter needs its `code`, `kind`, `record`,
+  `scene` and `still` in `src/sections.js`, plus its particle scene from `export_particles.py`.
 - **Loading screen** (`index.html`): inline HTML/CSS, painted before the app loads, driven by the
   real download progress of the particle data.
 - **Chapters** (`src/components/SectionPage.vue`, content in `src/sections.js`): a live animation
