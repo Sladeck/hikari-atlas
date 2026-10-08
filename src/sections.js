@@ -83,11 +83,11 @@ export const SECTIONS = [
     accent2: '#0d38f2',
     anim: 'typhoons',
     lede:
-      'Every typhoon tracked by the Japan Meteorological Agency from 1951 to 2019. Storms are born in the warm tropics, drift west, then curve north and east towards Japan. The violent ones, below 930 hPa at their peak, burn white.',
+      'Every typhoon tracked by the Japan Meteorological Agency from 1951 to 2025. Storms are born in the warm tropics, drift west, then curve north and east towards Japan. The violent ones, below 930 hPa at their peak, burn white.',
     facts: [
-      ['1,784', 'storms'],
-      ['326', 'below 930 hPa'],
-      ['69', 'seasons'],
+      ['1,951', 'storms'],
+      ['349', 'below 930 hPa'],
+      ['75', 'seasons'],
     ],
     scale: { label: 'Central pressure', from: '1006 hPa', to: '905 hPa', stops: ['#0d38f2', '#008cff', '#1ae6ff', '#b3ffff', '#ffffff'] },
     wallpapers: [

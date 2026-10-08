@@ -17,7 +17,7 @@ const SCENES = [
     line: '30,167 quakes of magnitude 4.5 and up. No coastline is drawn: the plates draw Japan by themselves.' },
   { file: 'tsunami', sec: 'tsunami', title: 'The 2011 tsunami crossing the Pacific',
     line: 'Undersea ridges bend the wave into beams aimed at Hawaii, Chile and New Zealand. Computed from the physics, not drawn.' },
-  { file: 'typhoons', sec: 'typhoons', title: 'Seventy years of typhoons',
+  { file: 'typhoons', sec: 'typhoons', title: 'Seventy-five years of typhoons',
     line: 'Born in the tropics, they drift west, then curve north toward Japan. The white arcs fell below 930 hPa.' },
   { file: 'fuji3d', sec: 'fuji', threeD: true, title: 'Mount Fuji, built from light',
     line: 'Every point sits at its real place on the mountain, from 1,000 m up to the 3,776 m summit, slowly turning.' },

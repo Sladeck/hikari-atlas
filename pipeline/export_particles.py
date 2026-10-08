@@ -14,10 +14,13 @@ import json, os, sys
 import numpy as np
 from PIL import Image
 
-OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "particles")
+# usage: python export_particles.py [scene ...] [--out DIR]   (no scene names = all scenes)
+ARGS = sys.argv[1:]
+OUT = ARGS[ARGS.index("--out") + 1] if "--out" in ARGS else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "particles")
 os.makedirs(OUT, exist_ok=True)
 SETS = {"d": ("desktop", 36000), "p": ("phone", 22000)}
 SCENES = ["japan", "tsunami", "typhoons", "fuji3d", "sakura", "trains_tokyo"]
+ONLY = [a for a in ARGS if a in SCENES] or SCENES
 rng = np.random.default_rng(7)
 
 
@@ -88,7 +91,7 @@ def fuji3d(n):
 meta = {"scenes": SCENES, "sets": {}}
 for key, (kind, n) in SETS.items():
     total = 0
-    for sc in SCENES:
+    for sc in ONLY:
         x, y, z, rgb, a = fuji3d(n) if sc == "fuji3d" else from_render(sc, kind, n)
         total += write(f"{sc}_{key}", x, y, z, rgb, a)
     meta["sets"][key] = {"n": n, "aspect": 3840 / 2160 if key == "d" else 1290 / 2796}

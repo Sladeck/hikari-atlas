@@ -10,7 +10,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 |---|---|---|
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
-| 台風 Typhoons | 1,784 storms tracked by JMA, 1951 to 2019, coloured by central pressure | 1 |
+| 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 1 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 鉄道 Railways | Every line in its official colour, Shinkansen in white | Tokyo, Kansai, Japan |

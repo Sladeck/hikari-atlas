@@ -40,8 +40,8 @@ export const SIZES = {
  "trains_tokyo_phone": 1.1,
  "tsunami_desktop": 2.3,
  "tsunami_phone": 0.9,
- "typhoons_desktop": 4.6,
- "typhoons_phone": 3.8,
+ "typhoons_desktop": 4.8,
+ "typhoons_phone": 3.9,
  "west_desktop": 2.8,
  "west_phone": 1.0
 }

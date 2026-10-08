@@ -31,7 +31,7 @@ const PLATES = [
     title: 'A plate sinking 680 km',
     line: 'Along the Izu–Bonin Trench, the amber quakes are the surface. The violet ones beside them are the same ocean floor, hundreds of kilometres down.' },
   { img: 'typhoons', sec: 'typhoons', kind: 'sweep', dir: 'to top right', dirp: 'to top',
-    title: 'Seventy years of typhoons',
+    title: 'Seventy-five years of typhoons',
     line: 'Born in the tropics, they drift west, then curve north toward Japan. The white arcs fell below 930 hPa.' },
   { img: 'trains_tokyo', sec: 'railways', kind: 'radial', o: [0.556, 0.495], op: [0.703, 0.497],
     title: 'Tokyo, every line in its own colour',
@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
       </span>
       <div class="hero-copy wrap">
         <h1 id="home-title" class="hero-name"><span lang="ja">光の地図</span>Hikari Atlas</h1>
-        <p class="hero-thesis">Japan drawn only with light, from real data: 30,167 earthquakes, 1,784 typhoons, a tsunami, 5,843 cherry blossoms and every railway line. Every unlit pixel is pure black, made for OLED screens. All wallpapers are free.</p>
+        <p class="hero-thesis">Japan drawn only with light, from real data: 30,167 earthquakes, 1,951 typhoons, a tsunami, 5,843 cherry blossoms and every railway line. Every unlit pixel is pure black, made for OLED screens. All wallpapers are free.</p>
         <router-link to="/earthquakes" class="hero-go">Start with the earthquakes <Icon name="arrow" /></router-link>
       </div>
     </section>

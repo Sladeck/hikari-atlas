@@ -1,4 +1,4 @@
-"""Every typhoon tracked by the Japan Meteorological Agency, 1951 to 2019.
+"""Every typhoon tracked by the Japan Meteorological Agency, from 1951 to the last complete season.
 
 Data: JMA RSMC Tokyo best track (bst_all.txt). One header line per storm (66666 ...),
 then 6-hourly rows: YYMMDDHH 002 grade lat*10 lon*10 pressure(hPa) [wind kt].
@@ -9,6 +9,7 @@ import numpy as np
 from common import Canvas, caption, save, EquiProj, dl, DESKTOP, PHONE
 
 BST = dl("Typhoon-Search", "bst_all.txt")
+LAST = 2025                      # last complete season in the file (the current one is still being added)
 SRC = sys.argv[1] if __name__ == "__main__" and len(sys.argv) > 1 else BST
 
 
@@ -68,7 +69,7 @@ def render(storms, W, H, out):
 
 
 if __name__ == "__main__":
-    storms = [s for s in load(SRC) if s[0, 0] <= 2019]
+    storms = [s for s in load(SRC) if s[0, 0] <= LAST]
     print(len(storms), "storms")
     render(storms, *DESKTOP, "out/typhoons_desktop.png")
     render(storms, *PHONE, "out/typhoons_phone.png")

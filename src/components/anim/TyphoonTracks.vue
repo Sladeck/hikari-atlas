@@ -1,16 +1,17 @@
 <script setup>
-// Every typhoon 1951 -> 2019, each storm drawing its own track as its season arrives.
+// Every typhoon since 1951, each storm drawing its own track as its season arrives.
 // The bright head is the storm's eye; the trail stays as a thin line coloured by pressure.
 import Stage from './Stage.vue'
-import { load, ramp, rgba, glowSprite } from './data.js'
+import { load, meta, ramp, rgba, glowSprite } from './data.js'
 
 const pColor = ramp([[905, [1, 1, 1]], [935, [.7, 1, 1]], [960, [.1, .9, 1]], [985, [0, .55, 1]], [1006, [.05, .22, .95]]])
-const Y0 = 1951, Y1 = 2020
+let Y0 = 1951, Y1 = 2026                 // replaced by the exported range in init()
 let P, OFF, storms = [], layer, lctx, active = [], next = 0
 const head = glowSprite([.75, 1, 1], 48)
 
 async function init() {
   P = await load('typhoons.f32'); OFF = await load('typhoons_offsets.u32', Uint32Array)
+  const m = (await meta()).typhoons; if (m.y1) { Y0 = m.y0; Y1 = m.y1 + 1 }
   // spread each season's storms evenly through its year
   const byYear = {}
   for (let s = 0; s < OFF.length - 1; s++) {
@@ -72,10 +73,10 @@ function draw({ ctx, w, h, p, dt, map, still }) {
   active = active.filter((a) => a.pos < OFF[a.s + 1] - 1)
   ctx.globalAlpha = 1
 }
-const counter = (p) => String(Math.min(2019, Math.floor(Y0 + (Y1 - Y0) * p)))
+const counter = (p) => String(Math.min(Y1 - 1, Math.floor(Y0 + (Y1 - Y0) * p)))
 </script>
 
 <template>
-  <Stage label="Animation: every Northwest Pacific typhoon from 1951 to 2019 drawing its track, season by season" :duration="30" :hold="5"
+  <Stage label="Animation: every Northwest Pacific typhoon from 1951 to 2025 drawing its track, season by season" :duration="30" :hold="5"
          :init="init" :reset="reset" :draw="draw" :counter="counter" caption="JMA best track · bright = below 930 hPa" />
 </template>
