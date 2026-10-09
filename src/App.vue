@@ -106,6 +106,8 @@ watch([() => route.meta.section, sections], ([s]) => {
 .pane { grid-area: pane; min-width: 0; container: pane / inline-size; }
 /* the stage shares the pane's cell; it is the front page and stays out of sight on chapter pages */
 .layer { grid-area: pane; position: sticky; top: 0; align-self: start; z-index: 5; }
+/* the front page is the stage alone: a footer under it would only add a scrollbar that moves nothing */
+@media (min-width: 861px) { .shell.home .foot { display: none; } }
 @media (max-width: 860px) {
   .shell { display: flex; flex-direction: column; }
   .side { position: static; align-self: stretch; height: auto; overflow: visible; border-right: 0; order: 1; }
