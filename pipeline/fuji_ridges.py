@@ -51,7 +51,8 @@ def height(M, lon, lat):
     return map_coordinates(M.smooth, [(M.LAT0 - lat) / M.RES, (lon - M.LON0) / M.RES], order=1, mode="nearest")
 
 
-def render(W, H, out, M=F, view=None, text=None):
+def render(W, H, out, M=F, view=None, text=None, bare=False):
+    """bare: the lines alone, no labels or caption, returned instead of saved (og.py)."""
     phone = H > W
     V = view or VIEW["phone" if phone else "desktop"]
     cam = Cam(W, H, **V["cam"])
@@ -94,6 +95,8 @@ def render(W, H, out, M=F, view=None, text=None):
         if vis[j] and (peak is None or hc[j] > peak[2]):
             peak = (cols[j], yc[j], hc[j])
     im = cv.finish(core=0.45 * max(1, z), glow=4 * z, glow_amt=0.4, gain=3.2, black=1.5e-2)
+    if bare:
+        return im
     d = ImageDraw.Draw(im)
     u = H / 2160 if not phone else W / 1290 * 0.9
     f = ImageFont.truetype(F_LIGHT, int(17 * u))

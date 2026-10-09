@@ -107,6 +107,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `night.py` | Japan at night views, and the nightfall layers for the animation | NASA Black Marble 2016 tile D1, the rivers.py land mask |
 | `export_web.py`, `export_particles.py` | Data for the site's animations | the renders and datasets above |
 | `publish.py` | Copies renders to `public/` and writes the gallery previews | the renders above |
+| `og.py` | The share card `public/og.png` (Fuji in ridge lines, 1200×630) | `fuji_ridges.py` |
 
 `common.py` holds the shared idea: light is *added* into a float buffer (never painted over),
 blurred into a soft core and a wide glow, tone-mapped with `1 - exp(-x)`, and every unlit pixel is
