@@ -9,11 +9,11 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 
 | Chapter | What it shows | Wallpapers |
 |---|---|---|
+| 富士山 Mount Fuji and other summits | 10 m contours from above, as a 3D cloud of points and as ridge lines; beside it Kita-dake and Oku-hotaka-dake, the next highest | 7: Fuji ×3, Kita-dake and Oku-hotaka from the east and in ridge lines |
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
 | 火山 Volcanoes | 116 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations, and the marks it left on Japan's coast | 3: the Pacific, how high it reached, how far inland on the Sendai plain |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
-| 富士山 Mount Fuji | 10 m contours from above, as a 3D cloud of points and as ridge lines; beside it Kita-dake and Oku-hotaka-dake, the next highest | 7: Fuji ×3, Kita-dake and Oku-hotaka from the east and in ridge lines |
 | 川 Rivers | 42,984 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 紅葉 Autumn leaves | The first red maple at 90 JMA cities, 1953 to 2025, and the ginkgo's first yellow; both now come later | 4: the leaf front, ginkgo gold, a map of how much later, stripes |

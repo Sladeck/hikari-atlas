@@ -35,8 +35,8 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 - Vue 3 + Vite static site with hash routing, so the build works from any folder or static host.
 - Wallpapers and animation data are produced offline by the Python pipeline in `pipeline/`
   (render, then `publish.py`, then `npm run sizes`), and served from `public/`.
-- Chapters (ten): Earthquakes, Volcanoes, Tsunami, Typhoons, Mount Fuji, Rivers, Sakura front, Autumn leaves,
-  Railways, Japan at night.
+- Chapters (ten): Mount Fuji and other summits, Earthquakes, Volcanoes, Tsunami, Typhoons, Rivers, Sakura front,
+  Autumn leaves, Railways, Japan at night.
 - Every page holds a departure board of the chapters in a rail; pointing at a row shows that
   chapter's particle scene on a live stage, clicking opens it. This scales to ten chapters.
 
