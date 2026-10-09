@@ -102,7 +102,7 @@ export const SECTIONS = [
     accent: '#3ff2d0',
     anim: 'tsunami',
     lede:
-      'The 2011 Tōhoku tsunami crossing the Pacific, simulated from the shallow-water equations on the real depth of the ocean. The bright beams are not drawn by hand: undersea ridges act like lenses and channel the energy towards Hawaii, Chile and New Zealand.',
+      'The 2011 Tōhoku tsunami crossing the Pacific, simulated from the shallow-water equations on the real depth of the ocean. The bright beams are not drawn by hand: undersea ridges act like lenses and channel the energy towards Hawaii, Chile and New Zealand. Two pictures show what it did on Japan\'s own coast, from the marks the water left: how high it climbed, and how far inland it went.',
     facts: [
       ['24 h', 'of ocean simulated'],
       ['~700 km/h', 'wave speed over deep ocean'],
@@ -111,15 +111,20 @@ export const SECTIONS = [
     scale: { label: 'Highest wave', from: '5 cm', to: '4 m', stops: ['#06123d', '#004d8c', '#00b3cc', '#8cf2ff', '#ffffff'] },
     wallpapers: [
       { file: 'tsunami', jp: '津波', en: 'Tōhoku tsunami, 2011', note: 'The highest wave reached at every point of the Pacific in the 24 hours after the earthquake. Faint rings mark each hour of travel time.' },
+      { file: 'tsunami_heights', jp: '津波の高さ', en: 'How high it reached', note: 'Every mark the 2011 tsunami left on the coast that the joint survey measured and graded reliable: 5,476 points from Hokkaido to Kyushu. Colour is the height above the tide, up to 40.0 m at Ryōri, Ōfunato.' },
+      { file: 'tsunami_inland', jp: '浸水', en: 'How far it came inland', note: 'The Sendai plain and Ishinomaki, from Sōma to the Oshika peninsula. Each mark sits where the water reached; colour is its distance from the shore, teal at the beach, white 5 km inland. On the Kitakami river a mark was measured 14.5 km from the shore.' },
     ],
     method: [
       ['Physics', 'Linear shallow-water equations on a sphere, solved on a staggered grid every 12.5 seconds of simulated time. Land is a wall; the open edges absorb the wave.'],
       ['Source', 'An idealised seafloor uplift along the Japan Trench: about +5 m on the trench side and −2 m landward, 400 by 150 km. Close to the real event, not the published rupture model, so heights are approximate.'],
       ['Ocean depth', 'ETOPO1 bathymetry resampled to 10 arc-minutes (about 18 km).'],
+      ['Survey', 'The two coast pictures are measured, not simulated: the final release (29 December 2012) of the 2011 Tohoku Earthquake Tsunami Joint Survey Group, tide-corrected. Only marks graded A (clear trace) or B (reliable witness) are drawn: 5,476, of which 4,025 have a distance from the shore. Heights are above the tide at the time: a run-up height is the ground height where the water stopped, an inundation height the height of the water where it stood.'],
     ],
     sources: [
       ['ETOPO1 Global Relief Model (NOAA)', 'https://doi.org/10.7289/V5C8276M'],
       ['Earth topography grid, 10 arc-minutes (Fatiando a Terra)', 'https://github.com/fatiando-data/earth-topography-10arcmin'],
+      ['2011 Tohoku Earthquake Tsunami Joint Survey Group, release 20121229', 'https://coastal.jp/ttjt/'],
+      ['Mori, Takahashi et al. (2012), Nationwide survey of the 2011 Tohoku earthquake tsunami, Coastal Engineering Journal 54(1)', 'https://doi.org/10.1142/S0578563412500015'],
     ],
   },
   {
