@@ -13,7 +13,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 火山 Volcanoes | 116 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
 | 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations, and the marks it left on Japan's coast | 3: the Pacific, how high it reached, how far inland on the Sendai plain |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
-| 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
+| 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, as a 3D cloud of points and as ridge lines; beside it Kita-dake and Oku-hotaka-dake, the next highest | 8: Fuji ×4, Kita-dake and Oku-hotaka from the east and in ridge lines |
 | 川 Rivers | 42,984 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
 | 紅葉 Autumn leaves | The first red maple at 90 JMA cities, 1953 to 2025, and the ginkgo's first yellow; both now come later | 4: the leaf front, ginkgo gold, a map of how much later, stripes |
@@ -77,6 +77,8 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `typhoon_decades.py` | Typhoons decade by decade | the same best track |
 | `famous_typhoons.py` | Typhoon Vera (1959) and Hagibis (2019) | the same best track, Natural Earth coastline |
 | `fuji.py`, `fuji_side.py`, `fuji_points.py` | Fuji from above, from the south, in 3D | 30 m elevation model of Fuji |
+| `fuji_ridges.py` | Fuji's summit cone in ridge lines (works for any mountain) | the same model |
+| `mountains.py` | Kita-dake and Oku-hotaka-dake as layered skylines and ridge lines | Copernicus DEM GLO-30 |
 | `sakura.py`, `sakura_map.py` | Sakura front chart and map | JMA first-bloom dates, Natural Earth coastline |
 | `sakura_stripes.py` | Sakura stripes | JMA first-bloom dates |
 | `kyoto.py` | Kyoto, 1,200 years | Kyoto peak-bloom dates since 812 (Aono et al., via Our World in Data) |
@@ -98,6 +100,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | Path under `dl/` | Used by |
 |---|---|
 | `geovista-data/assets/rasters/fuji_dem.tif` | `fuji*.py` |
+| `copdem/Copernicus_DSM_COG_10_{N35_00_E138_00,N36_00_E137_00}_DEM.tif`, rewritten once to `*_raw.tif` with `gdal_translate -co COMPRESS=NONE` | `mountains.py` |
 | `jma-hypo/h2011`, `h2016` (unzipped yearly files) | `sequences.py` |
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
 | `tsunami/ttjt_survey_29-Dec-2012_tidecorrected_web.csv` (Shift-JIS) | `tsunami_coast.py` |
@@ -127,6 +130,7 @@ the providers state them, and the credit to use.
 | [Tsunami field survey, release 20121229](https://coastal.jp/ttjt/) | 2011 Tohoku Earthquake Tsunami Joint Survey Group (Mori et al. 2012) | Free to use, citing the group, the site and the release date | Tsunami (coast) |
 | [RSMC Tokyo best track data](https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html) | Japan Meteorological Agency | JMA content terms | Typhoons |
 | [Fuji elevation model](https://github.com/bjlittle/geovista-data) | bjlittle/geovista-data | BSD 3-Clause | Mount Fuji |
+| [Copernicus DEM GLO-30](https://registry.opendata.aws/copernicus-dem/) | European Union and ESA, Copernicus programme (TanDEM-X, DLR and Airbus) | Licence for the Copernicus WorldDEM-30: free reproduction, distribution and adaptation, notices below required | Kita-dake, Oku-hotaka-dake |
 | [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers) | WWF, HydroSHEDS (Lehner & Grill 2013) | HydroSHEDS v1 licence agreement: free for non-commercial and commercial use, statement below required | Rivers; the land in Volcanoes, Night and the tsunami coast |
 | [さくらの開花日](https://www.data.jma.go.jp/sakura/data/index.html) | Japan Meteorological Agency, compiled by [akg314/sakura](https://github.com/akg314/sakura) | JMA content terms | Sakura |
 | [Kyoto peak bloom since 812](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto) | Aono & Kazui (2008), Aono & Saito (2010), Katata (2026), via Our World in Data | CC BY 4.0 (Our World in Data) | Sakura (Kyoto) |
@@ -145,6 +149,8 @@ Credits in the providers' own form:
   Moulin Guillaume 作成・加工.
 - **Tsunami survey:** Data are from the 2011 Tohoku Earthquake Tsunami Joint Survey Group, release
   20121229, http://www.coastal.jp/ttjt/.
+- **Copernicus DEM:** produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. The organisations in charge of the Copernicus programme by law or by
+  delegation do not incur any liability for any use of the Copernicus WorldDEM-30.
 - **Global Volcanism Program:** Global Volcanism Program, Smithsonian Institution, *Volcanoes of the
   World*, https://volcano.si.edu/ (accessed October 2026).
 - **HydroSHEDS:** This product Hikari Atlas incorporates data from the HydroSHEDS version 1 database
