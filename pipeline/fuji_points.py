@@ -52,7 +52,7 @@ def project(P, W, H):
 
 def hidden(sx, sy, depth, W, H, q=4):
     """Points behind the near slope: a depth buffer built from the points themselves (nearest per
-    quarter-res pixel, eroded so the gaps between rings close), as fuji_side.py does with the terrain."""
+    quarter-res pixel, eroded so the gaps between rings close)."""
     zb = np.full((H // q + 1, W // q + 1), np.inf, np.float32)
     ok = (sx >= 0) & (sx < W) & (sy >= 0) & (sy < H)
     xi, yi = (sx[ok] / q).astype(int), (sy[ok] / q).astype(int)

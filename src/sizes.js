@@ -6,8 +6,6 @@ export const SIZES = {
  "fuji_points_phone": 0.6,
  "fuji_ridges_desktop": 2.1,
  "fuji_ridges_phone": 0.8,
- "fuji_side_desktop": 1.1,
- "fuji_side_phone": 0.5,
  "hagibis_2019_desktop": 0.4,
  "hagibis_2019_phone": 0.2,
  "hotaka_ridges_desktop": 1.1,

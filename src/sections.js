@@ -166,7 +166,7 @@ export const SECTIONS = [
     kind: { jp: '大地', en: 'Earth' },
     record: '3,776 m',
     scene: { file: 'fuji3d', threeD: true, title: 'Mount Fuji, built from light', line: 'Every point sits at its real place on the mountain, from 1,000 m up to the 3,776 m summit, slowly turning.' },
-    still: 'fuji_side',
+    still: 'fuji_ridges',
     short: 'Fuji',
     kanji: '富士山',
     kana: 'ふじさん',
@@ -183,9 +183,8 @@ export const SECTIONS = [
     scale: { label: 'Elevation', from: '0 m', to: '3,776 m', stops: ['#291a73', '#731a8c', '#d91f4d', '#ff6b2e', '#ffcc8c', '#ffffff'] },
     wallpapers: [
       { file: 'fuji', jp: '富士山', en: 'Mount Fuji', note: 'Contours bunch together where the cone is steepest. The flat ring at the base is the old lava plain that surrounds the mountain.' },
-      { file: 'fuji_side', jp: '南から', en: 'Fuji from the south', note: 'The same contour rings seen in perspective from 30 km south and 3 km up, at true vertical scale. Lines behind the slope are hidden with a depth buffer built from the terrain. The dark gash on the right flank is the Hōei crater.' },
-      { file: 'fuji_points', jp: '光の富士', en: 'Fuji in light', note: 'The 3D view from the front page as a wallpaper: 640,000 points along every 10 m contour from 1,000 m to the summit, each at its real position and true vertical scale, seen in perspective; points behind the near slope are left out. The lower slopes dissolve into the dark; the crater notch sits on top.' },
       { file: 'fuji_ridges', jp: '稜線の富士', en: 'The summit cone in ridge lines', note: 'Profiles of the cone about 150 m apart, seen from the south at true vertical scale, each hiding the ones behind it. Close enough to read the crater rim, and Hōei, the peak on the rim of the 1707 crater.' },
+      { file: 'fuji_points', jp: '光の富士', en: 'Fuji in light', note: 'The 3D view from the front page as a wallpaper: 640,000 points along every 10 m contour from 1,000 m to the summit, each at its real position and true vertical scale, seen in perspective; points behind the near slope are left out. The lower slopes dissolve into the dark; the crater notch sits on top.' },
       { file: 'kitadake_side', jp: '北岳', en: 'Kita-dake from the east', note: 'The second-highest summit in Japan, 3,193 m, in the Southern Alps, with Aino-dake (3,190 m) beside it to the south. The range as layered skylines about 450 m apart, seen from 30 km east.' },
       { file: 'kitadake_ridges', jp: '北岳の稜線', en: 'Kita-dake in ridge lines', note: 'Close up from the east, from the foot of its east face: profiles about 150 m apart, brightest near the summit so the peak stands out from the range.' },
       { file: 'hotaka_side', jp: '奥穂高岳', en: 'Oku-hotaka-dake from the east', note: 'The highest summit of the Northern Alps, 3,190 m, with the spire of Yari-ga-take (3,180 m) 6 km to the north: the Yari-Hotaka skyline as layered profiles seen from 30 km east.' },
@@ -194,7 +193,6 @@ export const SECTIONS = [
     method: [
       ['Data', 'A 1 arc-second (about 30 m) elevation model of the Fuji area.'],
       ['Lines', 'Contours traced every 10 m with marching squares; every 100 m slightly brighter. Low hills are dimmed so the cone stays the subject.'],
-      ['Side view', 'The rings are lifted to their real height and projected through a virtual camera. A depth buffer rendered from the elevation model decides which parts of each ring are hidden behind the mountain.'],
       ['Ridge lines', 'Profiles across the line of sight are drawn near to far; a running horizon per pixel column keeps only what rises above the lines already drawn, so each line hides the ones behind it. In the close-ups of the Alps the light fades with distance from the summit.'],
       ['The Alps', 'Kita-dake and Oku-hotaka-dake come from the Copernicus DEM GLO-30, also 30 m. A grid that coarse rounds the sharpest summits off and even ranks Aino-dake above Kita-dake, so the labels give the official heights. On ground that steep, 10 m contour rings pile into solid bands, so their side views show the ranges as layered skylines instead.'],
     ],

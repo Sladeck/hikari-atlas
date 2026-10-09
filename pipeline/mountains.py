@@ -1,6 +1,6 @@
-"""Japan's next highest peaks after Fuji, in two views like Fuji's. Contour rings from the side
-(fuji_side.py) do not suit a jagged range, where 10 m rings pile into solid bands, so the side view
-is the range as layered skylines; the close-up is ridge lines as for Fuji (fuji_ridges.py). Both
+"""Japan's next highest peaks after Fuji, in two views drawn with fuji_ridges.py: the range as layered
+skylines (contour rings, tried first, pile into solid bands on ground this steep), and ridge lines
+close up as for Fuji. Both
 are seen from the east, as the Southern and Northern Alps are best known, with their twin peaks
 beside them.
 

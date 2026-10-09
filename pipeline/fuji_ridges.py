@@ -11,8 +11,28 @@ import numpy as np
 from PIL import ImageDraw, ImageFont
 from scipy.ndimage import map_coordinates
 import fuji as F
-from fuji_side import Cam, KM
 from common import Canvas, caption, save, F_LIGHT, DESKTOP, PHONE
+
+KM = 111.32                                             # km per degree of latitude
+
+
+class Cam:
+    """Perspective camera az_deg around the summit (0 = from the south, -90 = from the east), dist km out,
+    cam_h km up, aimed at the summit axis at target_h km; screen centre at y_frac of the height."""
+    def __init__(self, W, H, dist, cam_h, az_deg, target_h, fov_deg, y_frac):
+        a = np.radians(az_deg)                          # direction FROM which we look (0 = from south)
+        self.C = np.array([-np.sin(a) * dist, -np.cos(a) * dist, cam_h])
+        T = np.array([0.0, 0.0, target_h])
+        f = T - self.C; self.f = f / np.linalg.norm(f)
+        r = np.cross(self.f, [0, 0, 1]); self.r = r / np.linalg.norm(r)
+        self.u = np.cross(self.r, self.f)
+        self.F = W / (2 * np.tan(np.radians(fov_deg) / 2))
+        self.W, self.H, self.cy = W, H, H * y_frac
+
+    def project(self, x, y, z):
+        v = np.stack([x - self.C[0], y - self.C[1], z - self.C[2]], -1)
+        d = v @ self.f
+        return self.W / 2 + (v @ self.r) / d * self.F, self.cy - (v @ self.u) / d * self.F, d
 
 # the summit cone close up, from about 1,500 m to the crater rim. Distances in km from the summit:
 # near / far along the line of sight, half the width of each line, the spacing of the lines
