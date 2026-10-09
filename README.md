@@ -60,6 +60,24 @@ npm run sizes                # after replacing wallpaper PNGs: refresh the sizes
   `wallpapers/feature` WebP previews, `data/` and `particles/` binary data for the animations,
   `video/` the pre-rendered tsunami.
 
+## Deploy
+
+Production runs on the same server and Traefik setup as the portfolio and the-obsidian-table, at
+https://hikari-atlas.com (www redirects to the apex). From the repo root on the server:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+- `Dockerfile.prod`: builds the site with Node 24, then serves `dist/` from nginx. The image holds
+  only the built site; `Dockerfile.prod.dockerignore` keeps `pipeline/` (raw data, renders, venv)
+  out of the build.
+- `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, revalidation for everything else so
+  a republished wallpaper shows at once.
+- `docker-compose.prod.yml`: joins the external Traefik network `web`, HTTPS via the `le` resolver.
+  No database, no `.env`, no secrets.
+- DNS: A records for `hikari-atlas.com` and `www.hikari-atlas.com` pointing to the server.
+
 ## The images (`pipeline/`)
 
 Python 3 with NumPy, SciPy, pandas, Pillow (plus `pyreadr`/`rdata`, `tifffile`, `h5py`,

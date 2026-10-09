@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.claude
+.impeccable
+# raw datasets, renders and the Python venv: gigabytes the build never reads
+pipeline
+*.md
+.env*

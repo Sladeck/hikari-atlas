@@ -1,0 +1,37 @@
+# Production stack. Deploy from the repo root on the server with:
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# A static site, unlike the portfolio and the-obsidian-table: no database, no .env, no secrets.
+# nginx serves the built dist/ on port 80; it only needs the shared Traefik "web" network.
+
+name: hikari-atlas
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    restart: always
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      # Canonical host — serves the site.
+      - "traefik.http.routers.hikari-atlas.rule=Host(`hikari-atlas.com`)"
+      - "traefik.http.routers.hikari-atlas.entrypoints=websecure"
+      - "traefik.http.routers.hikari-atlas.tls.certresolver=le"
+      - "traefik.http.services.hikari-atlas.loadbalancer.server.port=80"
+      # www → apex, permanent redirect (same convention as the portfolio and the-obsidian-table).
+      # $${1} stays double-dollar-escaped so Compose's interpolation leaves the backreference alone.
+      - "traefik.http.routers.hikari-atlas-www.rule=Host(`www.hikari-atlas.com`)"
+      - "traefik.http.routers.hikari-atlas-www.entrypoints=websecure"
+      - "traefik.http.routers.hikari-atlas-www.tls.certresolver=le"
+      - "traefik.http.routers.hikari-atlas-www.middlewares=hikari-atlas-www-redirect"
+      - "traefik.http.middlewares.hikari-atlas-www-redirect.redirectregex.regex=^https://www\\.hikari-atlas\\.com/(.*)"
+      - "traefik.http.middlewares.hikari-atlas-www-redirect.redirectregex.replacement=https://hikari-atlas.com/$${1}"
+      - "traefik.http.middlewares.hikari-atlas-www-redirect.redirectregex.permanent=true"
+
+networks:
+  web:
+    external: true
