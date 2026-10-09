@@ -43,9 +43,11 @@ async function init() {
 }
 function layout(w, h, portrait) {
   const mx = portrait ? 0.12 : 0.07, my = portrait ? 0.1 : 0.12
+  // wide: room above for the month marks under the caption, and below for the controls
+  const top = Math.max(h * my, 76), bot = Math.max(h * my, 68)
   return (a, b) => portrait
     ? [w * mx + b * w * (1 - 2 * mx), h * my + a * h * (1 - 2 * my)]
-    : [w * mx + a * w * (1 - 2 * mx), h * (1 - my) - b * h * (1 - 2 * my)]
+    : [w * mx + a * w * (1 - 2 * mx), h - bot - b * (h - top - bot)]
 }
 function reset({ w, h, portrait }) {
   layer = document.createElement('canvas'); layer.width = w * 2; layer.height = h * 2
@@ -68,10 +70,11 @@ function reset({ w, h, portrait }) {
   lctx.font = `300 ${portrait ? 11 : 12}px "IBM Plex Mono", monospace`
   lctx.fillStyle = '#6e665d'; lctx.textBaseline = 'middle'
   for (const [name, doy] of MONTHS) {
+    if (doy < M.doy0 || doy > M.doy1) continue      // a mark past the axis would land on the counter or the controls
     const a = (doy - M.doy0) / (M.doy1 - M.doy0)
     const [x, y] = L(a, 0)
     if (portrait) { lctx.textAlign = 'left'; lctx.fillText(name, 6, y) }
-    else { lctx.textAlign = 'center'; lctx.fillText(name, x, h * 0.95) }
+    else { lctx.textAlign = 'center'; lctx.fillText(name, x, L(a, 1)[1] - 18) }    // above the plot, clear of the Pause button
   }
   lctx.fillStyle = '#8a7f74'
   for (const c of M.cities) {
