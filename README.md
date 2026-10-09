@@ -11,7 +11,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 |---|---|---|
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
 | 火山 Volcanoes | 116 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
-| 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations | 1 |
+| 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations, and the marks it left on Japan's coast | 3: the Pacific, how high it reached, how far inland on the Sendai plain |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
 | 富士山 Mount Fuji | 10 m contours from above, in perspective from the south, and as a 3D cloud of points | 3 |
 | 川 Rivers | 42,984 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
@@ -72,6 +72,7 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `quakes_3d.py` | The plates in 3D | the same USGS CSVs |
 | `sequences.py` (+ `jma_hypo.py`) | Tōhoku 2011 and Kumamoto 2016 sequences | JMA earthquake catalogue, 2011 and 2016 |
 | `tsunami.py`, `tsunami_render.py` | Tsunami still (+ `--video`) | ETOPO1 10 arc-minute relief |
+| `tsunami_coast.py` | Tsunami heights and inland reach on the coast | 2011 Tohoku Earthquake Tsunami Joint Survey, HydroRIVERS (land), Natural Earth (shore) |
 | `typhoons.py` | Typhoon tracks | JMA RSMC Tokyo best track (`bst_all.txt`) |
 | `typhoon_decades.py` | Typhoons decade by decade | the same best track |
 | `famous_typhoons.py` | Typhoon Vera (1959) and Hagibis (2019) | the same best track, Natural Earth coastline |
@@ -99,6 +100,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `geovista-data/assets/rasters/fuji_dem.tif` | `fuji*.py` |
 | `jma-hypo/h2011`, `h2016` (unzipped yearly files) | `sequences.py` |
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
+| `tsunami/ttjt_survey_29-Dec-2012_tidecorrected_web.csv` (Shift-JIS) | `tsunami_coast.py` |
 | `Typhoon-Search/bst_all.txt` | `typhoons.py`, `export_web.py` |
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
 | `ne/land10.geojson` | `sakura_map.py`, `rivers.py`, `night.py` |
@@ -111,28 +113,87 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 
 The earthquake CSVs from USGS go in `pipeline/usgs/`.
 
-## Data
+## Sources
 
-- Earthquakes: [USGS ANSS Comprehensive Earthquake Catalog](https://earthquake.usgs.gov/fdsnws/event/1/); for the sequences, the [JMA earthquake catalogue](https://www.data.jma.go.jp/eqev/data/bulletin/hypo.html)
-- Ocean depth: [ETOPO1, NOAA](https://doi.org/10.7289/V5C8276M), via [fatiando-data/earth-topography-10arcmin](https://github.com/fatiando-data/earth-topography-10arcmin)
-- Typhoons: [JMA RSMC Tokyo best track data](https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html)
-- Mount Fuji elevation: [bjlittle/geovista-data](https://github.com/bjlittle/geovista-data)
-- Cherry blossoms: [JMA さくらの開花日](https://www.data.jma.go.jp/sakura/data/index.html), compiled by [akg314/sakura](https://github.com/akg314/sakura)
-  (four misgeocoded station positions are corrected in the scripts); Kyoto since 812: Aono & Kazui (2008), Aono & Saito (2010), Katata (2026),
-  via [Our World in Data](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto)
-- Volcanoes: [Global Volcanism Program, Smithsonian Institution, Volcanoes of the World](https://volcano.si.edu/)
-- Rivers: [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers), Lehner & Grill (2013), HydroSHEDS
-- Autumn leaves: [JMA 生物季節観測累年値](https://www.data.jma.go.jp/sakura/data/download_ruinenchi.html) (かえでの紅葉, いちょうの黄葉)
-- Railways: [国土数値情報 鉄道データ, MLIT](https://nlftp.mlit.go.jp/ksj/), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway)
-- Night lights: [NASA Earth Observatory, Black Marble 2016](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/) (Suomi NPP VIIRS); sunset times from [NOAA's solar equations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF)
-- Coastline: [Natural Earth](https://www.naturalearthdata.com/)
+Every image is made from public data. Each provider keeps its own terms; the table gives them as
+the providers state them, and the credit to use.
 
-The tsunami starts from an idealised seafloor uplift, not the published rupture model, so wave
-heights are approximate.
+| Data | Provider | Terms | Used for |
+|---|---|---|---|
+| [ANSS Comprehensive Earthquake Catalog](https://earthquake.usgs.gov/fdsnws/event/1/) | U.S. Geological Survey | Public domain (U.S. Government work) | Earthquakes, Volcanoes (plate) |
+| [震源データ, JMA earthquake catalogue](https://www.data.jma.go.jp/eqev/data/bulletin/hypo.html) | Japan Meteorological Agency (気象庁) | [JMA content terms](https://www.jma.go.jp/jma/kishou/info/coment.html), 公共データ利用規約 第1.0版: credit required, edits stated | Tōhoku and Kumamoto sequences |
+| [ETOPO1 Global Relief Model](https://doi.org/10.7289/V5C8276M) | NOAA National Centers for Environmental Information | Public domain | Tsunami |
+| [Earth topography grid, 10 arc-minutes](https://github.com/fatiando-data/earth-topography-10arcmin) ([doi:10.5281/zenodo.5882203](https://doi.org/10.5281/zenodo.5882203)) | Fatiando a Terra, from ETOPO1 | CC BY 4.0 | Tsunami |
+| [Tsunami field survey, release 20121229](https://coastal.jp/ttjt/) | 2011 Tohoku Earthquake Tsunami Joint Survey Group (Mori et al. 2012) | Free to use, citing the group, the site and the release date | Tsunami (coast) |
+| [RSMC Tokyo best track data](https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html) | Japan Meteorological Agency | JMA content terms | Typhoons |
+| [Fuji elevation model](https://github.com/bjlittle/geovista-data) | bjlittle/geovista-data | BSD 3-Clause | Mount Fuji |
+| [HydroRIVERS v1.0](https://www.hydrosheds.org/products/hydrorivers) | WWF, HydroSHEDS (Lehner & Grill 2013) | HydroSHEDS v1 licence agreement: free for non-commercial and commercial use, statement below required | Rivers; the land in Volcanoes, Night and the tsunami coast |
+| [さくらの開花日](https://www.data.jma.go.jp/sakura/data/index.html) | Japan Meteorological Agency, compiled by [akg314/sakura](https://github.com/akg314/sakura) | JMA content terms | Sakura |
+| [Kyoto peak bloom since 812](https://ourworldindata.org/grapher/date-of-the-peak-cherry-tree-blossom-in-kyoto) | Aono & Kazui (2008), Aono & Saito (2010), Katata (2026), via Our World in Data | CC BY 4.0 (Our World in Data) | Sakura (Kyoto) |
+| [生物季節観測累年値](https://www.data.jma.go.jp/sakura/data/download_ruinenchi.html) (かえでの紅葉, いちょうの黄葉) | Japan Meteorological Agency | JMA content terms | Autumn leaves |
+| [Volcanoes of the World](https://volcano.si.edu/) | Global Volcanism Program, Smithsonian Institution (accessed October 2026) | Credit required | Volcanoes |
+| [国土数値情報 鉄道データ](https://nlftp.mlit.go.jp/ksj/) | Ministry of Land, Infrastructure, Transport and Tourism (国土交通省), via [paithiov909/jprailway](https://github.com/paithiov909/jprailway) | MLIT terms (CC BY 4.0 for 2020 and later, 商用可 before); jprailway CC BY 4.0 | Railways |
+| [Black Marble 2016](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/) (Suomi NPP VIIRS) | NASA Earth Observatory | NASA imagery, credit requested | Japan at night |
+| [Solar position equations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF) | NOAA Global Monitoring Laboratory | Public domain | Japan at night (nightfall) |
+| [Natural Earth](https://www.naturalearthdata.com/) coastline | Natural Earth | Public domain | Coastlines, the land mask |
+
+Credits in the providers' own form:
+
+- **Japan Meteorological Agency:** 出典：気象庁ホームページ. 気象庁の震源データ、台風ベストトラック、
+  さくらの開花日、生物季節観測累年値を加工して作成.
+- **MLIT:** 「国土数値情報（鉄道データ）」（国土交通省）（https://nlftp.mlit.go.jp/ksj/）をもとに
+  Moulin Guillaume 作成・加工.
+- **Tsunami survey:** Data are from the 2011 Tohoku Earthquake Tsunami Joint Survey Group, release
+  20121229, http://www.coastal.jp/ttjt/.
+- **Global Volcanism Program:** Global Volcanism Program, Smithsonian Institution, *Volcanoes of the
+  World*, https://volcano.si.edu/ (accessed October 2026).
+- **HydroSHEDS:** This product Hikari Atlas incorporates data from the HydroSHEDS version 1 database
+  which is © World Wildlife Fund, Inc. (2006-2022) and has been used herein under license. WWF has
+  not evaluated the data as altered and incorporated within Hikari Atlas, and therefore gives no
+  warranty regarding its accuracy, completeness, currency or suitability for any particular
+  purpose. Portions of the HydroSHEDS v1 database incorporate data which are the intellectual
+  property rights of © USGS (2006-2008), NASA (2000-2005), ESRI (1992-1998), CIAT (2004-2006),
+  UNEP-WCMC (1993), WWF (2004), Commonwealth of Australia (2007), and Her Royal Majesty and the
+  British Crown and are used under license. The HydroSHEDS v1 database and more information are
+  available at https://www.hydrosheds.org.
+- **Scientific citations:** Lehner, B., Grill, G. (2013), Global river hydrography and network
+  routing, *Hydrological Processes* 27(15): 2171-2186, https://doi.org/10.1002/hyp.9740.
+  Lehner, B., Verdin, K., Jarvis, A. (2008), New global hydrography derived from spaceborne
+  elevation data, *Eos* 89(10): 93-94. Amante, C., Eakins, B. W. (2009), ETOPO1 1 Arc-Minute
+  Global Relief Model, NOAA, https://doi.org/10.7289/V5C8276M. Mori, N., Takahashi, T., and The
+  2011 Tohoku Earthquake Tsunami Joint Survey Group (2012), Nationwide survey of the 2011 Tohoku
+  earthquake tsunami, *Coastal Engineering Journal* 54(1): 1-27,
+  https://doi.org/10.1142/S0578563412500015.
+
+None of the providers has evaluated or endorsed these images. The tsunami starts from an idealised
+seafloor uplift, not the published rupture model, so its wave heights are approximate.
 
 ## Credits
 
-The idea comes from **[Blackbody: scientific OLED wallpapers](https://alistair-roberts.co.uk/blackbody)**
-by [Alistair Roberts](https://alistair-roberts.co.uk/) ([source on GitHub](https://github.com/robertsalistair-jpg/blackbody-oled)):
-black wallpapers rendered in code from real scientific data and physics, each with its sources.
-Hikari Atlas takes that idea to Japan with its own data, renders, design and code.
+- **Idea:** [Blackbody: scientific OLED wallpapers](https://alistair-roberts.co.uk/blackbody) by
+  [Alistair Roberts](https://alistair-roberts.co.uk/): black wallpapers rendered in code from real
+  scientific data and physics, each with its sources. Hikari Atlas takes that idea to Japan with
+  its own data, renders, design and code.
+- **Fonts:** [Shippori Mincho](https://fonts.google.com/specimen/Shippori+Mincho),
+  [Zen Kaku Gothic New](https://fonts.google.com/specimen/Zen+Kaku+Gothic+New) and
+  [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono), all SIL Open Font License,
+  served by Google Fonts. Captions on the images use Noto Sans CJK (SIL Open Font License) or the
+  system's Hiragino Sans.
+- **Libraries:** [Vue](https://vuejs.org/) and [Vue Router](https://router.vuejs.org/) (MIT),
+  [GSAP](https://gsap.com/) ([standard no-charge licence](https://gsap.com/standard-license)),
+  [Vite](https://vite.dev/) (MIT); in the pipeline NumPy, SciPy, pandas, Pillow, scikit-image,
+  h5py, tifffile, rdata and pyshp.
+
+## Licence
+
+Hikari Atlas by [Moulin Guillaume](https://gmmoulin.com).
+
+- **Images, videos and data files** (`public/wallpapers`, `public/video`, `public/data`,
+  `public/particles`, and the renders in `pipeline/out/`):
+  [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Share and adapt them freely for
+  non-commercial use, crediting "Hikari Atlas by Moulin Guillaume (https://gmmoulin.com), CC BY-NC
+  4.0" and keeping the data credits above. See [LICENSE-IMAGES.md](LICENSE-IMAGES.md).
+- **Code:** [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0).
+  Free to use, modify and share for any non-commercial purpose. See [LICENSE](LICENSE).
+
+For commercial use, ask the author.
