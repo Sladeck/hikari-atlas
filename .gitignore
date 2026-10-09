@@ -14,6 +14,7 @@ __pycache__/
 .venv/
 
 # tooling
+.claude/
 .impeccable/
 .DS_Store
 *.log
