@@ -48,8 +48,9 @@ def render(W, H, out, M=F, view=None, text=None):
         e, n = t * fwd[0] + s * right[0], t * fwd[1] + s * right[1]          # km east, north of the summit
         h = height(M, M.SUMMIT[0] + e / (KM * kk), M.SUMMIT[1] + n / KM)
         x, y, d = cam.project(e, n, h / 1000)
+        sv = s
         if x[0] > x[-1]:
-            x, y, h, e, n = x[::-1], y[::-1], h[::-1], e[::-1], n[::-1]
+            x, y, h, e, n, sv = x[::-1], y[::-1], h[::-1], e[::-1], n[::-1], s[::-1]
         cols = np.arange(max(int(np.ceil(x.min())), 0), min(int(x.max()), W - 1) + 1)
         if len(cols) < 2:
             continue
@@ -63,6 +64,11 @@ def render(W, H, out, M=F, view=None, text=None):
             ec, nc = np.interp(cols, x, e), np.interp(cols, x, n)
             w = w * (0.22 + 0.78 * np.exp(-(np.hypot(ec, nc) / V["spot"]) ** 2))
         w = w * V.get("w", 1.0)
+        # a window onto the mountain, not a slab: every line fades out over its outer quarter
+        sc = np.interp(cols, x, sv)
+        edge = np.clip((V["half"] - np.abs(sc)) / (0.25 * V["half"]), 0, 1)
+        edge = np.minimum(edge, np.clip(np.minimum(cols, W - 1 - cols) / (0.14 * W), 0, 1))   # and before the frame
+        w = w * edge * edge * (3 - 2 * edge)
         cv.add_polyline(cols, yc, F.ecolor(hc), w, step=0.5)
         j = np.argmax(hc)
         if vis[j] and (peak is None or hc[j] > peak[2]):

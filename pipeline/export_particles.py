@@ -89,8 +89,8 @@ def fuji3d(n):
     P = P[idx] + rng.normal(0, 0.012, (n, 3)) * [1, 1, 0]
     rgb = F.ecolor(P[:, 2] * 1000)
     a = 0.35 + 0.65 * (P[:, 2] / 3.776)
-    # normalise: x, y by 13.5 km, z centred so the cone sits around the origin
-    return P[:, 0] / 13.5, P[:, 1] / 13.5, (P[:, 2] - 1.9) / 13.5 * 2.0, rgb, a
+    # normalise: x, y, z all by 13.5 km (true vertical scale), z centred so the cone sits around the origin
+    return P[:, 0] / 13.5, P[:, 1] / 13.5, (P[:, 2] - 1.9) / 13.5, rgb, a
 
 
 meta = {"scenes": SCENES, "sets": {}}

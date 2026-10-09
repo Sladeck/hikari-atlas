@@ -1,10 +1,12 @@
 """Mount Fuji as a 3D cloud of light: the front page's WebGL view, rendered as a wallpaper.
 
-Points along every 10 m contour ring from 1,000 m to the summit, at their real positions,
-seen with the same tilted perspective camera as ParticleJourney.vue (scene 'fuji3d'),
-with ~10x more points than the browser draws. Colour = height (the red-Fuji ramp).
+Points along every 10 m contour ring from 1,000 m to the summit, at their real positions and
+true vertical scale, seen with the same tilted perspective camera as ParticleStage.vue (scene 'fuji3d'),
+with ~10x more points than the browser draws. Colour = height (the red-Fuji ramp). Points
+hidden behind the near slope are left out, so the far rings do not show through the cone.
 """
 import numpy as np
+from scipy.ndimage import grey_erosion
 import fuji as F
 from common import Canvas, caption, save, DESKTOP, PHONE
 
@@ -35,28 +37,42 @@ ROT = 0.95          # turned a little past the browser's opening angle: the Hōe
 def project(P, W, H):
     """Same maths as the WebGL vertex shader (fuji3d branch)."""
     x, y = P[:, 0] / 13.5, P[:, 1] / 13.5
-    z = (P[:, 2] - 1.9) / 13.5 * 2.0
+    z = (P[:, 2] - 1.9) / 13.5                        # true vertical scale, as x and y
     c, s = np.cos(ROT), np.sin(ROT)
     rx, ry = x * c - y * s, x * s + y * c
     persp = 1.0 / (1.0 + ry * 0.28)
-    qx, qy = rx * persp * 0.92, (z * 1.6 + ry * 0.20 - 0.10) * persp * 0.92
+    qx, qy = rx * persp * 0.92, (z * 0.98 + ry * 0.20 - 0.10) * persp * 0.92   # looking down ~11.5°
     a = W / H
     if a >= 1:
-        cx, cy = qx / a * 1.75, qy * 1.75 + 0.05          # zoomed in: the cone fills the frame
+        cx, cy = qx / a * 2.5, qy * 2.5 + 0.02            # zoomed in: the cone fills the frame
     else:
         cx, cy = qx * 2.8, qy * a * 2.8
-    return (cx * 0.5 + 0.5) * W, (0.5 - cy * 0.5) * H, persp
+    return (cx * 0.5 + 0.5) * W, (0.5 - cy * 0.5) * H, persp, ry
+
+
+def hidden(sx, sy, depth, W, H, q=4):
+    """Points behind the near slope: a depth buffer built from the points themselves (nearest per
+    quarter-res pixel, eroded so the gaps between rings close), as fuji_side.py does with the terrain."""
+    zb = np.full((H // q + 1, W // q + 1), np.inf, np.float32)
+    ok = (sx >= 0) & (sx < W) & (sy >= 0) & (sy < H)
+    xi, yi = (sx[ok] / q).astype(int), (sy[ok] / q).astype(int)
+    np.minimum.at(zb, (yi, xi), depth[ok].astype(np.float32))
+    zb = grey_erosion(zb, size=(5, 5))
+    out = np.zeros(len(sx), bool)
+    out[ok] = depth[ok] > zb[yi, xi] + 0.04         # 0.04 = about 540 m behind the nearest surface
+    return out
 
 
 def render(W, H, out):
     phone = H > W
-    sx, sy, persp = project(P, W, H)
+    sx, sy, persp, depth = project(P, W, H)
+    behind = hidden(sx, sy, depth, W, H)
     if phone:                                          # phone: cone in the upper-middle third
         sy += H * 0.02
     col = F.ecolor(P[:, 2] * 1000)
     h = P[:, 2] / 3.776
     fade = np.clip((P[:, 2] - 1.0) / 0.7, 0, 1) ** 1.6     # low rings dissolve instead of ending on a hard edge
-    w = (0.15 + 0.85 * h ** 1.2) * fade * persp * 0.034 * (1.5 if phone else 1)
+    w = (0.15 + 0.85 * h ** 1.2) * fade * persp * 0.06 * (1.5 if phone else 1) * ~behind     # brighter: the far side no longer adds its light
     cv = Canvas(W, H)
     cv.add_points(sx, sy, col, w)
     z = min(W, H) / 2160

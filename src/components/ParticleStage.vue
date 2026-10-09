@@ -39,7 +39,7 @@ vec3 project(vec3 p, float is3d) {     // returns clip xy + a size factor
   vec2 r = vec2(p.x * c - p.y * s, p.x * s + p.y * c);
   float depth = r.y;                                   // + = away from the camera
   float persp = 1.0 / (1.0 + depth * 0.28);
-  vec2 q = vec2(r.x, p.z * 1.6 + depth * 0.20 - 0.10) * persp;
+  vec2 q = vec2(r.x, p.z * 0.98 + depth * 0.20 - 0.10) * persp;   // looking down ~11.5°: height x cos, depth x sin, true scale
   q *= 0.92;
   vec2 clip = uCanvas >= 1.0 ? vec2(q.x / uCanvas, q.y) : vec2(q.x, q.y * uCanvas);
   return vec3(clip * (uCanvas >= 1.0 ? 1.0 : 1.35), persp);
