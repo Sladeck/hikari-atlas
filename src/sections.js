@@ -10,7 +10,7 @@ export const SECTIONS = [
     code: 'FJ',
     kind: { jp: '大地', en: 'Earth' },
     record: '3,776 m',
-    scene: { file: 'fuji3d', threeD: true, title: 'Mount Fuji, built from light', line: 'Every point sits at its real place on the mountain, from 1,000 m up to the 3,776 m summit, slowly turning.' },
+    scene: { file: 'fuji3d', threeD: true, title: 'Mount Fuji and other summits', line: 'Fuji built from light: every point sits at its real place on the mountain, from 1,000 m up to the 3,776 m summit, slowly turning.' },
     still: 'fuji_ridges',
     short: 'Fuji',
     kanji: '富士山',
