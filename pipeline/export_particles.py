@@ -26,6 +26,8 @@ ONLY = [a for a in ARGS if a in SCENES] or SCENES
 GAMMA = {"night_japan": 0.55}
 # and its lights cover a few percent of the frame, so its points are fainter or they stack past white
 ALPHA = {"night_japan": 0.6}
+# a scene drawn from a render other than its own name: the tsunami's labels must not turn into points
+SOURCE = {"tsunami": "tsunami_bare"}
 rng = np.random.default_rng(7)
 
 
@@ -97,7 +99,7 @@ meta = {"scenes": SCENES, "sets": {}}
 for key, (kind, n) in SETS.items():
     total = 0
     for sc in ONLY:
-        x, y, z, rgb, a = fuji3d(n) if sc == "fuji3d" else from_render(sc, kind, n, GAMMA.get(sc, 1.35))
+        x, y, z, rgb, a = fuji3d(n) if sc == "fuji3d" else from_render(SOURCE.get(sc, sc), kind, n, GAMMA.get(sc, 1.35))
         total += write(f"{sc}_{key}", x, y, z, rgb, a * ALPHA.get(sc, 1.0))
     meta["sets"][key] = {"n": n, "aspect": 3840 / 2160 if key == "d" else 1290 / 2796}
     print(kind, n, "points/scene,", total // 1024, "KB total")

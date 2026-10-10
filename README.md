@@ -12,7 +12,7 @@ every unlit pixel is exactly `#000000`, so OLED screens switch it off.
 | 富士山 Mount Fuji and other summits | 10 m contours from above, as a 3D cloud of points and as ridge lines; beside it Kita-dake and Oku-hotaka-dake, the next highest | 7: Fuji ×3, Kita-dake and Oku-hotaka from the east and in ridge lines |
 | 地震 Earthquakes | 30,167 quakes of M4.5+ since 1973, size = magnitude, colour = depth | Japan + 6 regions, the plates in 3D, Tōhoku 2011 and Kumamoto 2016 sequences |
 | 火山 Volcanoes | 116 volcanoes and their eruptions from the Smithsonian GVP, coloured by time since the last one | 3: Japan, above the sinking plate, eruption stripes since 1600 |
-| 津波 Tsunami | The 2011 Tōhoku tsunami simulated across the Pacific from the shallow-water equations, and the marks it left on Japan's coast | 3: the Pacific, how high it reached, how far inland on the Sendai plain |
+| 津波 Tsunami | The 2011 Tōhoku tsunami simulated from the shallow-water equations, striking Japan's coast (the animation) and crossing the Pacific, and the marks it left on Japan's coast | 3: the Pacific, how high it reached, how far inland on the Sendai plain |
 | 台風 Typhoons | 1,951 storms tracked by JMA, 1951 to 2025, coloured by central pressure | 4: all storms, decade by decade, Vera 1959, Hagibis 2019 |
 | 川 Rivers | 42,984 river reaches from HydroRIVERS, each as bright as its average flow | 4: Japan, river systems, Kantō, Hokkaido |
 | 桜 Sakura | The first-bloom front at 102 cities, 1953 to 2018, a map of how much earlier each city now blooms, Kyoto since 812, and stripes for every city | 4 |
@@ -94,7 +94,8 @@ the two `export_*` scripts write the site's data straight into `public/data` and
 | `render_views.py` | Earthquake views | USGS ComCat CSVs, M4.5+, 1973 to today |
 | `quakes_3d.py` | The plates in 3D | the same USGS CSVs |
 | `sequences.py` (+ `jma_hypo.py`) | Tōhoku 2011 and Kumamoto 2016 sequences | JMA earthquake catalogue, 2011 and 2016 |
-| `tsunami.py`, `tsunami_render.py` | Tsunami still (+ `--video`) | ETOPO1 10 arc-minute relief |
+| `tsunami.py`, `tsunami_render.py` | Tsunami across the Pacific: the still (Japan lit, epicentre and landfalls labelled) and its unlabelled `tsunami_bare` for the front page's particles; `--info` prints the arrival times | ETOPO1 10 arc-minute relief, Natural Earth (Japan's land) |
+| `tsunami_japan.py`, `tsunami_japan_render.py` | The chapter animation: the wave striking Japan in its first 3 hours (simulation about 2 min, frames 2.3 GB in `out/`), then the video, poster and `public/data/tsunami_marks.json` (each frame's time and camera, the labelled places); `--preview` renders a contact sheet, `--info` prints the arrival times | ETOPO 2022 60 arc-second relief, Natural Earth (Japan's land) |
 | `tsunami_coast.py` | Tsunami heights and inland reach on the coast | 2011 Tohoku Earthquake Tsunami Joint Survey, HydroRIVERS (land), Natural Earth (shore) |
 | `typhoons.py` | Typhoon tracks | JMA RSMC Tokyo best track (`bst_all.txt`) |
 | `typhoon_decades.py` | Typhoons decade by decade | the same best track |
@@ -127,6 +128,7 @@ Raw datasets are not in the repo. Put them under `pipeline/dl/` (ignored by git)
 | `copdem/Copernicus_DSM_COG_10_{N35_00_E138_00,N36_00_E137_00}_DEM.tif`, rewritten once to `*_raw.tif` with `gdal_translate -co COMPRESS=NONE` | `mountains.py` |
 | `jma-hypo/h2011`, `h2016` (unzipped yearly files) | `sequences.py` |
 | `topo/earth-topography-10arcmin.nc` | `tsunami.py` |
+| `topo/etopo2022_60s_japan.nc` (22-47°N, 122-152°E, netCDF-3, 11 MB): `https://oceanwatch.pifsc.noaa.gov/erddap/griddap/ETOPO_2022_v1_60s.nc?z[(22):1:(47)][(122):1:(152)]` | `tsunami_japan.py` |
 | `tsunami/ttjt_survey_29-Dec-2012_tidecorrected_web.csv` (Shift-JIS) | `tsunami_coast.py` |
 | `Typhoon-Search/bst_all.txt` | `typhoons.py`, `export_web.py` |
 | `sakura/data/flowering.csv`, `locations.csv` | `sakura*.py` |
@@ -150,6 +152,7 @@ the providers state them, and the credit to use.
 | [ANSS Comprehensive Earthquake Catalog](https://earthquake.usgs.gov/fdsnws/event/1/) | U.S. Geological Survey | Public domain (U.S. Government work) | Earthquakes, Volcanoes (plate) |
 | [震源データ, JMA earthquake catalogue](https://www.data.jma.go.jp/eqev/data/bulletin/hypo.html) | Japan Meteorological Agency (気象庁) | [JMA content terms](https://www.jma.go.jp/jma/kishou/info/coment.html), 公共データ利用規約 第1.0版: credit required, edits stated | Tōhoku and Kumamoto sequences |
 | [ETOPO1 Global Relief Model](https://doi.org/10.7289/V5C8276M) | NOAA National Centers for Environmental Information | Public domain | Tsunami |
+| [ETOPO 2022 Global Relief Model, 60 arc-seconds](https://doi.org/10.25921/fd45-gt74), via [NOAA OceanWatch ERDDAP](https://oceanwatch.pifsc.noaa.gov/erddap/info/ETOPO_2022_v1_60s/index.html) | NOAA National Centers for Environmental Information | Free to use and redistribute, no warranty | Tsunami animation |
 | [Earth topography grid, 10 arc-minutes](https://github.com/fatiando-data/earth-topography-10arcmin) ([doi:10.5281/zenodo.5882203](https://doi.org/10.5281/zenodo.5882203)) | Fatiando a Terra, from ETOPO1 | CC BY 4.0 | Tsunami |
 | [Tsunami field survey, release 20121229](https://coastal.jp/ttjt/) | 2011 Tohoku Earthquake Tsunami Joint Survey Group (Mori et al. 2012) | Free to use, citing the group, the site and the release date | Tsunami (coast) |
 | [RSMC Tokyo best track data](https://www.jma.go.jp/jma/jma-eng/jma-center/rsmc-hp-pub-eg/besttrack.html) | Japan Meteorological Agency | JMA content terms | Typhoons |
@@ -190,7 +193,9 @@ Credits in the providers' own form:
   routing, *Hydrological Processes* 27(15): 2171-2186, https://doi.org/10.1002/hyp.9740.
   Lehner, B., Verdin, K., Jarvis, A. (2008), New global hydrography derived from spaceborne
   elevation data, *Eos* 89(10): 93-94. Amante, C., Eakins, B. W. (2009), ETOPO1 1 Arc-Minute
-  Global Relief Model, NOAA, https://doi.org/10.7289/V5C8276M. Mori, N., Takahashi, T., and The
+  Global Relief Model, NOAA, https://doi.org/10.7289/V5C8276M. NOAA National Centers for
+  Environmental Information (2022), ETOPO 2022 15 Arc-Second Global Relief Model,
+  https://doi.org/10.25921/fd45-gt74. Mori, N., Takahashi, T., and The
   2011 Tohoku Earthquake Tsunami Joint Survey Group (2012), Nationwide survey of the 2011 Tohoku
   earthquake tsunami, *Coastal Engineering Journal* 54(1): 1-27,
   https://doi.org/10.1142/S0578563412500015.
