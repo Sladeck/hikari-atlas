@@ -32,7 +32,8 @@ Hikari Atlas takes it to Japan with its own data, renders and code.
 
 ## Operating Context
 
-- Vue 3 + Vite static site with hash routing, so the build works from any folder or static host.
+- Vue 3 + Vite static site with history routing: each chapter has its own URL (`/fuji`), so the
+  host must fall back to `index.html` for paths that are not files, as `nginx.conf` does.
 - Wallpapers and animation data are produced offline by the Python pipeline in `pipeline/`
   (render, then `publish.py`, then `npm run sizes`), and served from `public/`.
 - Chapters (ten): Mount Fuji and other summits, Earthquakes, Volcanoes, Tsunami, Typhoons, Rivers, Sakura front,

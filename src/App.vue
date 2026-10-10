@@ -33,9 +33,14 @@ watch(
   },
   { immediate: true },
 )
-// the tab's title, in the current language
+// the tab's title, description and address, in the current language
+const head = (sel, attr, v) => document.head.querySelector(sel)?.setAttribute(attr, v)
 watch([() => route.meta.section, sections], ([s]) => {
   document.title = s ? `${local(s).title} · ${t('name')}` : t('name')
+  const url = `https://hikari-atlas.com${s ? `/${s.id}` : '/'}`
+  head('link[rel=canonical]', 'href', url)
+  head('meta[property="og:url"]', 'content', url)
+  head('meta[name=description]', 'content', s ? local(s).scene.line : t('thesis'))
 }, { immediate: true })
 </script>
 

@@ -6,6 +6,22 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Japan drawn only with light, from real data: Mount Fuji, earthquakes, volcanoes, the 2011 tsunami, typhoons, rivers, cherry blossoms and the lights at night. Free OLED wallpapers." />
     <title>Hikari Atlas</title>
+    <!-- the front page's address; App.vue points it, og:url and the description at each chapter -->
+    <link rel="canonical" href="https://hikari-atlas.com/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Hikari Atlas",
+        "alternateName": "光の地図",
+        "url": "https://hikari-atlas.com/",
+        "description": "Japan drawn only with light, from real data: Mount Fuji, earthquakes, volcanoes, the 2011 tsunami, typhoons, rivers, cherry blossoms and the lights at night. Free OLED wallpapers.",
+        "inLanguage": ["en", "ja"],
+        "image": "https://hikari-atlas.com/og.png",
+        "author": { "@type": "Person", "name": "Moulin Guillaume", "url": "https://gmmoulin.com" },
+        "license": "https://creativecommons.org/licenses/by-nc/4.0/"
+      }
+    </script>
     <!-- the share card (pipeline/og.py): absolute URLs, as link previews require -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Hikari Atlas" />
@@ -42,7 +58,7 @@
       #loader .status { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: #80786e; font-variant-numeric: tabular-nums; min-height: 1.4em; }
       @media (prefers-reduced-motion: reduce) { #loader, #loader * { transition: none !important; animation: none !important; } }
     </style>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><circle cx='16' cy='16' r='5' fill='%23ffcf8a'/></svg>" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
     <div id="loader" role="status" aria-live="polite" aria-label="Loading Hikari Atlas">

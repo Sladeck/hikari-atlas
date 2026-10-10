@@ -29,7 +29,7 @@ Vue 3 + Vite, GSAP for motion, plain WebGL for the front page.
 ```bash
 npm install
 npm run dev -- --host        # dev server, also reachable from a phone on the same Wi-Fi
-npm run build                # static site in dist/ (works from any static host or folder)
+npm run build                # static site in dist/, with sitemap.xml (host must fall back to index.html)
 npm run preview -- --host    # serve the built site
 npm run sizes                # after replacing wallpaper PNGs: refresh the sizes on the download buttons
 ```
@@ -73,7 +73,12 @@ docker compose -f docker-compose.prod.yml up -d --build
   only the built site; `Dockerfile.prod.dockerignore` keeps `pipeline/` (raw data, renders, venv)
   out of the build.
 - `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, revalidation for everything else so
-  a republished wallpaper shows at once.
+  a republished wallpaper shows at once. Any path that is not a file falls back to `index.html`,
+  which the history router needs for chapter URLs (`/fuji`).
+- Search engines: `public/robots.txt` points to `sitemap.xml`, which the build writes from
+  `SECTIONS` (`vite.config.js`). `index.html` holds the canonical link and the JSON-LD; `App.vue`
+  updates the title, canonical, `og:url` and description for each chapter. Old `#/fuji` links are
+  redirected in `src/router.js`.
 - `docker-compose.prod.yml`: joins the external Traefik network `web`, HTTPS via the `le` resolver.
   No database, no `.env`, no secrets.
 - DNS: A records for `hikari-atlas.com` and `www.hikari-atlas.com` pointing to the server.

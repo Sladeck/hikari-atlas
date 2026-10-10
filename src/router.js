@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import SectionPage from './components/SectionPage.vue'
 import HomePage from './components/HomePage.vue'
 import { SECTIONS } from './sections.js'
@@ -8,9 +8,13 @@ import { SECTIONS } from './sections.js'
 let entered = null
 export function pageEntered() { entered?.(); entered = null }
 
-// hash history: the built site works from a plain folder or any static host, no server rewrites
+// links shared before history mode (hikari-atlas.com/#/fuji) still open their chapter
+if (location.hash.startsWith('#/')) history.replaceState(null, '', location.hash.slice(1))
+
+// history mode: each chapter has its own URL for search engines; the server falls back to
+// index.html for any path that is not a file (nginx.conf, and Vite's dev and preview servers)
 export const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', component: HomePage },
     ...SECTIONS.map((s) => ({ path: `/${s.id}`, component: SectionPage, props: { section: s }, meta: { section: s } })),
