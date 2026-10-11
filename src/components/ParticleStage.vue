@@ -132,6 +132,7 @@ function frame(now) {
 
 // a new destination: the cloud leaves from whichever scene it shows most of right now
 function go(i) {
+  if (!buffers[i]) return want(i)
   if (i === to && m.t >= 1) return
   from = m.t < 0.5 ? from : to
   to = i
@@ -147,28 +148,39 @@ async function get(url) {
   if (!r.ok) throw new Error(`${url}: ${r.status}`)
   return r
 }
-// stream each scene so the loading screen shows real bytes, not a guess
-async function loadScenes() {
-  const meta = await (await get(`${base}particles/meta.json`)).json()
-  N = meta.sets[set].n; aspectFrame = meta.sets[set].aspect
-  const L = window.hikariLoader
-  const total = N * 10 * props.scenes.length, got = new Array(props.scenes.length).fill(0)
-  const report = () => L?.set(0.12 + 0.83 * got.reduce((a, b) => a + b, 0) / total,
-    `${ui('gathering')} · ${Math.round(100 * got.reduce((a, b) => a + b, 0) / total)}%`)
-  return Promise.all(props.scenes.map(async (s, i) => {
+// one scene's points, uploaded to the GPU as they land; `progress` streams the bytes to the loading screen
+const jobs = []
+function scene(i, progress) {
+  return jobs[i] ||= (async () => {
+    const s = props.scenes[i]
     const r = await get(`${base}particles/${s.file}_${set}.bin`)
     let buf
-    if (!r.body?.getReader) { buf = await r.arrayBuffer(); got[i] = buf.byteLength; report() }
+    if (!r.body?.getReader || !progress) buf = await r.arrayBuffer()
     else {
-      const reader = r.body.getReader(), parts = []
-      for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); got[i] += value.length; report() }
-      const out = new Uint8Array(got[i]); let o = 0; for (const p of parts) { out.set(p, o); o += p.length }
+      const reader = r.body.getReader(), parts = []; let got = 0
+      for (;;) { const { done, value } = await reader.read(); if (done) break; parts.push(value); got += value.length; progress(got / (N * 10)) }
+      const out = new Uint8Array(got); let o = 0; for (const p of parts) { out.set(p, o); o += p.length }
       buf = out.buffer
     }
     if (buf.byteLength !== N * 10) throw new Error(`${s.file}_${set}.bin: ${buf.byteLength} bytes, expected ${N * 10}`)
-    return buf
-  }))
+    if (alive) buffers[i] = upload(buf)
+  })()
 }
+// a scene asked for before its points have arrived: fetch it now, fly there once it lands if still wanted
+function want(i) {
+  scene(i).then(() => { if (alive && props.index === i) go(i) }, fail)
+}
+// the rest arrive one at a time, nearest to the scene on show first, so the page is never kept waiting
+async function rest() {
+  const n = props.scenes.length
+  for (;;) {
+    let next = -1
+    for (let d = 1; d < n && next < 0; d++) for (const i of [(props.index + d) % n, (props.index - d + n) % n]) if (!jobs[i]) { next = i; break }
+    if (next < 0 || !alive) return
+    await scene(next)
+  }
+}
+function fail(e) { if (alive && e?.name !== 'AbortError') { console.error(e); emit('unsupported') } }
 // the cloud converges only once the loading screen has lifted, so the opening is seen
 function begin() { startT = performance.now() }
 // a lost context (GPU reset, too many tabs) or missing data falls back to the stills
@@ -180,21 +192,25 @@ onMounted(async () => {
   window.hikariLoader?.set(0.1, ui('gathering'))
   size()
   set = W / H < 0.9 ? 'p' : 'd'
-  let bins
-  try { bins = await loadScenes() } catch (e) {
-    if (alive) { console.error(e); emit('unsupported') }
-    return
-  }
-  if (!alive) return                                     // left the page while the data was arriving
   const L = window.hikariLoader
+  // the loading screen waits for the first scene only
+  const first = props.index
+  try {
+    const meta = await (await get(`${base}particles/meta.json`)).json()
+    N = meta.sets[set].n; aspectFrame = meta.sets[set].aspect
+    buffers = new Array(props.scenes.length).fill(null)
+    await scene(first, (f) => L?.set(0.12 + 0.83 * f, `${ui('gathering')} · ${Math.round(100 * f)}%`))
+  } catch (e) { return fail(e) }
+  if (!alive) return                                     // left the page while the data was arriving
   L?.set(0.97, ui('lighting'))
-  buffers = bins.map(upload)
   const rnd = new Float32Array(N); for (let i = 0; i < N; i++) rnd[i] = Math.random()
   randBuf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, randBuf); gl.bufferData(gl.ARRAY_BUFFER, rnd, gl.STATIC_DRAW)
   gl.enableVertexAttribArray(attr.aRnd); gl.vertexAttribPointer(attr.aRnd, 1, gl.FLOAT, false, 0, 0)
-  from = to = props.index; m.t = 1
+  from = to = first; m.t = 1
   loaded = true
   emit('ready')
+  rest().catch(fail)
+  if (props.index !== first) go(props.index)            // the visitor moved on while the first scene arrived
   if (!L || L.closed) begin(); else { startT = Infinity; addEventListener('hikari:revealed', begin, { once: true }); L.done() }
   raf = requestAnimationFrame(frame)
   io = new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0 })

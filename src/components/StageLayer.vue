@@ -28,6 +28,21 @@ function tint(sec) {
 }
 watch([selected, shown], () => tint(shown.value ? s.value : route.meta.section), { immediate: true })
 
+// the caption trails the stage by its fade. Its elements stay and only their words change, at the
+// fade's darkest point: a new element each turn would count as a new, later LCP every 7 s
+const ci = ref(selected.value)
+const c = computed(() => sections.value[ci.value])
+const cap = ref(null)
+let capTl
+watch(selected, (i) => {
+  capTl?.kill()
+  if (reduce || !cap.value) { ci.value = i; return }
+  capTl = gsap.timeline()
+    .to(cap.value, { opacity: 0, filter: 'blur(4px)', duration: 0.3, ease: 'none' })
+    .call(() => { ci.value = i })
+    .fromTo(cap.value, { y: 10, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'expo.out', clearProps: 'filter,transform' }, '+=0.35')
+})
+
 function noWebGL() { webgl.value = false; window.hikariLoader?.done() }
 // on touch the stage is swiped through the scenes, sideways; the board's rows open the chapters
 let swipe = null
@@ -62,16 +77,14 @@ function cancel() { swipe = null }
     <div class="veil" aria-hidden="true"></div>
     <!-- on phones the words sit under the stage, never on the light; the slot keeps its height between scenes -->
     <div class="cap-slot">
-    <Transition name="cap" mode="out-in">
-      <div :key="s.id + s.title" class="caption" :aria-live="shown ? 'polite' : 'off'">
-        <p class="cap-title"><span class="cap-badge mono" aria-hidden="true">{{ s.code }}</span>{{ s.scene.title }}</p>
-        <p class="cap-line">{{ s.scene.line }}</p>
+      <div ref="cap" class="caption" :aria-live="shown ? 'polite' : 'off'">
+        <p class="cap-title"><span class="cap-badge mono" aria-hidden="true">{{ c.code }}</span>{{ c.scene.title }}</p>
+        <p class="cap-line">{{ c.scene.line }}</p>
         <p class="cap-act">
-          <router-link :to="`/${s.id}`" class="cap-go">{{ t('open', s.title) }} <Icon name="arrow" /></router-link>
-          <span class="cap-count">{{ t('count', s.wallpapers.length * 2) }}</span>
+          <router-link :to="`/${c.id}`" class="cap-go">{{ t('open', c.title) }} <Icon name="arrow" /></router-link>
+          <span class="cap-count">{{ t('count', c.wallpapers.length * 2) }}</span>
         </p>
       </div>
-    </Transition>
     </div>
   </section>
 </template>
@@ -103,10 +116,6 @@ function cancel() { swipe = null }
 .cap-go svg { width: 18px; height: 18px; transition: transform .5s var(--ease-out); }
 .cap-go:hover svg { transform: translateX(5px); }
 .cap-count { font-size: 14px; color: var(--dim); }
-.cap-enter-active { transition: opacity .7s var(--ease-out) .35s, transform .7s var(--ease-out) .35s, filter .7s var(--ease-out) .35s; }
-.cap-leave-active { transition: opacity .3s ease, filter .3s ease; }
-.cap-enter-from { opacity: 0; transform: translateY(10px); filter: blur(6px); }
-.cap-leave-to { opacity: 0; filter: blur(4px); }
 
 /* ---------- phones: the front page's stage on top, the rail's board right under it ---------- */
 @media (max-width: 860px) {
@@ -120,6 +129,6 @@ function cancel() { swipe = null }
 }
 @media (max-width: 360px) { .cap-slot { min-height: 216px; } }       /* titles wrap a line more */
 @media (prefers-reduced-motion: reduce) {
-  .cap-enter-active, .cap-leave-active, .still-enter-active, .still-leave-active { transition: none; }
+  .still-enter-active, .still-leave-active { transition: none; }
 }
 </style>
