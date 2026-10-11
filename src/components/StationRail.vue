@@ -8,6 +8,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import DepartureBoard from './DepartureBoard.vue'
 import LangSwitch from './LangSwitch.vue'
+import Icon from './Icon.vue'
 import { sections, lang, t } from '../i18n.js'
 import { selected, auto, DWELL, select, touched } from '../station.js'
 
@@ -26,6 +27,8 @@ function poke() { if (home.value) touched() }
     <DepartureBoard :sections="sections" :selected="home ? selected : here" :preview="home"
                     :dwell="home && auto ? DWELL : 0" @select="select" />
     <p class="thesis">{{ t('thesis') }}</p>
+    <!-- a plain link, not Ko-fi's widget script: nothing of theirs loads on the site -->
+    <p class="tip"><a class="ctl" href="https://ko-fi.com/X6R328MF6B" target="_blank" rel="noopener"><Icon name="cup" />{{ t('tip') }}</a></p>
   </aside>
 </template>
 
@@ -38,12 +41,14 @@ function poke() { if (home.value) touched() }
 .name.ja { font-family: var(--mincho); font-weight: 700; letter-spacing: .12em; color: var(--accent); transition: color .6s; }
 .name:focus-visible { outline-offset: 6px; }
 .rail .board { --row: 48px; }
+.tip { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); }
+.tip .ctl svg { width: 16px; height: 16px; }
 .thesis { margin: auto 0 0; padding-top: 12px; max-width: 40ch; font-weight: 300; font-size: 14px; line-height: 1.55; color: var(--dim); }
 
 /* phones: the header carries the name, so the rail is just the board under the front page's stage */
 @media (max-width: 860px) {
   .rail { padding: 18px var(--gutter) 8px; }
-  .rail-top, .thesis { display: none; }
+  .rail-top, .thesis, .tip { display: none; }
   .rail .board { --row: 54px; }
 }
 </style>

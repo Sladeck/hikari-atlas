@@ -11,6 +11,7 @@ const P = {
   download: 'M12 4v11m0 0l-5-5m5 5l5-5M5 20h14',
   arrow: 'M5 12h14m0 0l-6-6m6 6l-6 6',
   back: 'M19 12H5m0 0l6-6m-6 6l6 6',
+  cup: 'M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zm11 1h1.5a2.5 2.5 0 0 1 0 5H16M9 3.5V6m3.5-2.5V6',
 }
 </script>
 

@@ -75,6 +75,7 @@ watch([() => route.meta.section, sections], ([s]) => {
       <div class="foot-row">
         <p>{{ t('foot1')[0] }}<span class="mono">#000000</span>{{ t('foot1')[1] }}</p>
         <p>{{ t('foot2') }}</p>
+        <p class="foot-tip">{{ t('foot3')[0] }}<a href="https://ko-fi.com/X6R328MF6B" target="_blank" rel="noopener">{{ t('foot3')[1] }}</a>{{ t('foot3')[2] }}</p>
       </div>
     </footer>
   </div>
@@ -102,6 +103,8 @@ watch([() => route.meta.section, sections], ([s]) => {
 .foot { grid-area: foot; border-top: 1px solid var(--line); margin-top: 48px; }
 .foot-row { padding: 32px var(--gutter) 56px; display: grid; gap: 12px; color: var(--dim); font-weight: 300; max-width: 820px; }
 .foot-row p { margin: 0; }
+.foot-tip a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.foot-tip a:hover { color: var(--accent); }
 
 /* the rail holds still at the left while the window scrolls the pane; the pane is the container
    its pages size themselves against, since its width is the window's minus the rail */
