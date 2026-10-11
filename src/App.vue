@@ -76,6 +76,7 @@ watch([() => route.meta.section, sections], ([s]) => {
         <p>{{ t('foot1')[0] }}<span class="mono">#000000</span>{{ t('foot1')[1] }}</p>
         <p>{{ t('foot2') }}</p>
         <p class="foot-tip">{{ t('foot3')[0] }}<a href="https://ko-fi.com/X6R328MF6B" target="_blank" rel="noopener">{{ t('foot3')[1] }}</a>{{ t('foot3')[2] }}</p>
+        <p class="foot-tip">{{ t('by')[0] }}<a href="https://gmmoulin.com" target="_blank" rel="noopener">{{ t('by')[1] }}</a></p>
       </div>
     </footer>
   </div>

@@ -28,7 +28,8 @@ function poke() { if (home.value) touched() }
                     :dwell="home && auto ? DWELL : 0" @select="select" />
     <p class="thesis">{{ t('thesis') }}</p>
     <!-- a plain link, not Ko-fi's widget script: nothing of theirs loads on the site -->
-    <p class="tip"><a class="ctl" href="https://ko-fi.com/X6R328MF6B" target="_blank" rel="noopener"><Icon name="cup" />{{ t('tip') }}</a></p>
+    <p class="tip"><a class="ctl" href="https://ko-fi.com/X6R328MF6B" target="_blank" rel="noopener"><Icon name="cup" />{{ t('tip') }}</a>
+      <span class="by">{{ t('by')[0] }}<a href="https://gmmoulin.com" target="_blank" rel="noopener">{{ t('by')[1] }}</a></span></p>
   </aside>
 </template>
 
@@ -41,7 +42,10 @@ function poke() { if (home.value) touched() }
 .name.ja { font-family: var(--mincho); font-weight: 700; letter-spacing: .12em; color: var(--accent); transition: color .6s; }
 .name:focus-visible { outline-offset: 6px; }
 .rail .board { --row: 48px; }
-.tip { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); }
+.tip { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+.by { font-size: 13px; font-weight: 300; color: var(--dim); }
+.by a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--edge); transition: color .2s; }
+.by a:hover { color: var(--accent); text-decoration-color: currentColor; }
 .tip .ctl svg { width: 16px; height: 16px; }
 .thesis { margin: auto 0 0; padding-top: 12px; max-width: 40ch; font-weight: 300; font-size: 14px; line-height: 1.55; color: var(--dim); }
 
