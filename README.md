@@ -72,9 +72,12 @@ docker compose -f docker-compose.prod.yml up -d --build
 - `Dockerfile.prod`: builds the site with Node 24, then serves `dist/` from nginx. The image holds
   only the built site; `Dockerfile.prod.dockerignore` keeps `pipeline/` (raw data, renders, venv)
   out of the build.
-- `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, revalidation for everything else so
-  a republished wallpaper shows at once. Any path that is not a file falls back to `index.html`,
-  which the history router needs for chapter URLs (`/fuji`).
+- `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, a day in browsers for `wallpapers/`,
+  `particles/`, `data/` and `video/`, revalidation for the pages. Any other path that is not a file
+  falls back to `index.html`, which the history router needs for chapter URLs (`/fuji`).
+- Cloudflare proxies the site. A cache rule holds `wallpapers/`, `particles/`, `data/` and `video/` at
+  the edge for a month; Browser Cache TTL is set to respect the origin. After a deploy that
+  republishes any of those files: Caching, Configuration, Purge Everything.
 - Search engines: `public/robots.txt` points to `sitemap.xml`, which the build writes from
   `SECTIONS` (`vite.config.js`). `index.html` holds the canonical link and the JSON-LD; `App.vue`
   updates the title, canonical, `og:url` and description for each chapter. Old `#/fuji` links are
