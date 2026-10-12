@@ -35,7 +35,7 @@ def render(W, H, out):
     total_strong = 0
     for i, (a, b) in enumerate(DECADES):
         sel = [s for s in storms if a <= s[0, 0] <= b]
-        panel, n_strong = ty.tracks(sel, pw, ph, BOX, k=1.0, weak_k=10.0)
+        panel, n_strong = ty.tracks(sel, pw, ph, BOX, k=1.0, weak_k=10.0, coast=0.06)   # small panels: the coast packs tighter, so dimmer
         # soften the panel edges so tracks fade out instead of ending on a hard rectangle
         e = 0.06
         fx = np.clip(np.minimum(np.arange(pw), pw - 1 - np.arange(pw)) / (e * pw), 0, 1)

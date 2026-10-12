@@ -61,7 +61,23 @@ def typhoons(OUT):
     P = np.concatenate(pts).astype(np.float32)
     P.tofile(f"{OUT}/typhoons.f32")
     np.array(offs, np.uint32).tofile(f"{OUT}/typhoons_offsets.u32")
-    print("typhoons", P.shape)
+    # Japan's coastline in the same frames, thinned to a point every ~4 km (well under a pixel on the stage)
+    from japan_land import JP
+    rings, offs = [], [0]
+    for a in JP:
+        keep = [0]
+        for i in range(1, len(a)):
+            if np.hypot(*(a[i] - a[keep[-1]])) >= 0.04:
+                keep.append(i)
+        if len(keep) < 3:
+            continue
+        r = a[keep]
+        a_, b = Ed(r[:, 0], r[:, 1]); c, d = Ep(r[:, 0], r[:, 1])
+        rings.append(np.stack([a_ / DW, b / DH, c / PW, d / PH], 1))
+        offs.append(offs[-1] + len(r))
+    np.concatenate(rings).astype(np.float32).tofile(f"{OUT}/typhoons_japan.f32")
+    np.array(offs, np.uint32).tofile(f"{OUT}/typhoons_japan_offsets.u32")
+    print("typhoons", P.shape, "japan", offs[-1], "points in", len(rings), "rings")
     return {"n_points": len(P), "n_storms": len(storms), "y0": int(storms[0][0, 0]), "y1": int(ty.LAST),
             "fields": ["xd", "yd", "xp", "yp", "pressure", "grade", "year"]}
 

@@ -1,17 +1,20 @@
 <script setup>
 // Every typhoon since 1951, each storm drawing its own track as its season arrives.
 // The bright head is the storm's eye; the trail stays as a thin line coloured by pressure.
+// Japan sits over them as a faint warm outline, so the eye knows where the storms are heading.
 import Stage from './Stage.vue'
 import { load, meta, ramp, rgba, glowSprite } from './data.js'
 import { t } from '../../i18n.js'
 
 const pColor = ramp([[905, [1, 1, 1]], [935, [.7, 1, 1]], [960, [.1, .9, 1]], [985, [0, .55, 1]], [1006, [.05, .22, .95]]])
 let Y0 = 1951, Y1 = 2026                 // replaced by the exported range in init()
-let P, OFF, storms = [], layer, lctx, active = [], next = 0
+let P, OFF, JP, JOFF, storms = [], layer, lctx, japan, active = [], next = 0
+const JAPAN = [1, .81, .54]               // the warm light of Japan's land in the wallpapers
 const head = glowSprite([.75, 1, 1], 48)
 
 async function init() {
   P = await load('typhoons.f32'); OFF = await load('typhoons_offsets.u32', Uint32Array)
+  JP = await load('typhoons_japan.f32'); JOFF = await load('typhoons_japan_offsets.u32', Uint32Array)
   const m = (await meta()).typhoons; if (m.y1) { Y0 = m.y0; Y1 = m.y1 + 1 }
   // spread each season's storms evenly through its year
   const byYear = {}
@@ -28,9 +31,23 @@ async function init() {
     })
   }
 }
-function reset({ w, h }) {
+function reset({ w, h, map }) {
   layer = document.createElement('canvas'); layer.width = w * 2; layer.height = h * 2
   lctx = layer.getContext('2d'); lctx.scale(2, 2); lctx.globalCompositeOperation = 'lighter'; lctx.lineCap = 'round'
+  // Japan on its own layer, laid over the tracks every frame so seventy years of storms never bury it
+  japan = document.createElement('canvas'); japan.width = w * 2; japan.height = h * 2
+  const j = japan.getContext('2d'); j.scale(2, 2); j.lineJoin = 'round'
+  j.beginPath()
+  for (let r = 0; r < JOFF.length - 1; r++) {
+    for (let i = JOFF[r]; i < JOFF[r + 1]; i++) {
+      const [x, y] = map(JP[i * 4], JP[i * 4 + 1], JP[i * 4 + 2], JP[i * 4 + 3])
+      i === JOFF[r] ? j.moveTo(x, y) : j.lineTo(x, y)
+    }
+    j.closePath()
+  }
+  j.fillStyle = 'rgba(0,0,0,0.35)'; j.fill()      // the land a shade quieter than the sea of tracks
+  j.fillStyle = rgba(JAPAN, 0.06); j.fill()
+  j.strokeStyle = rgba(JAPAN, 0.8); j.lineWidth = 0.7; j.stroke()
   active = []; next = 0
 }
 function segment(map, s, from, to, strong) {
@@ -62,6 +79,7 @@ function draw({ ctx, w, h, p, dt, map, still }) {
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h)
   ctx.drawImage(layer, 0, 0, w, h)
+  ctx.drawImage(japan, 0, 0, w, h)
   ctx.globalCompositeOperation = 'lighter'
   const k = Math.min(w, h) / 700
   for (const a of active) {

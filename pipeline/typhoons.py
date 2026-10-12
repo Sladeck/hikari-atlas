@@ -3,9 +3,11 @@
 Data: JMA RSMC Tokyo best track (bst_all.txt). One header line per storm (66666 ...),
 then 6-hourly rows: YYMMDDHH 002 grade lat*10 lon*10 pressure(hPa) [wind kt].
 Colour and brightness follow central pressure: lower pressure = stronger storm = whiter.
+Japan sits under the storms as a faint warm coastline over a dim fill (japan_land.py), so the eye can find it.
 """
 import sys
 import numpy as np
+from PIL import Image
 from common import Canvas, caption, save, EquiProj, dl, DESKTOP, PHONE
 
 BST = dl("Typhoon-Search", "bst_all.txt")
@@ -40,11 +42,28 @@ def pcolor(p):
     return np.stack([np.interp(p, ks, cs[:, i]) for i in range(3)], -1)
 
 
-def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5):
+def japan(cv, P, w):
+    """Japan's coastline as a faint warm line under the storms, so the eye knows where they are heading."""
+    from japan_land import JP, JAPAN
+    for a in JP:
+        x, y = P(a[:, 0], a[:, 1])
+        cv.add_polyline(x, y, JAPAN, w, step=0.7)
+
+
+def japan_fill(im, P, fill):
+    """A dim warm glow over Japan's land, added to the finished image, so the islands still read small."""
+    from japan_land import land_mask, JAPAN
+    W, H = im.size
+    a = np.asarray(im, np.float32) + land_mask(W, H, P, ss=2)[..., None] * JAPAN * 255 * fill
+    return Image.fromarray(np.clip(a + 0.5, 0, 255).astype(np.uint8))
+
+
+def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5, coast=0.14, fill=0.06):
     """Draw every storm into a W x H image of the lon/lat box; returns (image, storms below 930 hPa)."""
     P = EquiProj(W, H, *box, margin=0.0, mode="fill")
     cv = Canvas(W, H)
     z = min(W, H) / 2160
+    japan(cv, P, coast)
     n_strong = 0
     for s in storms:
         x, y = P(s[:, 2], s[:, 3])
@@ -59,7 +78,8 @@ def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.
             w = np.full(len(pres), weak_k * k * 0.0024)
         w = np.where(grade == 6, w * 0.3, w)
         cv.add_polyline(x, y, col, w)
-    return cv.finish(core=core * max(1, z), glow=4 * z, glow_amt=0.3, gain=gain, black=1.6e-2), n_strong
+    im = cv.finish(core=core * max(1, z), glow=4 * z, glow_amt=0.3, gain=gain, black=1.6e-2)
+    return japan_fill(im, P, fill), n_strong
 
 
 def render(storms, W, H, out):
