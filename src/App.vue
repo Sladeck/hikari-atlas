@@ -35,8 +35,8 @@ watch(
 )
 // the tab's title, description and address, in the current language
 const head = (sel, attr, v) => document.head.querySelector(sel)?.setAttribute(attr, v)
-watch([() => route.meta.section, sections], ([s]) => {
-  document.title = s ? `${local(s).title} · ${t('name')}` : t('name')
+watch([() => route.meta.section, () => route.meta.notFound, sections], ([s]) => {
+  document.title = s ? `${local(s).title} · ${t('name')}` : route.meta.notFound ? `${t('notFound').tab} · ${t('name')}` : t('name')
   const url = `https://hikari-atlas.com${s ? `/${s.id}` : '/'}`
   head('link[rel=canonical]', 'href', url)
   head('meta[property="og:url"]', 'content', url)

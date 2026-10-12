@@ -1,3 +1,5 @@
+import { copyFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { SECTIONS } from './src/sections.js'
@@ -21,8 +23,22 @@ function sitemap() {
   }
 }
 
+// a copy of index.html per chapter (dist/fuji.html), so nginx answers the chapters with 200 and
+// every other page address with a real 404 (nginx.conf), without a second list of chapters
+function chapterPages() {
+  let out
+  return {
+    name: 'chapter-pages',
+    apply: 'build',
+    configResolved(c) { out = resolve(c.root, c.build.outDir) },
+    closeBundle() {
+      for (const s of SECTIONS) copyFileSync(resolve(out, 'index.html'), resolve(out, `${s.id}.html`))
+    },
+  }
+}
+
 // base '/': history routing serves chapters at /<id>, so assets and data load from the root
 export default defineConfig({
-  plugins: [vue(), sitemap()],
+  plugins: [vue(), sitemap(), chapterPages()],
   base: '/',
 })

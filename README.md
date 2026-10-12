@@ -73,8 +73,9 @@ docker compose -f docker-compose.prod.yml up -d --build
   only the built site; `Dockerfile.prod.dockerignore` keeps `pipeline/` (raw data, renders, venv)
   out of the build.
 - `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, a day in browsers for `wallpapers/`,
-  `particles/`, `data/` and `video/`, revalidation for the pages. Any other path that is not a file
-  falls back to `index.html`, which the history router needs for chapter URLs (`/fuji`).
+  `particles/`, `data/` and `video/`, revalidation for the pages. The build writes a copy of `index.html` per chapter (`fuji.html`,
+  `vite.config.js`), so chapter URLs (`/fuji`) answer 200; any other address answers a real 404
+  with `index.html` as the body, and the app shows its "not found" page (`NotFound.vue`).
 - Cloudflare proxies the site. A cache rule holds `wallpapers/`, `particles/`, `data/` and `video/` at
   the edge for a month; Browser Cache TTL is set to respect the origin. After a deploy that
   republishes any of those files: Caching, Configuration, Purge Everything.
