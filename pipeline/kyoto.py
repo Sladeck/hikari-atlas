@@ -79,8 +79,8 @@ def render(W, H, out):
         dr.text((px, py + 30 * u), label, font=f, fill=(150, 110, 125), anchor="lt")
     else:
         dr.text((px - 26 * u, py + 6 * u), label, font=f, fill=(150, 110, 125), anchor="rt")
-    caption(im, f"桜  Kyoto, {int(pts.year.min())}–{int(pts.year.max())}  ·  peak bloom in {len(pts)} years of records  ·  "
-                "deeper pink = earlier than the 812–1850 average  ·  Aono & Kazui, Aono & Saito, Katata",
+    caption(im, f"桜  Kyoto, {int(pts.year.min())}–{int(pts.year.max())}",
+            f"Peak bloom in {len(pts)} years of records; deeper pink, earlier than before 1850  ·  Aono et al.",
             ramp=[WHITE, PINK])
     save(im, out)
 

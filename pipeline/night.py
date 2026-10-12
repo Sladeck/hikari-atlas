@@ -122,7 +122,7 @@ def render(name, v, W, H, out, A):
     zz = np.sqrt(max(1, zoom))                           # a close view is enlarged 500 m pixels: glow only a little more
     im = cv.finish(core=0.6 * zz, glow=4.5 * zz, glow_amt=0.35 if zoom <= 1.2 else 0.22, gain=1.9 if zoom <= 1.2 else 1.6,
                    gamma=0.9, black=1.6e-2)
-    caption(im, f"{v['jp']}  {v['en']}  ·  the lights of Japan from space, 2016  ·  NASA Black Marble (Suomi NPP VIIRS)",
+    caption(im, f"{v['jp']}  {v['en']}", "The lights of Japan seen from space, 2016  ·  NASA Black Marble",
             ramp=[c for _, c in LAMP])
     save(im, out)
 

@@ -77,8 +77,8 @@ def render(W, H, out):
     cv.add_points(sx, sy, col, w)
     z = min(W, H) / 2160
     im = cv.finish(core=0.9 * max(1, z), glow=6 * z, glow_amt=0.55, gain=4.2, black=1.5e-2)
-    caption(im, "富士山  Mount Fuji in light  ·  points along every 10 m contour from 1,000 m to the 3,776 m summit, "
-                "at their real positions in 3D", ramp=F.RAMP)
+    caption(im, "富士山  Mount Fuji in points", "A point on every 10 m contour from 1,000 m up, at its real place in 3D",
+            ramp=F.RAMP)
     save(im, out)
 
 

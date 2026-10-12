@@ -148,10 +148,12 @@ def front(kind, W, H, out):
             d.text((W * mx + a_ * W * (1 - 2 * mx) + 22 * u, H * (1 - my) - b_ * H * (1 - 2 * my)), city.title(),
                    font=f, fill=(110, 100, 94), anchor="lm")
     if kind == "kaede":
-        text = f"紅葉前線  The autumn leaf front  ·  first red maple at {df.l_code.nunique()} cities  ·  {y0} gold → {y1} crimson  ·  JMA"
+        text = ("紅葉前線  The autumn leaf front",
+                f"First red maple at {df.l_code.nunique()} cities, {y0} in gold to {y1} in crimson  ·  JMA")
     else:
-        text = f"銀杏の黄葉  Ginkgo gold  ·  first yellow ginkgo at {df.l_code.nunique()} cities  ·  {y0} pale → {y1} deep gold  ·  JMA"
-    caption(im, text, ramp=[c0, c1])
+        text = ("銀杏の黄葉  Ginkgo gold",
+                f"First yellow ginkgo at {df.l_code.nunique()} cities, {y0} pale to {y1} deep gold  ·  JMA")
+    caption(im, *text, ramp=[c0, c1])
     save(im, out)
 
 
@@ -200,8 +202,9 @@ def leaf_map(W, H, out):
         cx, cy, L = W - 70 * z, H - 70 * z, 22 * z
         d.line([(cx - dx * L, cy - dy * L), (cx + dx * L, cy + dy * L)], fill=(100, 90, 85), width=max(1, int(1.5 * z)))
         d.text((cx + dx * (L + 14 * z), cy + dy * (L + 14 * z)), "N", font=f, fill=(100, 90, 85), anchor="mm")
-    caption(im, f"紅葉  Autumn leaf map  ·  {len(T)} JMA cities  ·  deeper red = maples turn later than in the 1950s "
-                f"(up to 5 days per decade)  ·  {int((T.slope > 0).mean() * 100)}% of cities now turn later",
+    caption(im, "紅葉  Turning later",
+            f"{int((T.slope > 0).mean() * 100)}% of {len(T)} cities see red maples later than in the 1950s; deeper red, "
+            f"later  ·  JMA",
             ramp=[PALE_L, (PALE_L + VIVID_L) / 2, VIVID_L])
     save(im, out)
 
@@ -265,8 +268,9 @@ def stripes(W, H, out, k=3.0):
             dr.text((W * mx + i * cw, H * my - 16 * u), name.title(), font=f, fill=tick, anchor="ls")
         else:
             dr.text((W * mx - 14 * u, H * (1 - my) - i * ch), name.title(), font=f, fill=tick, anchor="rm")
-    caption(im, f"紅葉の縞  Autumn leaf stripes  ·  first red maple at {len(cities)} cities, {y0}–{y1}, each against its own "
-                "average  ·  red = late, white = usual, blue = early  ·  JMA", ramp=[EARLY_S * 0.5, MID_S * 0.4, LATE_S])
+    caption(im, f"紅葉の縞  Autumn leaf stripes, {y0}–{y1}",
+            f"Each of {len(cities)} cities against its own average: red late, blue early  ·  JMA",
+            ramp=[EARLY_S * 0.5, MID_S * 0.4, LATE_S])
     save(im, out)
 
 

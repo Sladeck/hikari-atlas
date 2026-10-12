@@ -182,8 +182,8 @@ def render(name, v, W, H, out, R):
         cv.add_polyline(xs, ys, rgb[i], w[i], step=0.6)
     im = cv.finish(core=0.55 * max(1, z), glow=5 * z, glow_amt=0.45, gain=v.get("gain", 4.2), black=1.2e-2)
     km = R["LENGTH_KM"][seen].sum()
-    caption(im, f"{v['jp']}  {v['en']}  ·  {seen.sum():,} river reaches, {km:,.0f} km, as bright as the water they carry  ·  "
-                f"HydroRIVERS", ramp=FLOW if v["colour"] == "flow" else None)
+    what = "each as bright as the water it carries" if v["colour"] == "flow" else "each river system in its own colour"
+    caption(im, f"{v['jp']}  {v['en']}", f"{km:,.0f} km of rivers, {what}  ·  HydroRIVERS", ramp=FLOW if v["colour"] == "flow" else None)
     save(im, out)
 
 

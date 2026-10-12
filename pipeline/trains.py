@@ -100,8 +100,7 @@ def render(name, v, W, H, out):
         cv.add_points(sx, sy, (1.0, 1.0, 1.0), 0.9 * v["st"])
     im = cv.finish(core=0.55 * max(1, z), glow=5 * z, glow_amt=0.35, gain=2.6, black=1.5e-2)
     n = len({c for c in poly.code.astype(int) if c in open_codes})
-    caption(im, f"{v['jp']}  {v['en']}  ·  {n} lines in their official colours, Shinkansen in white  ·  "
-                f"国土数値情報", ramp=[(0.0, 0.7, 0.38), (1.0, 0.55, 0.0), (0.9, 0.2, 0.3), (0.1, 0.5, 0.9), (1, 1, 1)])
+    caption(im, f"{v['jp']}  {v['en']}", f"{n} lines in their official colours, the Shinkansen in white  ·  国土数値情報", ramp=[(0.0, 0.7, 0.38), (1.0, 0.55, 0.0), (0.9, 0.2, 0.3), (0.1, 0.5, 0.9), (1, 1, 1)])
     save(im, out)
 
 

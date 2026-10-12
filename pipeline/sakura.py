@@ -77,8 +77,8 @@ def render(W, H, out):
         else:
             px, py = W * mx + a_ * W * (1 - 2 * mx) - 22 * u, H * (1 - my) - b_ * H * (1 - 2 * my)
             d.text((px, py), city.title(), font=f, fill=(110, 100, 105), anchor="rm")
-    caption(im, f"桜前線  The sakura front  ·  first bloom at {df.l_code.nunique()} cities  ·  "
-                f"{Y0} white → {Y1} pink  ·  JMA", ramp=[WHITE, PINK])
+    caption(im, "桜前線  The sakura front",
+            f"First bloom at {df.l_code.nunique()} cities, {Y0} in white to {Y1} in pink  ·  JMA", ramp=[WHITE, PINK])
     save(im, out)
 
 

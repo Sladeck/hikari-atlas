@@ -153,10 +153,10 @@ def render(name, v, W, H, out):
     im = cv.finish(core=0.7, glow=6 * max(z, 0.6), glow_amt=0.4, gain=2.4, black=1.2e-2)
     t = table()
     if v["back"] == "land":
-        text = f"{v['jp']}  {v['en']}  ·  {len(t)} volcanoes, colour = years since the last eruption, brightness = eruptions on record  ·  Smithsonian GVP"
+        text = f"{len(t)} volcanoes, coloured by years since the last eruption  ·  GVP"
     else:
-        text = f"{v['jp']}  {v['en']}  ·  volcanoes over the earthquakes of the sinking plates, brightest 90 to 160 km down  ·  Smithsonian GVP, USGS"
-    caption(im, text, ramp=[c for _, c in EMBER][::-1] if v["back"] == "land" else [(0.30, 0.55, 1.0), (0.55, 0.40, 1.0)])
+        text = "Volcanoes above the quakes of the sinking plate, 90 to 160 km down  ·  GVP, USGS"
+    caption(im, f"{v['jp']}  {v['en']}", text, ramp=[c for _, c in EMBER][::-1] if v["back"] == "land" else [(0.30, 0.55, 1.0), (0.55, 0.40, 1.0)])
     save(im, out)
 
 
@@ -225,8 +225,9 @@ def render_stripes(W, H, out):
     for yr in ticks:
         x, y = at(yr, -1.6) if not phone else at(yr, -1.2)
         d.text((x, y), str(yr), font=f, fill=(85, 85, 85), anchor="mm" if not phone else "rm")
-    caption(im, f"噴火の縞  Eruption stripes  ·  {len(conf)} eruptions at {len(vols)} volcanoes since 1600, south at the "
-                f"{'left' if phone else 'bottom'}, brighter for larger eruptions (VEI)  ·  Smithsonian GVP", ramp=VEI_RGB)
+    caption(im, "噴火の縞  Eruption stripes, since 1600",
+            f"{len(conf)} eruptions at {len(vols)} volcanoes, south at the {'left' if phone else 'bottom'}, brighter "
+            f"for larger ones  ·  GVP", ramp=VEI_RGB)
     save(im, out)
 
 

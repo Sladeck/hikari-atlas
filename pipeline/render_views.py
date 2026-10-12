@@ -16,6 +16,7 @@ import numpy as np, pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 
 OUT = "out"
+import common
 from common import DESKTOP, PHONE, F_LIGHT, F_REG
 DATA_CLIP = (121, 150, 23, 47)  # lon0, lon1, lat0, lat1 of the USGS query box
 
@@ -201,23 +202,15 @@ def north_arrow(im, P, W, H, phone):
 
 
 def caption(im, d, view, W, H, phone):
-    """One small, dim line in the corner + a thin depth bar. The data is the picture."""
-    draw = ImageDraw.Draw(im)
-    u = H / 2160 if not phone else W / 1290 * 0.9
-    f = ImageFont.truetype(F_LIGHT, int(17 * u))
+    """The shared caption (common.caption) with a depth bar, and the figures the site quotes."""
     big = d.loc[d.mag.idxmax()]
     stats = dict(count=int(len(d)), y0=int(d.time.min().year), y1=int(d.time.max().year),
                  maxmag=float(big.mag), maxdate=big.time.strftime("%Y-%m-%d"),
                  maxdepth=round(float(big.depth)), maxplace=str(big.place),
                  deepest=round(float(d.depth.max())))
-    text = f"{view['jp']}  {view['en']}  ·  {stats['count']:,} quakes M4.5+  ·  {stats['y0']}–{stats['y1']}  ·  USGS"
-    x = int(W * (0.06 if phone else 0.025))
-    y = int(H - (150 * u if phone else 60 * u))
-    lw, lh = int(70 * u), max(2, int(3 * u))
-    for i in range(lw):                                    # depth bar, shallow -> deep
-        c = depth_color(np.array([i / lw * 650]))[0] * 0.6
-        draw.line([(x + i, y), (x + i, y + lh)], fill=tuple(int(v * 255) for v in c))
-    draw.text((x + lw + 12 * u, y + lh / 2), text, font=f, fill=(85, 85, 85), anchor="lm")
+    common.caption(im, f"{view['jp']}  {view['en']}",
+                   f"{stats['count']:,} quakes M4.5+, {stats['y0']}–{stats['y1']}, coloured by depth  ·  USGS",
+                   ramp=depth_color(np.linspace(0, 650, 8)), phone=phone)
     return stats
 
 

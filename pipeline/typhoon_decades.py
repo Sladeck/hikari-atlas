@@ -51,8 +51,8 @@ def render(W, H, out):
     arr = np.asarray(im).copy()
     arr[arr.max(-1) <= 2] = 0                    # guaranteed #000000 between and around the panels
     im = Image.fromarray(arr)
-    caption(im, f"台風  Typhoons decade by decade  ·  {len(storms):,} storms, {DECADES[0][0] + 1}–{ty.LAST}  ·  "
-                f"bright = below 930 hPa ({total_strong})  ·  JMA best track", ramp=ty.RAMP)
+    caption(im, "台風  Decade by decade",
+            f"{len(storms):,} typhoons, {DECADES[0][0] + 1}–{ty.LAST}, one map per decade  ·  JMA", ramp=ty.RAMP)
     save(im, out)
 
 

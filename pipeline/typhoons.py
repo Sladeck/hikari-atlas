@@ -58,7 +58,7 @@ def japan_fill(im, P, fill):
     return Image.fromarray(np.clip(a + 0.5, 0, 255).astype(np.uint8))
 
 
-def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=1.1, gain=3.5, coast=0.14, fill=0.06):
+def tracks(storms, W, H, box, k=1.0, strong_k=4.5, weak_k=8.0, core=0.55, gain=3.5, coast=0.14, fill=0.06):
     """Draw every storm into a W x H image of the lon/lat box; returns (image, storms below 930 hPa)."""
     P = EquiProj(W, H, *box, margin=0.0, mode="fill")
     cv = Canvas(W, H)
@@ -87,8 +87,8 @@ def render(storms, W, H, out):
     box = (112, 166, 6, 52) if phone else (100, 178, 4, 52)
     im, n_strong = tracks(storms, W, H, box, k=1.1 if phone else 1.0)   # phone lines a little heavier (smaller screen)
     yrs = (int(min(s[0, 0] for s in storms)), int(max(s[0, 0] for s in storms)))
-    caption(im, f"台風  Typhoons of the Northwest Pacific  ·  {len(storms):,} storms, "
-                f"{n_strong} below 930 hPa highlighted  ·  {yrs[0]}–{yrs[1]}  ·  JMA best track", ramp=RAMP)
+    caption(im, f"台風  Typhoons, {yrs[0]}–{yrs[1]}",
+            f"{len(storms):,} storms, the {n_strong} that fell below 930 hPa drawn bright  ·  JMA", ramp=RAMP)
     save(im, out)
 
 

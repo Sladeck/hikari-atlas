@@ -50,7 +50,7 @@ def from_render(img, kind, n, gamma=1.35):
     H, W, _ = im.shape
     # drop the caption strip and a thin border
     lum = im.max(-1)
-    lum[int(H * (0.93 if kind == "desktop" else 0.90)):, : int(W * 0.6)] = 0
+    lum[int(H * (0.93 if kind == "desktop" else 0.90)):, : int(W * (0.6 if kind == "desktop" else 0.8))] = 0
     lum[:, :2] = lum[:, -2:] = 0
     # sample on a 2x downscaled grid to keep it fast, then jitter inside the cell
     s = 2

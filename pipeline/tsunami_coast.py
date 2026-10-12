@@ -102,12 +102,10 @@ def render(name, v, W, H, out):
     shown = np.isfinite(h) & (x > 0) & (x < W) & (y > 0) & (y < H)
     im = cv.finish(core=0.6, glow=5 * max(z, 0.6), glow_amt=0.35, gain=2.4, black=1.2e-2)
     if name == "heights":
-        text = (f"{v['jp']}  {v['en']}  ·  {len(h):,} marks, colour = height above the tide, up to {h.max():.0f} m  ·  "
-                f"TTJS Group")
+        text = f"{len(h):,} survey marks, coloured by height above the tide, up to {h.max():.0f} m  ·  TTJS Group"
     else:
-        text = (f"{v['jp']}  {v['en']}  ·  {shown.sum():,} marks, colour = distance from the shore, 30 m to 5 km  ·  "
-                f"TTJS Group")
-    caption(im, text, ramp=RAMP)
+        text = f"{shown.sum():,} survey marks, coloured by distance from the shore, 30 m to 5 km  ·  TTJS Group"
+    caption(im, f"{v['jp']}  {v['en']}", text, ramp=RAMP)
     import render_views as rv                                  # both views are turned: mark north, as the quakes do
     rv.north_arrow(im, SimpleNamespace(theta=P.th), W, H, phone)
     save(im, out)

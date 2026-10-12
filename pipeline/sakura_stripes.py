@@ -78,8 +78,9 @@ def render(W, H, out, k=3.0):
             dr.text((W * mx + i * cw, H * my - 16 * u), name.title(), font=f, fill=tick, anchor="ls")
         else:
             dr.text((W * mx - 14 * u, H * (1 - my) - i * ch), name.title(), font=f, fill=tick, anchor="rm")
-    caption(im, f"桜  Sakura stripes  ·  first bloom at {len(cities)} cities, {Y0}–{Y1}, each against its own average  ·  "
-                "pink = early, white = usual, blue = late  ·  JMA", ramp=[LATE * 0.5, MID * 0.4, EARLY])
+    caption(im, f"桜の縞  Sakura stripes, {Y0}–{Y1}",
+            f"Each of {len(cities)} cities against its own average: pink early, blue late  ·  JMA",
+            ramp=[LATE * 0.5, MID * 0.4, EARLY])
     save(im, out)
 
 

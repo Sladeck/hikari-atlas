@@ -80,6 +80,6 @@ if __name__ == "__main__":
         for (W, H), kind in ((DESKTOP, "desktop"), (PHONE, "phone")):
             v = VIEWS[n]["side"][kind]
             fuji_ridges.render(W, H, f"out/{n}_side_{kind}.png", M, v,
-                               text=f"{M.jp}  {M.en} from the east, {M.height:,} m  ·  the range as layered skylines, "
-                                    f"one every {v['step'] * 1000:.0f} m, true vertical scale  ·  Copernicus DEM, 30 m")
+                               text=(f"{M.jp}  {M.en} from the east", f"The range as layered skylines "
+                                     f"{v['step'] * 1000:.0f} m apart, true vertical scale  ·  Copernicus DEM"))
             fuji_ridges.render(W, H, f"out/{n}_ridges_{kind}.png", M, VIEWS[n]["ridges"][kind])

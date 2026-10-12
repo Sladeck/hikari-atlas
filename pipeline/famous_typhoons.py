@@ -17,7 +17,7 @@ import render_views as rv
 from common import Canvas, caption, save, EquiProj, dl, DESKTOP, PHONE, F_LIGHT
 
 STORMS = {
-    "isewan_1959": dict(id="5915", jp="伊勢湾台風", en="Typhoon Vera (Isewan), 1959"),
+    "isewan_1959": dict(id="5915", jp="伊勢湾台風", en="Typhoon Vera, 1959"),
     "hagibis_2019": dict(id="1919", jp="令和元年東日本台風", en="Typhoon Hagibis, 2019"),
 }
 
@@ -81,7 +81,7 @@ def render(name, W, H, out):
             continue
         r = (3.0 + 13.0 * depth[i] ** 1.2) * z
         rv.splat(cv.buf, x[i], y[i], r, col[i], 0.10 + 0.45 * depth[i])
-    im = cv.finish(core=0.9 * max(1, z), glow=6 * z, glow_amt=0.4, gain=3.0, black=1.6e-2)
+    im = cv.finish(core=0.55 * max(1, z), glow=6 * z, glow_amt=0.4, gain=3.0, black=1.6e-2)
 
     dr = ImageDraw.Draw(im)
     u = min(W, H) / 2160 * (1.5 if phone else 1)
@@ -92,8 +92,8 @@ def render(name, W, H, out):
             dr.text((x[i] + 18 * u, y[i]), t[i].strftime("%-d %b"), font=f, fill=(95, 110, 125), anchor="lm")
     k = int(np.argmin(pres))                                    # the deepest point
     dr.text((x[k] - 22 * u, y[k]), f"{int(pres[k])} hPa", font=f2, fill=(175, 205, 220), anchor="rm")
-    caption(im, f"台風  {s['jp']}  {s['en']}  ·  {t[0]:%-d %b} to {t[-1]:%-d %b %Y}, every 6 hours, dates at 00 UTC  ·  "
-                f"lowest {int(pres.min())} hPa  ·  JMA best track", ramp=ty.RAMP)
+    caption(im, f"{s['jp']}  {s['en']}",
+            f"A bead every 6 hours, {t[0]:%-d} to {t[-1]:%-d %b}, lowest {int(pres.min())} hPa  ·  JMA", ramp=ty.RAMP)
     save(im, out)
 
 

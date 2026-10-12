@@ -55,8 +55,8 @@ def render(W, H, out):
         w = w * np.clip((e - 4) / 40, 0, 1)
         cv.add_polyline(x, y, ecolor(lev), w, step=0.5)
     im = cv.finish(core=0.5 * max(1, z), glow=4 * z, glow_amt=0.45, gain=3.4, black=1.5e-2)
-    caption(im, "富士山  Mount Fuji, 3,776 m  ·  contour lines every 10 m, sunrise colours by height  ·  "
-                "30 m elevation model", ramp=RAMP)
+    caption(im, "富士山  Mount Fuji, 3,776 m", "Contour lines every 10 m, in sunrise colours by height  ·  30 m DEM",
+            ramp=RAMP)
     save(im, out)
 
 

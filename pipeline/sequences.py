@@ -76,8 +76,8 @@ def render(name, W, H, out, label=True):
         rv.draw_cities(im, P, view, W, H, phone)
         rv.north_arrow(im, P, W, H, phone)
         ramp = time_color(np.geomspace(0.1, d.hours.max(), 6))         # only the span this picture covers
-        caption(im, f"{s['jp']}  {s['en']}  ·  {len(d):,} quakes M{s['minmag']:g}+ {s['when']}  ·  "
-                    "colour = time since the first shock  ·  JMA", ramp=ramp)
+        caption(im, f"{s['jp']}  {s['en']}",
+                f"{len(d):,} quakes M{s['minmag']:g}+ {s['when']}, coloured by time  ·  JMA", ramp=ramp)
     save(im, out)
     return len(d)
 

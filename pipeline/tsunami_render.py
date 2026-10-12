@@ -156,8 +156,8 @@ def render(W, H, out, bare=False):
         if hrs and hrs[0] <= a < 90:
             halo(d, (x, y), f"{hrs[0]} h", f, u, (110, 150, 155), "mm")
             hrs = hrs[1:]
-    caption(im, "津波  Tōhoku tsunami, 11 March 2011  ·  highest wave in 24 h, simulated from the shallow-water "
-                "equations on real ocean depth  ·  rings = hours", ramp=RAMP)
+    caption(im, "津波  The Tōhoku tsunami, 2011",
+            "The highest wave in 24 hours, simulated on the real ocean depth; one ring an hour", ramp=RAMP)
     save(im, out)
 
 

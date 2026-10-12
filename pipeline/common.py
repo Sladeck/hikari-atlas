@@ -86,26 +86,56 @@ class Canvas:
         return Image.fromarray(arr)
 
 
-def caption(im, text, ramp=None, phone=None):
-    """One small dim line bottom-left, optional thin colour bar (list of rgb 0..1)."""
+def caption(im, title, desc="", ramp=None, phone=None):
+    """Bottom-left: a short title, and under it a smaller dim line saying what the picture is, led by
+    an optional thin colour bar (list of rgb 0..1). The description wraps onto more lines rather than
+    run past the strip export_particles.py blanks, and a soft halo dims the light under the words so
+    they read over any picture."""
     W, H = im.size
     phone = H > W if phone is None else phone
-    d = ImageDraw.Draw(im)
     u = H / 2160 if not phone else W / 1290 * 0.9
-    f = ImageFont.truetype(F_LIGHT, int(17 * u))
+    ft = ImageFont.truetype(F_LIGHT, int(40 * u))
+    fd = ImageFont.truetype(F_LIGHT, int(23 * u))
     x = int(W * (0.06 if phone else 0.025))
-    y = int(H - (150 * u if phone else 60 * u))
-    tx = x
+    y = int(H - (150 * u if phone else 60 * u))          # the last line's middle, clear of a phone's home bar
+    lw, lh = int(70 * u), max(2, int(3 * u))
+    tx = x + lw + 14 * u if ramp is not None else x
+    limit = W * (0.8 if phone else 0.6) - tx              # what export_particles.py blanks
+    rows = []
+    # too long for one line: break first before the source (after the last "  ·  "), then between words
+    parts = desc.rsplit("  ·  ", 1) if desc and fd.getlength(desc) > limit else [desc] if desc else []
+    for part in parts:
+        rows.append("")
+        for word in part.split(" "):
+            if rows[-1] and fd.getlength(rows[-1] + " " + word) > limit:
+                rows.append("")
+            rows[-1] += (" " if rows[-1] else "") + word
+    step = 30 * u
+    first = y - step * (len(rows) - 1)                    # the first description line's middle
+    ty = first - 26 * u if rows or ramp is not None else y + 12 * u
+    lines = [((x, ty), title, ft, (170, 170, 170), "ls")]
+    lines += [((tx, first + i * step), r, fd, (110, 110, 110), "lm") for i, r in enumerate(rows)]
+
+    mask = Image.new("L", im.size, 0)                    # the halo: the words' shapes, grown and blurred
+    md = ImageDraw.Draw(mask)
+    for pos, text, f, _, anchor in lines:
+        md.text(pos, text, font=f, fill=255, anchor=anchor, stroke_width=int(10 * u), stroke_fill=255)
     if ramp is not None:
-        lw, lh = int(70 * u), max(2, int(3 * u))
+        md.rectangle([x, first - 4 * lh, x + lw, first + 4 * lh], fill=255)
+    m = gaussian_filter(np.asarray(mask, np.float32) / 255, 14 * u)
+    a = np.asarray(im.convert("RGB"), np.float32) * (1 - np.clip(m * 1.8, 0, 0.94))[..., None]
+    im.paste(Image.fromarray((a + 0.5).astype(np.uint8)))
+
+    d = ImageDraw.Draw(im)
+    if ramp is not None:
         ramp = np.asarray(ramp, np.float32)
         for i in range(lw):
             p = i / max(1, lw - 1) * (len(ramp) - 1)
-            a, t = int(p), p - int(p)
-            c = ramp[a] * (1 - t) + ramp[min(a + 1, len(ramp) - 1)] * t
-            d.line([(x + i, y), (x + i, y + lh)], fill=tuple(int(v * 255 * 0.6) for v in c))
-        tx = x + lw + 12 * u
-    d.text((tx, y + 1.5 * u), text, font=f, fill=(85, 85, 85), anchor="lm")
+            k, t = int(p), p - int(p)
+            c = ramp[k] * (1 - t) + ramp[min(k + 1, len(ramp) - 1)] * t
+            d.line([(x + i, first - lh // 2), (x + i, first - lh // 2 + lh)], fill=tuple(int(v * 255 * 0.6) for v in c))
+    for pos, text, f, fill, anchor in lines:
+        d.text(pos, text, font=f, fill=fill, anchor=anchor)
 
 
 def save(im, path):

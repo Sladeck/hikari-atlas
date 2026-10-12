@@ -73,8 +73,9 @@ def render(df, W, H, az, el, out, label=True):
     arr[buf.max(-1) < 1e-3] = 0                # guaranteed #000000
     im = Image.fromarray(arr)
     if label:
-        caption(im, f"地震  The plates in 3D  ·  {int((f > 0.5).sum()):,} quakes M4.5+, "
-                    f"{df.time.min().year}–{df.time.max().year}  ·  depth ×{VEX:g}  ·  USGS",
+        caption(im, "地震  The plates in 3D",
+                f"{int((f > 0.5).sum()):,} quakes M4.5+, {df.time.min().year}–{df.time.max().year}, depth stretched "
+                f"×{VEX:g}  ·  USGS",
                 ramp=[c for _, c in rv.RAMP])
     save(im, out)
 

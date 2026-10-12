@@ -116,8 +116,9 @@ def render(W, H, out):
         cx, cy, L = W - 70 * z, H - 70 * z, 22 * z
         d.line([(cx - dx * L, cy - dy * L), (cx + dx * L, cy + dy * L)], fill=(100, 90, 95), width=max(1, int(1.5 * z)))
         d.text((cx + dx * (L + 14 * z), cy + dy * (L + 14 * z)), "N", font=f, fill=(100, 90, 95), anchor="mm")
-    caption(im, f"桜  Cherry blossom map of Japan  ·  {len(T)} JMA cities  ·  deeper pink = first bloom earlier than in the 1950s "
-                f"(up to 1.5 days per decade)  ·  {int((T.slope < 0).mean() * 100)}% of cities now bloom earlier", ramp=RAMP)
+    caption(im, "桜  Blooming earlier",
+            f"{int((T.slope < 0).mean() * 100)}% of {len(T)} cities bloom earlier than in the 1950s; deeper pink, "
+            f"earlier  ·  JMA", ramp=RAMP)
     save(im, out)
 
 

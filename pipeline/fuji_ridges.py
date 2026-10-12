@@ -52,7 +52,8 @@ def height(M, lon, lat):
 
 
 def render(W, H, out, M=F, view=None, text=None, bare=False):
-    """bare: the lines alone, no labels or caption, returned instead of saved (og.py)."""
+    """bare: the lines alone, no labels or caption, returned instead of saved (og.py).
+    text: an optional (title, description) for the caption."""
     phone = H > W
     V = view or VIEW["phone" if phone else "desktop"]
     cam = Cam(W, H, **V["cam"])
@@ -125,10 +126,10 @@ def render(W, H, out, M=F, view=None, text=None, bare=False):
         d.line([(px, py - 16 * u), (px, py - 70 * u)], fill=grey, width=max(1, int(u)))
         d.text((px, py - 82 * u), getattr(M, "summit_name", f"{M.jp}  {M.height:,} m"), font=f, fill=grey, anchor="ms")
     side = SIDES.get(round(V["cam"]["az_deg"] / 90) * 90, "side")
-    what = "The summit cone" if M is F else M.en
-    caption(im, text or f"{M.jp}  {what} in ridge lines  ·  {len(rows)} profiles one every {V['step'] * 1000:.0f} m, seen from "
-                f"the {side}, true vertical scale  ·  {'30 m elevation model' if M is F else 'Copernicus DEM, 30 m'}",
-            ramp=F.RAMP)
+    what = "Mount Fuji's summit cone" if M is F else M.en
+    title, desc = text or (f"{M.jp}  {what}", f"{len(rows)} ridge lines {V['step'] * 1000:.0f} m apart, seen from the "
+                                   f"{side}, true vertical scale  ·  {'30 m DEM' if M is F else 'Copernicus DEM'}")
+    caption(im, title, desc, ramp=F.RAMP)
     save(im, out)
 
 
