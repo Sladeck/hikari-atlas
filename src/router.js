@@ -9,8 +9,12 @@ import { SECTIONS } from './sections.js'
 let entered = null
 export function pageEntered() { entered?.(); entered = null }
 
-// links shared before history mode (hikari-atlas.com/#/fuji) still open their chapter
-if (location.hash.startsWith('#/')) history.replaceState(null, '', location.hash.slice(1))
+// links shared before history mode (hikari-atlas.com/#/fuji) still open their chapter. A hash such
+// as #//host or #/\host names another origin, which replaceState refuses with a throw: the app
+// would never mount, so such a hash is left as it is and the front page opens
+if (location.hash.startsWith('#/')) {
+  try { history.replaceState(null, '', location.hash.slice(1)) } catch { /* another origin */ }
+}
 
 // history mode: each chapter has its own URL for search engines. The build writes a copy of
 // index.html per chapter (vite.config.js); nginx serves anything else as a 404 with index.html
