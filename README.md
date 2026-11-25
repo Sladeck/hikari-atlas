@@ -59,33 +59,15 @@ npm run sizes                # after replacing wallpaper PNGs: refresh the sizes
 - **Assets** (`public/`): `wallpapers/full` PNG downloads, `wallpapers/preview` and
   `wallpapers/feature` WebP previews, `data/` and `particles/` binary data for the animations,
   `video/` the pre-rendered tsunami.
-
-## Deploy
-
-Production runs on the same server and Traefik setup as the portfolio and the-obsidian-table, at
-https://hikari-atlas.com (www redirects to the apex). From the repo root on the server:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d --build
-```
-
-- `Dockerfile.prod`: builds the site with Node 24, then serves `dist/` from nginx. The image holds
-  only the built site; `Dockerfile.prod.dockerignore` keeps `pipeline/` (raw data, renders, venv)
-  out of the build.
-- `nginx.conf`: gzip, long caching for Vite's hashed `assets/`, a day in browsers for `wallpapers/`,
-  `particles/`, `data/` and `video/`, revalidation for the pages. The build writes a copy of `index.html` per chapter (`fuji.html`,
+- **Chapter pages**: the build writes a copy of `index.html` per chapter (`fuji.html`,
   `vite.config.js`), so chapter URLs (`/fuji`) answer 200; any other address answers a real 404
   with `index.html` as the body, and the app shows its "not found" page (`NotFound.vue`).
-- Cloudflare proxies the site. A cache rule holds `wallpapers/`, `particles/`, `data/` and `video/` at
-  the edge for a month; Browser Cache TTL is set to respect the origin. After a deploy that
-  republishes any of those files: Caching, Configuration, Purge Everything.
-- Search engines: `public/robots.txt` points to `sitemap.xml`, which the build writes from
+- **Search engines**: `public/robots.txt` points to `sitemap.xml`, which the build writes from
   `SECTIONS` (`vite.config.js`). `index.html` holds the canonical link and the JSON-LD; `App.vue`
   updates the title, canonical, `og:url` and description for each chapter. Old `#/fuji` links are
   redirected in `src/router.js`.
-- `docker-compose.prod.yml`: joins the external Traefik network `web`, HTTPS via the `le` resolver.
-  No database, no `.env`, no secrets.
-- DNS: A records for `hikari-atlas.com` and `www.hikari-atlas.com` pointing to the server.
+- **Content-Security-Policy**: written into every page at build (`vite.config.js`), with the hashes
+  of `index.html`'s inline script and handlers computed there, so editing them needs no hand update.
 
 ## The images (`pipeline/`)
 
